@@ -1,11 +1,9 @@
-
 // this is an example of calling an external api
 const https = require('https');
 const axios = require('axios');
 
-
 export function getActivities(){
-	axios.get("https://www.boredapi.com/api/activity")
+	axios.get(`${process.env.BORED_API_URL}`)
 		.then(response => {
 		// access parsed JSON response data using response.data field
 			var data = response.data
@@ -19,5 +17,5 @@ export function getActivities(){
 			  console.log(error.message)
 			}
 		})
-}
 
+}
