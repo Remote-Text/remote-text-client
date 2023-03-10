@@ -8,6 +8,7 @@ Some basics
 - package.json is what tells npm what dependencies to install, how to build, and more. the package-lock.json makes sure everyone who builds has the same version of each package
   - You can add external packages by saying  `npm install <name> --save` (save will add it to package.json). Best to never edit package or package-lock manually
 - eslint is a linter, which will look over javascript to make sure it follows conventions
+
 ## Getting Started
 
 

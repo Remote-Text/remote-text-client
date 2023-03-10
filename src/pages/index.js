@@ -1,10 +1,18 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import { Inter } from 'next/font/google'
-import styles from '@/styles/Home.module.css'
-import {getActivities } from '@/api/hello.js'
+import styles from '../styles/Home.module.css'
+import BoredApi from '../externalApis/boredApi.js'
 const inter = Inter({ subsets: ['latin'] })
 
+const boredapi = new BoredApi();
+
+// a function like this could get our git history, get a file and load the editor, etc
+// right now it just console logs
+function logActivities(){
+	
+	boredapi.getActivities();
+}
 
 export default function Home() {
   return (
@@ -18,7 +26,7 @@ export default function Home() {
 	  HELLO WORLD
           </p>
 	  	</div>
-	  <button onClick={getActivities}>Default</button>
+	  <button onClick={logActivities}>Default</button>
       </main>
     </>
   )
