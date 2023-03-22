@@ -5,7 +5,7 @@ const nextConfig = {
   reactStrictMode: true,
 	// there has to be a better way...
 	env : {
-		BORED_API_URL:process.env.BORED_API_URL
+		REMOTE_TEXT_API_URL:process.env.REMOTE_TEXT_API_URL
 	}
 
 }

@@ -26,10 +26,9 @@ The button on the page will call an external api (see `api/hello.js`). This is h
 To load the url into your environment, make a file called `.env` in the root directory. Then, put this line in
 
 ```
-BORED_API_URL=https://www.boredapi.com/api/activity
+REMOTE_TEXT_API_URL=...
 ```
 
-now, when you run `npm run dev`, the variable will be loaded into your environment. Now when you look a the page, you can click the button to hit the bored api, which gives an activity to do when you are bored. To see the output, look in the console (left click on the browser page, hit inspect, and go to console in the dev tools window).
 
 ## Learn More
 
