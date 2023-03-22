@@ -15,7 +15,7 @@ module.exports = class RemoteTextApi {
 	}
 
 	async listFiles() {
-		 return axios.get(this.url)
+		 return axios.get(this.url + '/listFiles')
 			.then(response => {
 				// extract data from response
 				var data = response.data
@@ -34,8 +34,6 @@ module.exports = class RemoteTextApi {
 					console.log(error)
 				}
 			})
-
-	
 	}
 }
 
