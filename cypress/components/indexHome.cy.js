@@ -6,8 +6,8 @@ describe('<Home />', () => {
     // see: https://on.cypress.io/mounting-react
     cy.mount(<Home />)
 	
-	cy.get('p').contains("HELLO WORLD")
+	cy.get('p').contains("Hello World! Press buttons to see API calls in console")
 	
-	cy.get('button').should('be.visible')
+	cy.get('[id=listFiles]').should('be.visible')
   })
 })

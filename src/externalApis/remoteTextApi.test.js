@@ -6,10 +6,13 @@ jest.mock('axios');
 // example of how we will test our classes 
 // search google 'testing with jest js'
 describe('RemoteTextApi', () => {
+
 	const remoteTextApi = new RemoteTextApi();
+
 	test("Url is loaded from env", () => {
 		expect(!remoteTextApi.url === "undefined");
 	});
+
 	test("listFiles returns expected object", async () => {
 		axios.get.mockResolvedValue({
 			data: [{

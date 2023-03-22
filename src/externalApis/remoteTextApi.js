@@ -9,11 +9,19 @@ module.exports = class RemoteTextApi {
 		this.schemas = new schemas()
 	}
 
+	// helper function to validate input
+	validate(data, expected){
+		this.schemas.validator.validate(data, expected, {throwAll: true});
+	}
+
 	async listFiles() {
 		 return axios.get(this.url)
 			.then(response => {
+				// extract data from response
 				var data = response.data
-				this.schemas.validator.validate(data, this.schemas.listFilesSchema, {throwAll: true});
+
+				// make sure data follows expected format and return
+				this.validate(data, this.schemas.listFilesSchema)
 				return data;
 			})
 			.catch(error => {
@@ -30,3 +38,5 @@ module.exports = class RemoteTextApi {
 	
 	}
 }
+
+

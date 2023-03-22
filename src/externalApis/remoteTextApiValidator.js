@@ -3,6 +3,7 @@
 var Validator = require('jsonschema').Validator;
 
 module.exports = class Schemas{
+
 	fileSummarySchema = {
 		"id": "/FileSummary",
 		"type": "object",
@@ -22,6 +23,7 @@ module.exports = class Schemas{
 			"$ref": "/FileSummary"
 		}
 	};
+
 	constructor(){
 		// any supporting types need to be added to validator here
 		// so like in the getFilesSchema, since I say the json is an array of /FilesSummary, I need to add /FileSummary to validator so it knows that type

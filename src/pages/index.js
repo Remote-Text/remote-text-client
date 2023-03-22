@@ -1,8 +1,6 @@
 import Head from 'next/head'
-import { Inter } from 'next/font/google'
 import styles from '../styles/Home.module.css'
 import RemoteTextApi from '../externalApis/remoteTextApi.js'
-const inter = Inter({ subsets: ['latin'] })
 
 const remoteTextApi = new RemoteTextApi();
 
@@ -26,7 +24,7 @@ export default function Home() {
 					  Hello World! Press buttons to see API calls in console
 				  </p>
 			  </div>
-			  <button onClick={logListFiles}>ListFiles</button>
+			  <button id="listFiles" onClick={logListFiles}>ListFiles</button>
 		  </main>
 	  </>
   )
