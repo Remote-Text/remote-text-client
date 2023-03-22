@@ -1,5 +1,4 @@
 // this is an example of calling an external api
-const https = require('https');
 const axios = require('axios');
 const schemas = require('./remoteTextApiValidator')
 
@@ -10,11 +9,11 @@ module.exports = class RemoteTextApi {
 		this.schemas = new schemas()
 	}
 
-	async getFiles() {
+	async listFiles() {
 		 return axios.get(this.url)
 			.then(response => {
 				var data = response.data
-				this.schemas.validator.validate(data, this.schemas.getFilesSchema, {throwAll: true});
+				this.schemas.validator.validate(data, this.schemas.listFilesSchema, {throwAll: true});
 				return data;
 			})
 			.catch(error => {
@@ -23,6 +22,7 @@ module.exports = class RemoteTextApi {
 					console.log(error.reponse.status)
 				} else {
 					// should we have some more sophisticated error logs?
+					console.log('Schema Error')
 					console.log(error)
 				}
 			})

@@ -10,12 +10,12 @@ module.exports = class Schemas{
 			"name": {"type": "string"},
 			"edited_time": {"type": "string"},
 			"created_time": {"type": "string"},
-			"id": {"type": "integer"}
+			"id": {"type": "string"}
 		},
 		"required": ["id"]
 	};
 
-	getFilesSchema = {
+	listFilesSchema = {
 		"id": "/GetFiles",
 		"type": "array",
 		"items": {

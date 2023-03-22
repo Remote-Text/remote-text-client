@@ -10,22 +10,22 @@ describe('RemoteTextApi', () => {
 	test("Url is loaded from env", () => {
 		expect(!remoteTextApi.url === "undefined");
 	});
-	test("getFiles returns expected object", async () => {
+	test("listFiles returns expected object", async () => {
 		axios.get.mockResolvedValue({
 			data: [{
 				name: "README.md",
-				id: 1,
+				id: "1",
 				edited_time: Date(),
 				created_time: Date(),
 			}, {
 				name: "READMETOO.md",
-				id: 2,
+				id: "3",
 				edited_time: Date(),
 				created_time: Date(),
 			}]
 		});
-		const getFilesResult = await remoteTextApi.getFiles();
-		expect(getFilesResult[0].name).toEqual('README.md');
+		const listFilesResult = await remoteTextApi.listFiles();
+		expect(listFilesResult[0].name).toEqual('README.md');
 	}
 	);
 });

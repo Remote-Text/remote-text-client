@@ -8,10 +8,10 @@ const remoteTextApi = new RemoteTextApi();
 
 // a function like this could get our git history, get a file and load the editor, etc
 // right now it just console logs
-function logGetFiles(){
+async function logListFiles(){
 	
 	// this will throw unless server is up
-	console.log(remoteTextApi.getFiles());
+	 console.log(await remoteTextApi.listFiles());
 }
 
 export default function Home() {
@@ -26,7 +26,7 @@ export default function Home() {
 					  Hello World! Press buttons to see API calls in console
 				  </p>
 			  </div>
-			  <button onClick={logGetFiles}>GetFiles</button>
+			  <button onClick={logListFiles}>ListFiles</button>
 		  </main>
 	  </>
   )
