@@ -16,18 +16,18 @@ function logGetFiles(){
 
 export default function Home() {
   return (
-    <>
-      <Head>
-        <title>Hello World</title>
-      </Head>
-      <main className={styles.main}>
-        <div className={styles.description}>
-          <p>
-	  HELLO WORLD
-          </p>
-	  	</div>
-	  <button onClick={logGetFiles}>Default</button>
-      </main>
-    </>
+	  <>
+		  <Head>
+			  <title>Hello World</title>
+		  </Head>
+		  <main className={styles.main}>
+			  <div className={styles.description}>
+				  <p>
+					  Hello World! Press buttons to see API calls in console
+				  </p>
+			  </div>
+			  <button onClick={logGetFiles}>GetFiles</button>
+		  </main>
+	  </>
   )
 }
