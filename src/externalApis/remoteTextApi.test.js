@@ -48,5 +48,33 @@ describe('RemoteTextApi', () => {
 	}
 	);
 
+	test("getFile returns expected object", async () => {
+		expectedResponse = {
+			name: "READMETOO.md",
+			id: "3",
+			edited_time: Date(),
+			created_time: Date(),
+		}
+		axios.put.mockResolvedValue({
+			data: expectedResponse
+		});
+		getFileInput = "8"
+		const getFileResult = await remoteTextApi.getFile(getFileInput);
+		expect(getFileResult).toMatchObject(expectedResponse)
+	})
+
+	test("getHistory returns expected object", async () => {
+		expectedResponse = [
+				{hash: "some_git_hash"},
+				{hash: "some_other_git_hash",
+				parent: "some_git_hash"}
+			]
+		axios.put.mockResolvedValue({
+			data: expectedResponse
+		});
+		getFileInput = "8"
+		const getFileResult = await remoteTextApi.getFile(getFileInput);
+		expect(getFileResult).toMatchObject(expectedResponse)
+	})
 
 });

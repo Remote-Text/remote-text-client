@@ -98,7 +98,7 @@ module.exports = class RemoteTextApi {
 		return axios.put(this.url + '/getHistory', {id: fileid})
 			.then(response => {
 				var data = response.data
-				this.validate(data, this.schemas.gitSummarySchema)
+				this.validate(data, this.schemas.getHistorySchema)
 				return data;
 			})
 			.catch(error => {

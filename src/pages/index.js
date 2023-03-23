@@ -17,11 +17,11 @@ async function logCreateFile(){
 }
 
 async function logGetFile(){
-	console.log(await remoteTextApi.getFile("SOME_ID"))
+	console.log(await remoteTextApi.getFile("8"))
 }
 
 async function logGetHistory(){
-	console.log(await remoteTextApi.getFile("SOME_ID"))
+	console.log(await remoteTextApi.getFile("8"))
 }
 
 export default function Home() {

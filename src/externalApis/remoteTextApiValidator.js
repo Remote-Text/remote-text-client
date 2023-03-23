@@ -71,21 +71,14 @@ module.exports = class Schemas{
 		}
 	};
 
-	listGitCommitsSchema = {
-		"id": "/ListCommitHistory",
+	getHistorySchema = {
+		"id": "/GetHistory",
 		"type": "array",
-		"items": {
-			"$ref": "/GitCommit"
-		}
-	};
-
-	listGitRefSchema = {
-		"id": "/ListRefHistory",
-		"type": "array",
-		"items": {
-			"$ref": "/GitRef"
-		}
-	};
+		"items": [
+			{"$ref": "/GitCommit"},
+			{"$ref": "/GitRef"}
+		]
+	}
 	
 
 	constructor(){
