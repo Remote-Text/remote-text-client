@@ -31,4 +31,22 @@ describe('RemoteTextApi', () => {
 		expect(listFilesResult[0].name).toEqual('README.md');
 	}
 	);
+
+	test("createFiles returns expected object", async () => {
+		expectedResponse = {
+			name: "READMETOO.md",
+			id: "3",
+			edited_time: Date(),
+			created_time: Date(),
+		}
+		axios.put.mockResolvedValue({
+			data: expectedResponse
+		});
+		createFileInput = "foo.txt"
+		const createFileResult = await remoteTextApi.createFile(createFileInput);
+		expect(createFileResult).toMatchObject(expectedResponse);
+	}
+	);
+
+
 });

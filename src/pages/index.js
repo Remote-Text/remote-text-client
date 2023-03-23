@@ -12,6 +12,10 @@ async function logListFiles(){
 	 console.log(await remoteTextApi.listFiles());
 }
 
+async function logCreateFile(){
+	 console.log(await remoteTextApi.createFile("foo.txt"));
+}
+
 export default function Home() {
   return (
 	  <>
@@ -25,6 +29,7 @@ export default function Home() {
 				  </p>
 			  </div>
 			  <button id="listFiles" onClick={logListFiles}>ListFiles</button>
+			  <button id="createFile" onClick={logCreateFile}>CreateFile</button>
 		  </main>
 	  </>
   )
