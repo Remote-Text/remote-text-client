@@ -49,19 +49,28 @@ describe('RemoteTextApi', () => {
 	);
 	test("saveFile returns expected object", async () => {
 		expectedResponse = {
-			hash: "aceaaec23664ae26d76ab66cedfb1206b9c972b1".to_string(),
-			parent: None,
+			hash: "aceaaec23664ae26d76ab66cedfb1206b9c972b1",
 		}
+		saveFileInput = {
+			name: "foo.txt",
+			id: "aec23664ae26d76ab66cedfb1206b9c972b1",
+			content: "hello world!",
+		}
+		//saveFileInput = "aec23664ae26d76ab66cedfb1206b9c972b1"
 		const saveFileResult = await remoteTextApi.saveFile(saveFileInput);
 		expect(saveFileResult).toMatchObject(expectedResponse);
 	}
 	)
 	test("getPreview returns expected object", async () => {
 		expectedResponse = {
-			name: "README.md".to_string(), //Not checking all the data, can though if needed, but not sure how that format works
-			id: obj.id,
+			name: "README.md", //Not checking all the data, can though if needed, but not sure how that format works
 		}
-		const getPreviewResult = await remoteTextApi.saveFile(getPreviewInput);
+		getPreviewInput = {
+			name: "foo.txt",
+			id: "aec23664ae26d76ab66cedfb1206b9c972b1",
+			content: "hello world!",
+		}
+		const getPreviewResult = await remoteTextApi.getPreview(getPreviewInput);
 		expect(getPreviewResult).toMatchObject(expectedResponse);
 	}
 	)

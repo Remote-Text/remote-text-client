@@ -17,11 +17,11 @@ async function logCreateFile() {
 }
 
 async function logSaveFile() {
-	console.log(await remoteTextApi.saveFile("foo.txt"));
+	console.log(await remoteTextApi.saveFile("aec23664ae26d76ab66cedfb1206b9c972b1"));
 }
 
 async function logGetPreview() {
-	console.log(await remoteTextApi.getPreview("README.md"))
+	console.log(await remoteTextApi.getPreview("aec23664ae26d76ab66cedfb1206b9c972b1"))
 }
 
 export default function Home() {

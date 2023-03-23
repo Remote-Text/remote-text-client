@@ -33,17 +33,36 @@ module.exports = class Schemas {
 		"required": ["name"]
 	}
 
-	saveFileInput = {
+	saveFileOutput = {
 		"id": "/saveFile",
 		"type": "object",
+		"properties": {
+			"hash": { "type": "string" },
+			"parent": { "type": "string" }
+		},
 		"required": ["hash"]
 	}
 
-	getPreviewInput = {
+	getPreviewOutput = {
 		"id": "/getPreview",
 		"type": "object",
+		"properties": {
+			"name": { "type": "string" },
+			"id": { "type": "string" }
+		},
 		"required": ["name"]
 	}
+
+	fileSchema = {
+		"id": "/FileSummary",
+		"type": "object",
+		"properties": {
+			"name": { "type": "string" },
+			"id": { "type": "string" },
+			"content": { "type": "string" }
+		},
+		"required": ["id"]
+	};
 
 	constructor() {
 		// any supporting types need to be added to validator here

@@ -27,7 +27,7 @@ module.exports = class RemoteTextApi {
 			.catch(error => {
 				if (error.response) {
 					//get HTTP error code
-					console.log(error.reponse.status)
+					console.log(error.response.status)
 				} else {
 					// should we have some more sophisticated error logs?
 					console.log('Schema Error')
@@ -56,7 +56,7 @@ module.exports = class RemoteTextApi {
 			.catch(error => {
 				if (error.response) {
 					//get HTTP error code
-					console.log(error.reponse.status)
+					console.log(error.response.status)
 				} else {
 					// should we have some more sophisticated error logs?
 					console.log('Schema Error')
@@ -65,10 +65,15 @@ module.exports = class RemoteTextApi {
 			})
 	}
 
-	async saveFile(filename) {
-		const filenameObject = { name: filename }
+	async saveFile(file) {
+		const filenameObject = {
+			name: file.name,
+			id: file.id,
+			content: file.content
+
+		}
 		try {
-			this.validate(filenameObject, this.schemas.saveFileInput)
+			this.validate(filenameObject, this.schemas.fileSchema)
 		} catch (error) {
 			throw error
 		}
@@ -77,12 +82,13 @@ module.exports = class RemoteTextApi {
 			.then(response => {
 				var data = response.data
 
-				this.validate(data, this.schemas.saveFileInput) //Think this isn't quite right? Gonna double check
+				this.validate(data, this.schemas.saveFileOutput) //Think this isn't quite right? Gonna double check
+				return data;
 			})
 			.catch(error => {
 				if (error.response) {
 					//get HTTP error code
-					console.log(error.reponse.status)
+					console.log(error.response.status)
 				} else {
 					// should we have some more sophisticated error logs?
 					console.log('Schema Error')
@@ -91,10 +97,15 @@ module.exports = class RemoteTextApi {
 			})
 	}
 
-	async getPreview(filename) {
-		const filenameObject = { name: filename }
+	async getPreview(file) {
+		const filenameObject = {
+			name: file.name,
+			id: file.id,
+			content: file.content
+
+		}
 		try {
-			this.validate(filenameObject, this.schemas.getPreviewInput)
+			this.validate(filenameObject, this.schemas.fileSchema)
 		} catch (error) {
 			throw error
 		}
@@ -103,12 +114,13 @@ module.exports = class RemoteTextApi {
 			.then(response => {
 				var data = response.data
 
-				this.validate(data, this.schemas.getPreviewInput)  //Think this isn't quite right? Gonna double check
+				this.validate(data, this.schemas.getPreviewOutput)  //Think this isn't quite right? Gonna double check
+				return data;
 			})
 			.catch(error => {
 				if (error.response) {
 					//get HTTP error code
-					console.log(error.reponse.status)
+					console.log(error.response.status)
 				} else {
 					// should we have some more sophisticated error logs?
 					console.log('Schema Error')
