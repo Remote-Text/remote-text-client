@@ -55,7 +55,7 @@ describe('RemoteTextApi', () => {
 		const saveFileResult = await remoteTextApi.saveFile(saveFileInput);
 		expect(saveFileResult).toMatchObject(expectedResponse);
 	}
-
+	)
 	test("getPreview returns expected object", async () => {
 		expectedResponse = {
 			name: "README.md".to_string(), //Not checking all the data, can though if needed, but not sure how that format works
@@ -64,5 +64,5 @@ describe('RemoteTextApi', () => {
 		const getPreviewResult = await remoteTextApi.saveFile(getPreviewInput);
 		expect(getPreviewResult).toMatchObject(expectedResponse);
 	}
-
+	)
 });
