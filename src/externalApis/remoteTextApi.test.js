@@ -72,9 +72,9 @@ describe('RemoteTextApi', () => {
 		axios.put.mockResolvedValue({
 			data: expectedResponse
 		});
-		getFileInput = "8"
-		const getFileResult = await remoteTextApi.getFile(getFileInput);
-		expect(getFileResult).toMatchObject(expectedResponse)
+		getHistoryInput = "8"
+		const getHistoryResult = await remoteTextApi.getHistory(getHistoryInput);
+		expect(getHistoryResult).toMatchObject(expectedResponse)
 	})
 
 });
