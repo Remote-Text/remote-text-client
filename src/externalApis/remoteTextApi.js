@@ -11,7 +11,7 @@ module.exports = class RemoteTextApi {
 
 	// helper function to validate input
 	validate(data, expected) {
-		return this.schemas.validator.validate(data, expected, {throwAll: true});
+		return this.schemas.validator.validate(data, expected, { throwAll: true });
 	}
 
 	async listFiles() {
@@ -37,7 +37,7 @@ module.exports = class RemoteTextApi {
 	}
 
 	async createFile(filename) {
-		const filenameObject = {name: filename}
+		const filenameObject = { name: filename }
 		try {
 			this.validate(filenameObject, this.schemas.createFileInput)
 		} catch (error) {
@@ -52,6 +52,58 @@ module.exports = class RemoteTextApi {
 				// make sure data follows expected format and return
 				this.validate(data, this.schemas.fileSummarySchema)
 				return data;
+			})
+			.catch(error => {
+				if (error.response) {
+					//get HTTP error code
+					console.log(error.reponse.status)
+				} else {
+					// should we have some more sophisticated error logs?
+					console.log('Schema Error')
+					console.log(error)
+				}
+			})
+	}
+
+	async saveFile(filename) {
+		const filenameObject = { name: filename }
+		try {
+			this.validate(filenameObject, this.schemas.saveFileInput)
+		} catch (error) {
+			throw error
+		}
+
+		return axios.get(this.url + '/saveFile', filenameObject)
+			.then(response => {
+				var data = response.data
+
+				this.validate(data, this.schemas.saveFileInput) //Think this isn't quite right? Gonna double check
+			})
+			.catch(error => {
+				if (error.response) {
+					//get HTTP error code
+					console.log(error.reponse.status)
+				} else {
+					// should we have some more sophisticated error logs?
+					console.log('Schema Error')
+					console.log(error)
+				}
+			})
+	}
+
+	async getPreview(filename) {
+		const filenameObject = { name: filename }
+		try {
+			this.validate(filenameObject, this.schemas.getPreviewInput)
+		} catch (error) {
+			throw error
+		}
+
+		return axios.get(this.url + '/getPreview', filenameObject)
+			.then(response => {
+				var data = response.data
+
+				this.validate(data, this.schemas.getPreviewInput)  //Think this isn't quite right? Gonna double check
 			})
 			.catch(error => {
 				if (error.response) {

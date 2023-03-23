@@ -47,6 +47,22 @@ describe('RemoteTextApi', () => {
 		expect(createFileResult).toMatchObject(expectedResponse);
 	}
 	);
+	test("saveFile returns expected object", async () => {
+		expectedResponse = {
+			hash: "aceaaec23664ae26d76ab66cedfb1206b9c972b1".to_string(),
+			parent: None,
+		}
+		const saveFileResult = await remoteTextApi.saveFile(saveFileInput);
+		expect(saveFileResult).toMatchObject(expectedResponse);
+	}
 
+	test("getPreview returns expected object", async () => {
+		expectedResponse = {
+			name: "README.md".to_string(), //Not checking all the data, can though if needed, but not sure how that format works
+			id: obj.id,
+		}
+		const getPreviewResult = await remoteTextApi.saveFile(getPreviewInput);
+		expect(getPreviewResult).toMatchObject(expectedResponse);
+	}
 
 });
