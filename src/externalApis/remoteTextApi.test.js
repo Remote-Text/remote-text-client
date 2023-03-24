@@ -51,15 +51,15 @@ describe('RemoteTextApi', () => {
 		expectedResponse = {
 			hash: "aceaaec23664ae26d76ab66cedfb1206b9c972b1",
 		}
-		/*saveFileInput = {
+		saveFileInput = {
 			name: "foo.txt",
 			id: "aec23664ae26d76ab66cedfb1206b9c972b1",
 			content: "hello world!",
-		}*/
-		axios.get.mockResolvedValue({
+		}
+		axios.put.mockResolvedValue({
 			data: expectedResponse
 		});
-		saveFileInput = "aec23664ae26d76ab66cedfb1206b9c972b1"
+		//saveFileInput = "aec23664ae26d76ab66cedfb1206b9c972b1"
 		const saveFileResult = await remoteTextApi.saveFile(saveFileInput);
 		expect(saveFileResult).toMatchObject(expectedResponse);
 	}
@@ -68,15 +68,15 @@ describe('RemoteTextApi', () => {
 		expectedResponse = {
 			name: "foo.txt", //Not checking all the data, can though if needed, but not sure how that format works
 		}
-		/*getPreviewInput = {
-			name: "foo.txt",
+		getPreviewInput = {
+			name: "README.md",
 			id: "aec23664ae26d76ab66cedfb1206b9c972b1",
 			content: "hello world!",
-		}*/
-		axios.get.mockResolvedValue({
+		}
+		axios.put.mockResolvedValue({
 			data: expectedResponse
 		});
-		getPreviewInput = "aec23664ae26d76ab66cedfb1206b9c972b1"
+		//getPreviewInput = "aec23664ae26d76ab66cedfb1206b9c972b1"
 		const getPreviewResult = await remoteTextApi.getPreview(getPreviewInput);
 		expect(getPreviewResult).toMatchObject(expectedResponse);
 	}

@@ -78,7 +78,7 @@ module.exports = class RemoteTextApi {
 			throw error
 		}
 
-		return axios.post(this.url + '/saveFile', filenameObject)
+		return axios.put(this.url + '/saveFile', filenameObject)
 			.then(response => {
 				var data = response.data
 
@@ -110,7 +110,7 @@ module.exports = class RemoteTextApi {
 			throw error
 		}
 
-		return axios.post(this.url + '/getPreview', filenameObject)
+		return axios.put(this.url + '/getPreview', filenameObject)
 			.then(response => {
 				var data = response.data
 
