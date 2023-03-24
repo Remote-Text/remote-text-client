@@ -70,15 +70,15 @@ module.exports = class RemoteTextApi {
 			name: file.name,
 			id: file.id,
 			content: file.content
-
 		}
+		//const filenameObject = { id: file }
 		try {
 			this.validate(filenameObject, this.schemas.fileSchema)
 		} catch (error) {
 			throw error
 		}
 
-		return axios.get(this.url + '/saveFile', filenameObject)
+		return axios.post(this.url + '/saveFile', filenameObject)
 			.then(response => {
 				var data = response.data
 
@@ -102,15 +102,15 @@ module.exports = class RemoteTextApi {
 			name: file.name,
 			id: file.id,
 			content: file.content
-
 		}
+		//const filenameObject = { id: file }
 		try {
 			this.validate(filenameObject, this.schemas.fileSchema)
 		} catch (error) {
 			throw error
 		}
 
-		return axios.get(this.url + '/getPreview', filenameObject)
+		return axios.post(this.url + '/getPreview', filenameObject)
 			.then(response => {
 				var data = response.data
 
@@ -122,8 +122,9 @@ module.exports = class RemoteTextApi {
 					//get HTTP error code
 					console.log(error.response.status)
 				} else {
+					var error_throw = "                __ \n               / _) \n      _.----._/ / \n     /   error / \n  __/ (  | (  | \n /__.-'|_|--|_|"
 					// should we have some more sophisticated error logs?
-					console.log('Schema Error')
+					console.log(error_throw)
 					console.log(error)
 				}
 			})

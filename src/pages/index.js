@@ -16,12 +16,24 @@ async function logCreateFile() {
 	console.log(await remoteTextApi.createFile("foo.txt"));
 }
 
+
+
 async function logSaveFile() {
-	console.log(await remoteTextApi.saveFile("aec23664ae26d76ab66cedfb1206b9c972b1"));
+	var testFile = {
+		name: "foo.txt",
+		id: "aec23664ae26d76ab66cedfb1206b9c972b1",
+		content: "hello world!",
+	}
+	console.log(await remoteTextApi.saveFile(testFile));
 }
 
 async function logGetPreview() {
-	console.log(await remoteTextApi.getPreview("aec23664ae26d76ab66cedfb1206b9c972b1"))
+	var testFile = {
+		name: "foo.txt",
+		id: "aec23664ae26d76ab66cedfb1206b9c972b1",
+		content: "hello world!",
+	}
+	console.log(await remoteTextApi.getPreview(testFile))
 }
 
 export default function Home() {

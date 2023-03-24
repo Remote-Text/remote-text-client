@@ -54,7 +54,7 @@ module.exports = class Schemas {
 	}
 
 	fileSchema = {
-		"id": "/FileSummary",
+		"id": "/File",
 		"type": "object",
 		"properties": {
 			"name": { "type": "string" },
