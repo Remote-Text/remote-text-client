@@ -44,7 +44,7 @@ module.exports = class Schemas{
 	};
 
 	getHistoryInput = {
-		"id": "/GetHistory",
+		"id": "/getHistory",
 		"type": "object",
 		"properties": {
 			"id": {"type": "string"},
@@ -57,7 +57,7 @@ module.exports = class Schemas{
 		"type": "object",
 		"properties": {
 			"hash": {"type": "string"},
-			"parent": {"type": "string"}
+			"parent": {"type": ["string", "null"]}
 		},
 		"required": ["hash"]
 	};
@@ -66,13 +66,13 @@ module.exports = class Schemas{
 		"id": "/GitRef",
 		"type": "object",
 		"properties": {
-			"hash": {"type": "string"},
-			"parent": {"type": "string"}
+			"name": {"type": "string"},
+			"hash": {"type": "string"}
 		}
 	};
 
-	getHistorySchema = {
-		"id": "/GetHistory",
+	gitSummarySchema = {
+		"id": "/gitSummary",
 		"type": "array",
 		"items": [
 			{"$ref": "/GitCommit"},
