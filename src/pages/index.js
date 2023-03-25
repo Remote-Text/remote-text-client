@@ -1,7 +1,6 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import RemoteTextApi from '../externalApis/remoteTextApi.js'
-import {v4 as uuidv4} from 'uuid';
 
 const remoteTextApi = new RemoteTextApi();
 
@@ -18,11 +17,11 @@ async function logCreateFile(){
 }
 
 async function logGetFile(){
-	console.log(await remoteTextApi.getFile(uuidv4()))
+	console.log(await remoteTextApi.getFile("0".repeat(32)))
 }
 
 async function logGetHistory(){
-	console.log(await remoteTextApi.getHistory(uuidv4()))
+	console.log(await remoteTextApi.getHistory("0".repeat(32)))
 }
 
 export default function Home() {

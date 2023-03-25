@@ -44,7 +44,7 @@ module.exports = class RemoteTextApi {
 			throw error
 		}
 
-		return axios.post(this.url + '/createFile', filenameObject)
+		return axios.put(this.url + '/createFile', filenameObject)
 			.then(response => {
 				// extract data from response
 				var data = response.data
@@ -72,7 +72,7 @@ module.exports = class RemoteTextApi {
 			throw error
 		}
 
-		return axios.post(this.url + '/getFile', {id: fileid, hash: githash})
+		return axios.put(this.url + '/getFile', {id: fileid, hash: githash})
 			.then(response => {
 				var data = response.data
 				this.validate(data, this.schemas.fileSummarySchema)
@@ -95,7 +95,7 @@ module.exports = class RemoteTextApi {
 			throw error
 		}
 
-		return axios.post(this.url + '/getHistory', {id: fileid})
+		return axios.put(this.url + '/getHistory', {id: fileid})
 			.then(response => {
 				var data = response.data
 				this.validate(data, this.schemas.gitSummarySchema)

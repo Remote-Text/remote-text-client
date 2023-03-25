@@ -1,5 +1,3 @@
-import {v4 as uuidv4} from 'uuid';
-
 const RemoteTextApi = require('./remoteTextApi');
 const axios = require('axios');
 
@@ -60,7 +58,7 @@ describe('RemoteTextApi', () => {
 		axios.put.mockResolvedValue({
 			data: expectedResponse
 		});
-		getFileInput = uuidv4()
+		getFileInput = "0".repeat(32)
 		const getFileResult = await remoteTextApi.getFile(getFileInput);
 		expect(getFileResult).toMatchObject(expectedResponse)
 	})
@@ -74,7 +72,7 @@ describe('RemoteTextApi', () => {
 		axios.put.mockResolvedValue({
 			data: expectedResponse
 		});
-		getHistoryInput = uuidv4()
+		getHistoryInput = "0".repeat(32)
 		const getHistoryResult = await remoteTextApi.getHistory(getHistoryInput);
 		expect(getHistoryResult).toMatchObject(expectedResponse)
 	})
