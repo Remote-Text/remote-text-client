@@ -36,7 +36,16 @@ async function logGetPreview() {
 	console.log(await remoteTextApi.getPreview(testFile))
 }
 
+async function logGetFile(){
+	console.log(await remoteTextApi.getFile("0".repeat(32)))
+}
+
+async function logGetHistory(){
+	console.log(await remoteTextApi.getHistory("0".repeat(32)))
+}
+
 export default function Home() {
+
 	return (
 		<>
 			<Head>
@@ -52,7 +61,10 @@ export default function Home() {
 				<button id="createFile" onClick={logCreateFile}>CreateFile</button>
 				<button id="saveFile" onClick={logSaveFile}>SaveFile</button>
 				<button id="getPreview" onClick={logGetPreview}>getPreview</button>
+        <button id="getFile" onClick={logGetFile}>GetFile</button>
+			  <button id="getHistory" onClick={logGetHistory}>GetHistory</button>
 			</main>
 		</>
 	)
+
 }

@@ -10,5 +10,7 @@ describe('<Home />', () => {
 	
 	cy.get('[id=listFiles]').should('be.visible')
 	cy.get('[id=createFile]').should('be.visible')
+  cy.get('[id=getFile]').should('be.visible')
+  cy.get('[id=getHistory]').should('be.visible')
   })
 })

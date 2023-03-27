@@ -83,10 +83,12 @@ module.exports = class RemoteTextApi {
 				var data = response.data
 
 				this.validate(data, this.schemas.saveFileOutput) //Think this isn't quite right? Gonna double check
+
 				return data;
 			})
 			.catch(error => {
 				if (error.response) {
+
 					//get HTTP error code
 					console.log(error.response.status)
 				} else {
@@ -126,6 +128,51 @@ module.exports = class RemoteTextApi {
 					var useful_error = filenameObject
 					// should we have some more sophisticated error logs?
 					console.log(useful_error)
+					console.log(error)
+				}
+			})
+	}
+  
+	async getFile(fileid, githash='HEAD') {  // Parameters: File ID, Git hash (optional, default = HEAD). Returns: A FileSummary object
+		try {
+			this.validate({id: fileid, hash: githash}, this.schemas.getFileInput)
+		} catch (error) {
+			throw error
+		}
+
+		return axios.put(this.url + '/getFile', {id: fileid, hash: githash})
+			.then(response => {
+				var data = response.data
+				this.validate(data, this.schemas.fileSummarySchema)
+				return data;
+			})
+			.catch(error => {
+				if (error.response) {
+					console.log(error.response.status)
+				} else {
+					console.log('Schema Error')
+					console.log(error)
+				}
+			})
+	}
+  
+	async getHistory(fileid) {  // Parameters: File ID. Returns: A list of GitCommit objects, and a list of GitRef objects
+		try {
+			this.validate({id: fileid}, this.schemas.getHistoryInput)
+		} catch (error) {
+			throw error
+		}
+		return axios.put(this.url + '/getHistory', {id: fileid})
+			.then(response => {
+				var data = response.data
+				this.validate(data, this.schemas.gitSummarySchema)
+				return data;
+			})
+			.catch(error => {
+				if (error.response) {
+					console.log(error.response.status)
+				} else {
+					console.log('Schema Error')
 					console.log(error)
 				}
 			})
