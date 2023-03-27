@@ -73,11 +73,17 @@ module.exports = class Schemas{
 
 	gitSummarySchema = {
 		"id": "/gitSummary",
-		"type": "array",
-		"items": [
-			{"$ref": "/GitCommit"},
-			{"$ref": "/GitRef"}
-		]
+		"type": "object",
+		"properties": {
+			"commits" : {
+				"type": "array",
+				"items": {"$ref": "/GitCommit"}
+			},
+			"refs" : {
+				"type": "array",
+				"items": {"$ref": "/GitRef"}
+			}
+		}
 	}
 	
 
