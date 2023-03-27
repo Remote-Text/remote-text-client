@@ -64,11 +64,14 @@ describe('RemoteTextApi', () => {
 	})
 
 	test("getHistory returns expected object", async () => {
-		expectedResponse = [
-				{hash: "some_git_hash"},
+		expectedResponse = {
+			commits: [{hash: "some_git_hash"},
 				{hash: "some_other_git_hash",
-				parent: "some_git_hash"}
-			]
+				parent: "some_git_hash"}],
+			refs: [{name: "some_git_name",
+				hash: "some_git_hash" },
+				{hash: "some_other_git_hash"}]
+		}
 		axios.put.mockResolvedValue({
 			data: expectedResponse
 		});
