@@ -21,7 +21,7 @@ async function logCreateFile() {
 async function logSaveFile() {
 	var testFile = {
 		name: "foo.txt",
-		id: "aec23664ae26d76ab66cedfb1206b9c972b1",
+		id: "aec23664ae26d76ab66cedfb1206b9c9",
 		content: "hello world!",
 	}
 	console.log(await remoteTextApi.saveFile(testFile));
@@ -30,7 +30,7 @@ async function logSaveFile() {
 async function logGetPreview() {
 	var testFile = {
 		name: "foo.txt",
-		id: "aec23664ae26d76ab66cedfb1206b9c972b1",
+		id: "aec23664ae26d76ab66cedfb1206b9c9",
 		content: "hello world!",
 	}
 	console.log(await remoteTextApi.getPreview(testFile))

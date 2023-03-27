@@ -53,7 +53,7 @@ describe('RemoteTextApi', () => {
 		}
 		saveFileInput = {
 			name: "foo.txt",
-			id: "aec23664ae26d76ab66cedfb1206b9c972b1",
+			id: "aec23664ae26d76ab66cedfb1206b9c9",
 			content: "hello world!",
 		}
 		axios.put.mockResolvedValue({
@@ -70,7 +70,7 @@ describe('RemoteTextApi', () => {
 		}
 		getPreviewInput = {
 			name: "README.md",
-			id: "aec23664ae26d76ab66cedfb1206b9c972b1",
+			id: "aec23664ae26d76ab66cedfb1206b9c9",
 			content: "hello world!",
 		}
 		axios.put.mockResolvedValue({

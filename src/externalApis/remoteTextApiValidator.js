@@ -38,7 +38,7 @@ module.exports = class Schemas {
 		"type": "object",
 		"properties": {
 			"hash": { "type": "string" },
-			"parent": { "type": "string" }
+			"parent": { "type": ["string", "null"] }
 		},
 		"required": ["hash"]
 	}
