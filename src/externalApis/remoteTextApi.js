@@ -11,7 +11,7 @@ module.exports = class RemoteTextApi {
 
 	// helper function to validate input
 	validate(data, expected) {
-		return this.schemas.validator.validate(data, expected, {throwAll: true});
+		return this.schemas.validator.validate(data, expected, { throwAll: true });
 	}
 
 	async listFiles() {
@@ -37,7 +37,7 @@ module.exports = class RemoteTextApi {
 	}
 
 	async createFile(filename) {
-		const filenameObject = {name: filename}
+		const filenameObject = { name: filename }
 		try {
 			this.validate(filenameObject, this.schemas.createFileInput)
 		} catch (error) {
@@ -65,6 +65,74 @@ module.exports = class RemoteTextApi {
 			})
 	}
 
+	async saveFile(file) {
+		const filenameObject = {
+			name: file.name,
+			id: file.id,
+			content: file.content
+		}
+		//const filenameObject = { id: file }
+		try {
+			this.validate(filenameObject, this.schemas.fileSchema)
+		} catch (error) {
+			throw error
+		}
+
+		return axios.put(this.url + '/saveFile', filenameObject)
+			.then(response => {
+				var data = response.data
+
+				this.validate(data, this.schemas.saveFileOutput) //Think this isn't quite right? Gonna double check
+
+				return data;
+			})
+			.catch(error => {
+				if (error.response) {
+
+					//get HTTP error code
+					console.log(error.response.status)
+				} else {
+					// should we have some more sophisticated error logs?
+					console.log('Schema Error')
+					console.log(error)
+				}
+			})
+	}
+
+	async getPreview(file) {
+		const filenameObject = {
+			name: file.name,
+			id: file.id,
+			content: file.content
+		}
+		//const filenameObject = { id: file }
+		try {
+			this.validate(filenameObject, this.schemas.fileSchema)
+		} catch (error) {
+			throw error
+		}
+
+		return axios.put(this.url + '/getPreview', filenameObject)
+			.then(response => {
+				var data = response.data
+
+				this.validate(data, this.schemas.getPreviewOutput)  //Think this isn't quite right? Gonna double check
+				return data;
+			})
+			.catch(error => {
+				if (error.response) {
+					//get HTTP error code
+					console.log(error.response.status)
+				} else {
+					var error_throw = "                __ \n               / _) \n      _.----._/ / \n     /   error / \n  __/ (  | (  | \n /__.-'|_|--|_|"
+					var useful_error = filenameObject
+					// should we have some more sophisticated error logs?
+					console.log(useful_error)
+					console.log(error)
+				}
+			})
+	}
+  
 	async getFile(fileid, githash='HEAD') {  // Parameters: File ID, Git hash (optional, default = HEAD). Returns: A FileSummary object
 		try {
 			this.validate({id: fileid, hash: githash}, this.schemas.getFileInput)
@@ -87,14 +155,13 @@ module.exports = class RemoteTextApi {
 				}
 			})
 	}
-
+  
 	async getHistory(fileid) {  // Parameters: File ID. Returns: A list of GitCommit objects, and a list of GitRef objects
 		try {
 			this.validate({id: fileid}, this.schemas.getHistoryInput)
 		} catch (error) {
 			throw error
 		}
-
 		return axios.put(this.url + '/getHistory', {id: fileid})
 			.then(response => {
 				var data = response.data

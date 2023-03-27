@@ -2,16 +2,16 @@
 
 var Validator = require('jsonschema').Validator;
 
-module.exports = class Schemas{
+module.exports = class Schemas {
 
 	fileSummarySchema = {
 		"id": "/FileSummary",
 		"type": "object",
 		"properties": {
-			"name": {"type": "string"},
-			"edited_time": {"type": "string"},
-			"created_time": {"type": "string"},
-			"id": {"type": "string"}
+			"name": { "type": "string" },
+			"edited_time": { "type": "string" },
+			"created_time": { "type": "string" },
+			"id": { "type": "string" }
 		},
 		"required": ["id"]
 	};
@@ -28,7 +28,7 @@ module.exports = class Schemas{
 		"id": "/createFile",
 		"type": "object",
 		"properties": {
-			"name": {"type": "string"},
+			"name": { "type": "string" },
 		},
 		"required": ["name"]
 	};
@@ -85,9 +85,39 @@ module.exports = class Schemas{
 			}
 		}
 	}
-	
 
-	constructor(){
+	saveFileOutput = {
+		"id": "/saveFile",
+		"type": "object",
+		"properties": {
+			"hash": { "type": "string" },
+			"parent": { "type": ["string", "null"] }
+		},
+		"required": ["hash"]
+	}
+
+	getPreviewOutput = {
+		"id": "/getPreview",
+		"type": "object",
+		"properties": {
+			"name": { "type": "string" },
+			"id": { "type": "string" }
+		},
+		"required": ["name"]
+	}
+
+	fileSchema = {
+		"id": "/File",
+		"type": "object",
+		"properties": {
+			"name": { "type": "string" },
+			"id": { "type": "string" },
+			"content": { "type": "string" }
+		},
+		"required": ["id"]
+	};
+
+	constructor() {
 		// any supporting types need to be added to validator here
 		// so like in the getFilesSchema, since I say the json is an array of /FilesSummary, I need to add /FileSummary to validator so it knows that type
 		this.validator = new Validator();
