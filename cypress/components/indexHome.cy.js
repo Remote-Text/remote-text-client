@@ -7,10 +7,12 @@ describe('<Home />', () => {
     cy.mount(<Home />)
 	
 	cy.get('p').contains("Hello World! Press buttons to see API calls in console")
-	
-	cy.get('[id=listFiles]').should('be.visible')
-	cy.get('[id=createFile]').should('be.visible')
-  cy.get('[id=getFile]').should('be.visible')
-  cy.get('[id=getHistory]').should('be.visible')
+
+	  cy.get('[id=listFiles]').should('be.visible')
+	  cy.get('[id=createFile]').should('be.visible')
+	  cy.get('[id=saveFile]').should('be.visible')
+	  cy.get('[id=getPreview]').should('be.visible')
+	  cy.get('[id=getFile]').should('be.visible')
+	  cy.get('[id=getHistory]').should('be.visible')
   })
 })

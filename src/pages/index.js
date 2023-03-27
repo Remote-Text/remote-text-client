@@ -61,8 +61,8 @@ export default function Home() {
 				<button id="createFile" onClick={logCreateFile}>CreateFile</button>
 				<button id="saveFile" onClick={logSaveFile}>SaveFile</button>
 				<button id="getPreview" onClick={logGetPreview}>getPreview</button>
-        <button id="getFile" onClick={logGetFile}>GetFile</button>
-			  <button id="getHistory" onClick={logGetHistory}>GetHistory</button>
+				<button id="getFile" onClick={logGetFile}>GetFile</button>
+				<button id="getHistory" onClick={logGetHistory}>GetHistory</button>
 			</main>
 		</>
 	)
