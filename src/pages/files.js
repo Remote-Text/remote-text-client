@@ -5,46 +5,38 @@ import React, { useEffect, useState } from 'react'
 
 const remoteTextApi = new RemoteTextApi()
 
-async function awaitListFiles() {
-	await remoteTextApi.listFiles()
-  .then(filesData => {
-    console.log(filesData)
-    return filesData
-  })
-  .catch(error => {
-    console.log(error.response)
-  })
-}
-
 function getFile(id) {  // placeholder for opening next page to view/edit selected file
   console.log('get file with id='+id)
 }
 
-function listFileButtons(jsonList) {
-  if (jsonList.length > 0) {
-    jsonList.forEach((fileJson)=>{
-      let fileName = fileJson['name']
-      let fileId = fileJson['id']
-      //combine? (<button onClick={() => getFile(fileId)}>{fileName}</button>)
-    })
-    return (<p>Doing something here!</p>)
-  } else {
-    console.log('here!')
-    return <p>It doesn't look like you have any files at the moment.</p>
-  }
+async function getFileData() {
+  let fileData = remoteTextApi.listFiles()
+  let filePromise = new Promise((resolve) => {
+    if (fileData != undefined) {
+      resolve(fileData)}
+  })
+  return filePromise
 }
 
-export default function Files() {
-  console.log("await: ", awaitListFiles())
-
-  const [listFiles, displayListFiles] = useState({});
+export default function Files() {  
+  const [fileData, setFileData] = useState({})
 
   useEffect(() => {
-    awaitListFiles()
-    .then(data => displayListFiles(data))
+    getFileData()
+   .then(data =>
+     setFileData(data)
+   )
   }, [])
 
-  console.log("data? ", listFiles)
+  let fileList = <>...</>
+
+  if (fileData.length > 0) {
+    fileList = fileData.map(f =>
+      <button key={f.id} onClick={() => getFile(f.id)}>
+        {f.name}
+      </button>
+    )
+  }
 
   return(
     <>
@@ -53,7 +45,10 @@ export default function Files() {
       </Head>
       <main className = {styles.main}>
         <div id='text' className={styles.description}>
-          <p>these are some files:</p>
+          <ul>
+            RemoteText Files: <br></br><br></br>
+            {fileList}
+          </ul>
 				</div>
       </main>
     </>
