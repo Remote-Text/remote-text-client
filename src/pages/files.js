@@ -18,6 +18,25 @@ async function getFileData() {
   return filePromise
 }
 
+function formatTimestamp(s) {
+  let parts = s.split('T')
+  if (parts.length > 1) {  // because for some reason it was running date strings through this twice
+    let date = parts[0]
+    let time = (parts[1]).split('.')[0]
+
+    let today = new Date()
+    let todaysDate = (today.getFullYear()).toString() + (today.getMonth() + 1).toString() + (today.getDate()).toString() // need to adjust month by 1 because js date format has months start from 0
+
+    if (date == todaysDate) {
+      return time
+    } else {
+      return date
+    }
+  } else {
+    return s
+  }
+}
+
 export default function Files() {  
   const [fileData, setFileData] = useState({})
 
@@ -28,14 +47,30 @@ export default function Files() {
    )
   }, [])
 
-  let fileList = <>...</>
+  let fileTable = <>Sorry, we couldn't find any files.</>
 
   if (fileData.length > 0) {
-    fileList = fileData.map(f =>
-      <button key={f.id} onClick={() => getFile(f.id)}>
-        {f.name}
-      </button>
-    )
+    fileData.forEach(file => {
+      file.created_time = formatTimestamp(file.created_time)
+      file.edited_time = formatTimestamp(file.edited_time)
+    })
+
+    let fileList = fileData.map(f =>
+    <tr key={f.id}>
+      <td>{f.name}</td>
+      <td>{f.created_time}</td>
+      <td>{f.edited_time}</td>
+      <td><button onClick={() => getFile(f.id)}>open file</button></td>
+    </tr>)
+
+    fileTable = <table className={styles.fileTable}>
+      <thead><tr>
+        <th>Name</th>
+        <th>Created</th>
+        <th>Last Edited</th>
+      </tr></thead>
+      <tbody>{fileList}</tbody>
+    </table>
   }
 
   return(
@@ -44,12 +79,8 @@ export default function Files() {
         <title>Files - RemoteText</title>
       </Head>
       <main className = {styles.main}>
-        <div id='text' className={styles.description}>
-          <ul>
-            RemoteText Files: <br></br><br></br>
-            {fileList}
-          </ul>
-				</div>
+        <h2>RemoteText Files:</h2>
+        <div>{fileTable}</div>
       </main>
     </>
   )

@@ -1,3 +1,7 @@
+.fileTable {
+  border-spacing: 30px;
+}
+
 .main {
   display: flex;
   flex-direction: column;
