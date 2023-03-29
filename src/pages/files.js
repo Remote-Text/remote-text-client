@@ -28,10 +28,25 @@ function formatTimestamp(s) {
     let todaysDate = (today.getFullYear()).toString() + (today.getMonth() + 1).toString() + (today.getDate()).toString() // need to adjust month by 1 because js date format has months start from 0
 
     if (date == todaysDate) {
-      return time
+      let timeParts = time.split(':')
+      let hour = timeParts[0]
+      let minute = timeParts[1]
+      let formattedTime = ''
+      if (hour>12) {
+        formattedTime = (hour-12) + ':' + minute + 'pm'
+      } else {
+        formattedTime = (hour) + ':' + minute + 'am'
+      }
+      return formattedTime
+
     } else {
-      return date
+      let dateParts = date.split('-')
+      let year = dateParts[0]
+      let month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][dateParts[1]-1]
+      let day = dateParts[2]
+      return (month + ' ' + day + ', ' + year)
     }
+
   } else {
     return s
   }
@@ -57,17 +72,16 @@ export default function Files() {
 
     let fileList = fileData.map(f =>
     <tr key={f.id}>
-      <td>{f.name}</td>
-      <td>{f.created_time}</td>
-      <td>{f.edited_time}</td>
-      <td><button onClick={() => getFile(f.id)}>open file</button></td>
+      <td className={styles.nameRow}><button className={styles.fileButton} onClick={() => getFile(f.id)}>{f.name}</button></td>
+      <td className={styles.dateRow}>{f.created_time}</td>
+      <td className={styles.dateRow}>{f.edited_time}</td>
     </tr>)
 
-    fileTable = <table className={styles.fileTable}>
+    fileTable = <table className={styles.table}>
       <thead><tr>
-        <th>Name</th>
-        <th>Created</th>
-        <th>Last Edited</th>
+        <th className={styles.nameRow}>Name</th>
+        <th className={styles.dateRow}>Created</th>
+        <th className={styles.dateRow}>Last Edited</th>
       </tr></thead>
       <tbody>{fileList}</tbody>
     </table>
@@ -78,8 +92,8 @@ export default function Files() {
       <Head>
         <title>Files - RemoteText</title>
       </Head>
-      <main className = {styles.main}>
-        <h2>RemoteText Files:</h2>
+      <main className = {styles.filesMain}>
+        <h2>RemoteText Files</h2>
         <div>{fileTable}</div>
       </main>
     </>

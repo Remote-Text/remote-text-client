@@ -1,6 +1,37 @@
-.fileTable {
-  border-spacing: 30px;
+.table {
+  border-spacing: 10px;
+  table-layout: fixed;
+  width: 90vw;
 }
+
+.nameRow {
+  text-align: left;
+  width: 40vw;
+  overflow: hidden;
+}
+
+.dateRow {
+  text-align: left;
+  width: 20vw;
+  overflow: hidden;
+}
+
+.fileButton {
+  font-family : inherit;
+  font-size: 1em;
+  padding: 0.5rem;
+}
+
+.filesMain {
+  display: flex;
+  flex-direction: column;
+  justify-content: top;
+  align-items: left;
+  padding: 10vw;
+  gap: 20px;
+}
+
+/* Below here was default CSS from React, above is new CSS for the file view page */
 
 .main {
   display: flex;
