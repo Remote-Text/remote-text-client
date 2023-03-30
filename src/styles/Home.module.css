@@ -59,6 +59,16 @@
   transition: transform 200ms;
 }
 
+.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow: auto;
+  background: white; /* Just to visualize the extent */
+  
+}
 .card h2 {
   font-weight: 600;
   margin-bottom: 0.7rem;
