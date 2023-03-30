@@ -2,13 +2,11 @@ import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import RemoteTextApi from '../externalApis/remoteTextApi.js'
 import React, { useEffect, useState } from 'react'
+import Link from 'next/link'
 
 const remoteTextApi = new RemoteTextApi()
 
-function getFile(id) {  // placeholder for opening next page to view/edit selected file
-  console.log('get file with id='+id)
-}
-
+// dealing with async data, there might be a neater way to do this
 async function getFileData() {
   let fileData = remoteTextApi.listFiles()
   let filePromise = new Promise((resolve) => {
@@ -18,6 +16,7 @@ async function getFileData() {
   return filePromise
 }
 
+// reformat date/time strings received from server
 function formatTimestamp(s) {
   let parts = s.split('T')
   if (parts.length > 1) {  // because for some reason it was running date strings through this twice
@@ -52,6 +51,7 @@ function formatTimestamp(s) {
   }
 }
 
+// main export
 export default function Files() {  
   const [fileData, setFileData] = useState({})
 
@@ -60,33 +60,44 @@ export default function Files() {
    .then(data =>
      setFileData(data)
    )
-  }, [])
+  }, [])  // gets async data^
 
-  let fileTable = <>Sorry, we couldn't find any files.</>
+  let fileTable = <></>
 
   if (fileData.length > 0) {
+    // iterate through files to reformat timestamps (couldn't do this while in map for some reason)
     fileData.forEach(file => {
       file.created_time = formatTimestamp(file.created_time)
       file.edited_time = formatTimestamp(file.edited_time)
     })
 
+    // map file data to html elements
     let fileList = fileData.map(f =>
     <tr key={f.id}>
-      <td className={styles.nameRow}><button className={styles.fileButton} onClick={() => getFile(f.id)}>{f.name}</button></td>
+      <td className={styles.nameRow}>
+        <Link href={`/edit/${f.id}`}>
+          <button className={styles.fileButton}>{f.name}</button>
+        </Link>
+      </td>
       <td className={styles.dateRow}>{f.created_time}</td>
       <td className={styles.dateRow}>{f.edited_time}</td>
     </tr>)
 
+    // fill html table with file elements
     fileTable = <table className={styles.table}>
       <thead><tr>
         <th className={styles.nameRow}>Name</th>
         <th className={styles.dateRow}>Created</th>
-        <th className={styles.dateRow}>Last Edited</th>
+        <th className={styles.dateRow}>Modified</th>
       </tr></thead>
       <tbody>{fileList}</tbody>
     </table>
+
+  } else { // in case of no files
+    fileTable = <>Sorry, we couldn't find any files.</>
   }
 
+  // page html
   return(
     <>
       <Head>
