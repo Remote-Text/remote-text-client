@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import Link from 'next/link'
 import styles from '../styles/Home.module.css'
 import RemoteTextApi from '../externalApis/remoteTextApi.js'
 
@@ -48,9 +49,6 @@ export default function Home() {
 
 	return (
 		<>
-			<Head>
-				<title>Hello World</title>
-			</Head>
 			<main className={styles.main}>
 				<div className={styles.description}>
 					<p>
@@ -63,6 +61,7 @@ export default function Home() {
 				<button id="getPreview" onClick={logGetPreview}>getPreview</button>
 				<button id="getFile" onClick={logGetFile}>GetFile</button>
 				<button id="getHistory" onClick={logGetHistory}>GetHistory</button>
+				<Link id="historyPageLink" href="/history">History Page</Link>
 			</main>
 		</>
 	)
