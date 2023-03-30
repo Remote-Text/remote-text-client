@@ -2,13 +2,25 @@ import Head from 'next/head'
 import Link from 'next/link'
 import styles from '../styles/Home.module.css'
 import RemoteTextApi from '../externalApis/remoteTextApi.js'
-import React, {useState, useEffect} from "react"
+import React, {useCallback, useState, useEffect} from "react"
 
 
 import Tree from 'react-d3-tree';
 
 
 const remoteTextApi = new RemoteTextApi();
+
+
+export const useCenteredTree = (defaultTranslate = { x: 0, y: 0 }) => {
+    const [translate, setTranslate] = useState(defaultTranslate);
+    const containerRef = useCallback((containerElem) => {
+        if (containerElem !== null) {
+            const { width, height } = containerElem.getBoundingClientRect();
+            setTranslate({ x: width / 2, y: height / 2 });
+        }
+    }, []);
+    return [translate, containerRef];
+};
 
 function createHistoryTree(commitMap, refMap, parentToFind = null){
 		
@@ -19,17 +31,19 @@ function createHistoryTree(commitMap, refMap, parentToFind = null){
 	}
 
 	var historyTree = {
-		name: nextCommitHash
+		name: nextCommitHash.substring(0,8)
 	}
 
 	var ref = refMap.get(nextCommitHash)
 
 	if(ref){
-		historyTree.name = ref
+		historyTree.attributes = { name: ref}
 	}
 
 
-	historyTree.children =[ createHistoryTree(commitMap, refMap, nextCommitHash)]
+	if(commitMap.get(nextCommitHash)){
+		historyTree.children =[ createHistoryTree(commitMap, refMap, nextCommitHash)]
+	}
 
 	return historyTree
 }
@@ -45,6 +59,7 @@ async function logGetHistory(){
 	var commitMap = new Map();
 	var refMap = new Map();
 
+	
 	for(let i = 0; i < hist.commits.length; i++){
 		let commit = hist.commits[i]
 		commitMap.set(commit.parent, commit.hash)
@@ -55,18 +70,18 @@ async function logGetHistory(){
 		refMap.set(ref.hash , ref.name)
 	}
 
-	
-	return createHistoryTree(commitMap, refMap)
+	// console.log(commitMap)
+	// console.log(refMap)
+	  let tree = createHistoryTree(commitMap, refMap) 
+  let treePromise = new Promise((resolve) => {
+
+    if (tree != undefined) {
+      resolve(tree)}
+  })
+  return treePromise
 }
 
-
-export default async function History() {
-    const [historyTree, setHistoryTree] = useState([]);
-    
-    useEffect(  async () => { 
-		var tree = await logGetHistory()
-		console.log(tree)
-		setHistoryTree({
+const orgChart = {
   name: 'CEO',
   children: [
     {
@@ -100,21 +115,32 @@ export default async function History() {
       ],
     },
   ],
-})
-    }, []);
+};
+
+export default function History() {
+    const [historyTree, setHistoryTree] = useState({name: "foo"});
+	const [translate, containerRef] = useCenteredTree();
+    
+	useEffect(() => {
+    logGetHistory()
+   .then(data =>{
+
+     setHistoryTree(data)
+	   // console.log(data)
+   }
+	
+   )
+  }, [])  // gets async data^
+	console.log(historyTree)
 	return (
-		<>
-			<Head>
-				<title>Hello World</title>
-			</Head>
-	  <div id="historyTree" style={{ width: '50em', height: '20em' }}>
-      <Tree data={historyTree} />
-    </div>	
-			<main className={styles.main}>
-				<button id="getHistory" onClick={logGetHistory}>GetHistory</button>
-				<Link id="goHome" href="/">Home</Link>
-			</main>
-		</>
+			<div ref={containerRef} id="treeWrapper" >
+				<Tree 
+		data={historyTree} 
+		translate={translate}
+		draggable={true}
+		/>
+			</div>
+		
 	)
 
 }
