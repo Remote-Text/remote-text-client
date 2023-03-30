@@ -6,14 +6,40 @@ import Link from 'next/link'
 
 const remoteTextApi = new RemoteTextApi()
 
-// dealing with async data, there might be a neater way to do this
+// Note: using 'next-page' as placeholder in URL for the name of the file history viewing page
+
+// dealing with API call listFiles promise
 async function getFileData() {
   let fileData = remoteTextApi.listFiles()
   let filePromise = new Promise((resolve) => {
     if (fileData != undefined) {
-      resolve(fileData)}
+      resolve(fileData)
+    }
   })
   return filePromise
+}
+
+// read data from createFile API call and open new file
+async function createNewFile() {
+  let name = document.getElementById('fileName').value
+  let fileData = remoteTextApi.createFile(name)
+  let filePromise = new Promise((resolve) => {
+    if (fileData != undefined) {
+      resolve(fileData)
+    }
+  })
+  .then(fileData=>{
+    window.open(`/next-page/${fileData['id']}`, '_top')
+  })
+}
+
+// show hidden html elements for naming a new file
+function showCreateFile() {
+  document.getElementById('createFile').hidden = false
+}
+
+// open file explorer to select a file to upload
+function chooseUploadFile() {
 }
 
 // reformat date/time strings received from server
@@ -75,7 +101,7 @@ export default function Files() {
     let fileList = fileData.map(f =>
     <tr key={f.id}>
       <td className={styles.nameRow}>
-        <Link href={`/edit/${f.id}`}>
+        <Link href={`/next-page/${f.id}`}>
           <button className={styles.fileButton}>{f.name}</button>
         </Link>
       </td>
@@ -94,7 +120,7 @@ export default function Files() {
     </table>
 
   } else { // in case of no files
-    fileTable = <>Sorry, we couldn't find any files.</>
+    fileTable = <>It doesn't look like you have any files.</>
   }
 
   // page html
@@ -105,6 +131,15 @@ export default function Files() {
       </Head>
       <main className = {styles.filesMain}>
         <h2>RemoteText Files</h2>
+        <div>
+          <button className={styles.createFileButton} onClick={showCreateFile}>Create New File</button>
+          <button className={styles.createFileButton} onClick={chooseUploadFile}>Upload File</button>
+          <div id='createFile' hidden={true}>
+            <label htmlFor='fileName'>New file name:</label>
+            <input type='text' id='fileName' name='fileName' required minLength='1' maxLength='64' size='10'></input>
+            <button onClick={createNewFile}>Create</button>
+          </div>
+        </div>
         <div>{fileTable}</div>
       </main>
     </>
