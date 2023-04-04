@@ -2,14 +2,17 @@ import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import RemoteTextApi from '../externalApis/remoteTextApi.js'
 import React, { useEffect, useState } from 'react'
-import Link from 'next/link'
 
 const remoteTextApi = new RemoteTextApi()
 
-// Note: using 'next-page' as placeholder in URL for the name of the file history viewing page
+function openFile(nextPage, id) {  // parameter nextPage is a string indicating whether to open file tree or editor
+  window.open('http://localhost:3000/'+nextPage+'?id='+id)
+}
+
+// Note: using 'test-page' as placeholder in URL for the name of the file history viewing page
 
 // dealing with API call listFiles promise
-async function getFileData() {
+async function listFilesData() {
   let fileData = remoteTextApi.listFiles()
   let filePromise = new Promise((resolve) => {
     if (fileData != undefined) {
@@ -29,7 +32,7 @@ async function createNewFile() {
     }
   })
   .then(fileData=>{
-    window.open(`/next-page/${fileData['id']}`, '_top')
+    openFile('test-page', fileData['id'])
   })
 }
 
@@ -82,7 +85,7 @@ export default function Files() {
   const [fileData, setFileData] = useState({})
 
   useEffect(() => {
-    getFileData()
+    listFilesData()
    .then(data =>
      setFileData(data)
    )
@@ -101,9 +104,7 @@ export default function Files() {
     let fileList = fileData.map(f =>
     <tr key={f.id}>
       <td className={styles.nameRow}>
-        <Link href={`/next-page/${f.id}`}>
-          <button className={styles.fileButton}>{f.name}</button>
-        </Link>
+        <button className={styles.fileButton} onClick={()=>openFile('test-page', f.id)}>{f.name}</button>
       </td>
       <td className={styles.dateRow}>{f.created_time}</td>
       <td className={styles.dateRow}>{f.edited_time}</td>
