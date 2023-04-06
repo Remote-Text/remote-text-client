@@ -36,12 +36,20 @@ async function logGetPreview() {
 	console.log(await remoteTextApi.getPreview(testFile))
 }
 
-async function logGetFile(){
+async function logGetFile() {
 	console.log(await remoteTextApi.getFile("0".repeat(32)))
 }
 
-async function logGetHistory(){
+async function logGetHistory() {
 	console.log(await remoteTextApi.getHistory("0".repeat(32)))
+}
+async function openEditor() {
+	var testFile = {
+		name: "foo.txt",
+		id: "00000000-0000-0000-0000-000000000000",
+		content: "hello world!",
+	}
+	window.open(document.location.origin + "/text_editor?id=" + testFile.id)
 }
 
 export default function Home() {
@@ -63,7 +71,10 @@ export default function Home() {
 				<button id="getPreview" onClick={logGetPreview}>getPreview</button>
 				<button id="getFile" onClick={logGetFile}>GetFile</button>
 				<button id="getHistory" onClick={logGetHistory}>GetHistory</button>
+				<button id="openEditor" onClick={openEditor}>openEditor</button>
+				<a href="/text_editor?id=thisIsAnID&hash=thisIsAHash">Text Editor</a>
 			</main>
+
 		</>
 	)
 
