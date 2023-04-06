@@ -219,7 +219,7 @@ module.exports = class RemoteTextApi {
 		return axios.put(this.url + '/deleteFile', {id: fileid})
 			.then(response => {
 				var data = response.data
-				this.validate(data, {})  // returns nothing
+				this.validate(data, undefined)  // returns nothing
 				return data
 			})
 			.catch(error => {
@@ -232,5 +232,3 @@ module.exports = class RemoteTextApi {
 			})
 	}
 }
-
-

@@ -136,8 +136,8 @@ describe('RemoteTextApi', () => {
 		axios.put.mockResolvedValue({
 			data: {}
 		})
-		getFileInput = {id: "0".repeat(32)}
+		deleteFileInput = {id: "0".repeat(32)}
 		const deleteFileResult = await remoteTextApi.getFile(deleteFileInput.id)
-		expect(deleteFileResult).toMatchObject(expectedResponse)
+		expect(deleteFileResult).toBeUndefined()
 	})
 });
