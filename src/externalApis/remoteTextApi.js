@@ -21,7 +21,7 @@ module.exports = class RemoteTextApi {
 				var data = response.data
 
 				// make sure data follows expected format and return
-				this.validate(data, this.schemas.listFilesSchema)
+				this.validate(data, this.schemas.listFilesOutput)
 				return data;
 			})
 			.catch(error => {
@@ -30,21 +30,21 @@ module.exports = class RemoteTextApi {
 					console.log(error.response.status)
 				} else {
 					// should we have some more sophisticated error logs?
-					console.log('Schema Error')
+					console.log('listFiles Schema Error')
 					console.log(error)
 				}
 			})
 	}
 
-	async createFile(filename) {
-		const filenameObject = { name: filename }
+	async createFile(filename, uploadcontent='') {
+		const newfileObject = { name: filename, content: uploadcontent }
 		try {
-			this.validate(filenameObject, this.schemas.createFileInput)
+			this.validate(newfileObject, this.schemas.createFileInput)
 		} catch (error) {
 			throw error
 		}
 
-		return axios.put(this.url + '/createFile', filenameObject)
+		return axios.put(this.url + '/createFile', newfileObject)
 			.then(response => {
 				// extract data from response
 				var data = response.data
@@ -59,7 +59,31 @@ module.exports = class RemoteTextApi {
 					console.log(error.response.status)
 				} else {
 					// should we have some more sophisticated error logs?
-					console.log('Schema Error')
+					console.log('createFile Schema Error')
+					console.log(error)
+				}
+			})
+	}
+
+	async getFile(fileid, githash='HEAD') {
+		const fileObject = {id: fileid, hash: githash}
+		try {
+			this.validate(fileObject, this.schemas.getFileInput)
+		} catch (error) {
+			throw error
+		}
+
+		return axios.put(this.url + '/getFile', {id: fileid, hash: githash})
+			.then(response => {
+				var data = response.data
+				this.validate(data, this.schemas.fileSummarySchema)
+				return data;
+			})
+			.catch(error => {
+				if (error.response) {
+					console.log(error.response.status)
+				} else {
+					console.log('getFile Schema Error')
 					console.log(error)
 				}
 			})
@@ -73,7 +97,7 @@ module.exports = class RemoteTextApi {
 		}
 		//const filenameObject = { id: file }
 		try {
-			this.validate(filenameObject, this.schemas.fileSchema)
+			this.validate(filenameObject, this.schemas.saveFileOutput)
 		} catch (error) {
 			throw error
 		}
@@ -93,21 +117,49 @@ module.exports = class RemoteTextApi {
 					console.log(error.response.status)
 				} else {
 					// should we have some more sophisticated error logs?
-					console.log('Schema Error')
+					console.log('saveFile Schema Error')
 					console.log(error)
 				}
 			})
 	}
 
-	async getPreview(file) {
+	async previewFile(fileid, githash) {
 		const filenameObject = {
-			name: file.name,
-			id: file.id,
-			content: file.content
+			id: fileid,
+			hash: githash
 		}
-		//const filenameObject = { id: file }
 		try {
-			this.validate(filenameObject, this.schemas.fileSchema)
+			this.validate(filenameObject, this.schemas.previewFileInput)
+		} catch (error) {
+			throw error
+		}
+
+		return axios.put(this.url + '/previewFile', filenameObject)
+			.then(response => {
+				var data = response.data
+
+				this.validate(data, this.schemas.previewFileOutput)  //Think this isn't quite right? Gonna double check
+				return data;
+			})
+			.catch(error => {
+				if (error.response) {
+					//get HTTP error code
+					console.log(error.response.status)
+				} else {
+					// should we have some more sophisticated error logs?
+					console.log('previewFile Schema Error')
+					console.log(error)
+				}
+			})
+	}
+
+	async getPreview(fileid, githash) {
+		const filenameObject = {
+			id: fileid,
+			hash: githash
+		}
+		try {
+			this.validate(filenameObject, this.schemas.getPreviewInput)
 		} catch (error) {
 			throw error
 		}
@@ -133,39 +185,17 @@ module.exports = class RemoteTextApi {
 			})
 	}
   
-	async getFile(fileid, githash='HEAD') {  // Parameters: File ID, Git hash (optional, default = HEAD). Returns: A FileSummary object
+	async getHistory(fileID) {  // Parameters: File ID. Returns: A list of GitCommit objects, and a list of GitRef objects
+		const fileidObject={id: fileID}
 		try {
-			this.validate({id: fileid, hash: githash}, this.schemas.getFileInput)
+			this.validate(fileidObject, this.schemas.getHistoryInput)
 		} catch (error) {
 			throw error
 		}
-
-		return axios.put(this.url + '/getFile', {id: fileid, hash: githash})
+		return axios.put(this.url + '/getHistory', fileidObject)
 			.then(response => {
 				var data = response.data
-				this.validate(data, this.schemas.fileSummarySchema)
-				return data;
-			})
-			.catch(error => {
-				if (error.response) {
-					console.log(error.response.status)
-				} else {
-					console.log('Schema Error')
-					console.log(error)
-				}
-			})
-	}
-  
-	async getHistory(fileid) {  // Parameters: File ID. Returns: A list of GitCommit objects, and a list of GitRef objects
-		try {
-			this.validate({id: fileid}, this.schemas.getHistoryInput)
-		} catch (error) {
-			throw error
-		}
-		return axios.put(this.url + '/getHistory', {id: fileid})
-			.then(response => {
-				var data = response.data
-				this.validate(data, this.schemas.gitSummarySchema)
+				this.validate(data, this.schemas.getHistoryOutput)
 				return data;
 			})
 			.catch(error => {

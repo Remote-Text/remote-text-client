@@ -4,6 +4,8 @@ var Validator = require('jsonschema').Validator;
 
 module.exports = class Schemas {
 
+// listFiles(no input) -> list of fileSummary objects
+
 	fileSummarySchema = {
 		"id": "/FileSummary",
 		"type": "object",
@@ -14,34 +16,116 @@ module.exports = class Schemas {
 			"id": { "type": "string" }
 		},
 		"required": ["id"]
-	};
+	}
 
-	listFilesSchema = {
-		"id": "/GetFiles",
+	listFilesOutput = {
+		"id": "/listFiles",
 		"type": "array",
 		"items": {
 			"$ref": "/FileSummary"
 		}
-	};
+	}
+
+// createFile(name) -> fileSummary object
 
 	createFileInput = {
 		"id": "/createFile",
 		"type": "object",
 		"properties": {
 			"name": { "type": "string" },
+			"content": { "type": "string" }  // content is optional (for uploading existing file content)
 		},
 		"required": ["name"]
-	};
+	}
+
+// getFile(id, hash) -> file object
 
 	getFileInput = {
 		"id": "/getFile",
 		"type": "object",
 		"properties": {
 			"id": {"type": "string"},
-			"hash": {"type": "string"}
+			"hash": {"type": ["string", "null"]}
 		},
 		"required": ["id"]
-	};
+	}
+
+	getFileOutput = {
+		"id": "/getFile",
+		"type": "object",
+		"properties": {
+			"name": { "type": "string" },
+			"id": { "type": "string" },
+			"content": { "type": "string" }
+		}
+	}
+
+// saveFile(name, id, content, parent, branch) -> hash, parent
+
+	saveFileInput = {
+		"id": "/saveFile",
+		"type": "object",
+		"properties": {
+			"name": { "type": "string" },
+			"id": { "type": "string" },
+			"content": { "type": "string" }
+		}
+	}
+
+	saveFileOutput = {
+		"id": "/saveFile",
+		"type": "object",
+		"properties": {
+			"hash": { "type": "string" },
+			"parent": { "type": ["string", "null"] }
+		}
+	}
+
+// previewFile(id, hash) -> state (success/failure), log
+
+	previewFileInput = {
+		"id": "/previewFile",
+		"type": "object",
+		"properties": {
+			"id": { "type": "string" },
+			"hash": { "type": "string" }
+		},
+		"required": ["id", "ref"]
+	}
+
+	previewFileOutput = {
+		"id": "/previewFile",
+		"type": "object",
+		"properties": {
+			"state": { "type": "string" },  // {"SUCCESS", "FAILURE"}
+			"log" : {"type": "string"}
+		}
+	}
+
+// getPreview(id, hash) -> name, id, filetype, data
+
+	getPreviewInput = {
+		"id": "/getPreview",
+		"type": "object",
+		"properties": {
+			"id": { "type": "string" },
+			"hash": { "type": "string" }
+		},
+		"required": ["id", "ref"]
+	}
+
+	getPreviewOutput = {
+		"id": "/getPreview",
+		"type": "object",
+		"properties": {
+			"name": { "type": "string" },
+			"id": { "type": "string" },
+			"type": { "type": "string" },  // {"HTML", "PDF"}
+			"data": { "type": "string" }
+		}
+	}
+
+// getHistory(id) -> list of commit objects & list of ref objects
 
 	getHistoryInput = {
 		"id": "/getHistory",
@@ -50,7 +134,7 @@ module.exports = class Schemas {
 			"id": {"type": "string"},
 		},
 		"required": ["id"]
-	};
+	}
 
 	gitCommitSchema = {
 		"id": "/GitCommit",
@@ -58,9 +142,8 @@ module.exports = class Schemas {
 		"properties": {
 			"hash": {"type": "string"},
 			"parent": {"type": ["string", "null"]}
-		},
-		"required": ["hash"]
-	};
+		}
+	}
 
 	gitRefSchema = {
 		"id": "/GitRef",
@@ -69,10 +152,10 @@ module.exports = class Schemas {
 			"name": {"type": "string"},
 			"hash": {"type": "string"}
 		}
-	};
+	}
 
-	gitSummarySchema = {
-		"id": "/gitSummary",
+	getHistoryOutput = {
+		"id": "/getHistory",
 		"type": "object",
 		"properties": {
 			"commits" : {
@@ -86,36 +169,6 @@ module.exports = class Schemas {
 		}
 	}
 
-	saveFileOutput = {
-		"id": "/saveFile",
-		"type": "object",
-		"properties": {
-			"hash": { "type": "string" },
-			"parent": { "type": ["string", "null"] }
-		},
-		"required": ["hash"]
-	}
-
-	getPreviewOutput = {
-		"id": "/getPreview",
-		"type": "object",
-		"properties": {
-			"name": { "type": "string" },
-			"id": { "type": "string" }
-		},
-		"required": ["name"]
-	}
-
-	fileSchema = {
-		"id": "/File",
-		"type": "object",
-		"properties": {
-			"name": { "type": "string" },
-			"id": { "type": "string" },
-			"content": { "type": "string" }
-		},
-		"required": ["id"]
-	};
 
 	constructor() {
 		// any supporting types need to be added to validator here
