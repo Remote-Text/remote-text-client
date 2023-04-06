@@ -132,4 +132,12 @@ describe('RemoteTextApi', () => {
 		expect(getHistoryResult).toMatchObject(expectedResponse)
 	});
   
+	test("deleteFile returns nothing as expected", async () => {
+		axios.put.mockResolvedValue({
+			data: {}
+		})
+		getFileInput = {id: "0".repeat(32)}
+		const deleteFileResult = await remoteTextApi.getFile(deleteFileInput.id)
+		expect(deleteFileResult).toMatchObject(expectedResponse)
+	})
 });

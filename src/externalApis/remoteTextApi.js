@@ -207,6 +207,30 @@ module.exports = class RemoteTextApi {
 				}
 			})
 	}
+
+	async deleteFile(fileid) {
+		const fileidObject = {id: fileid}
+		try {
+			this.validate(fileidObject, this.schemas.deleteFileInput)
+		} catch (error) {
+			throw error
+		}
+
+		return axios.put(this.url + '/deleteFile', {id: fileid})
+			.then(response => {
+				var data = response.data
+				this.validate(data, {})  // returns nothing
+				return data
+			})
+			.catch(error => {
+				if (error.response) {
+					console.log(error.response.status)
+				} else {
+					console.log('deleteFile Schema Error')
+					console.log(error)
+				}
+			})
+	}
 }
 
 

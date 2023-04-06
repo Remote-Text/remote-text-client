@@ -90,7 +90,7 @@ module.exports = class Schemas {
 			"id": { "type": "string" },
 			"hash": { "type": "string" }
 		},
-		"required": ["id", "ref"]
+		"required": ["id", "hash"]
 	}
 
 	previewFileOutput = {
@@ -111,7 +111,7 @@ module.exports = class Schemas {
 			"id": { "type": "string" },
 			"hash": { "type": "string" }
 		},
-		"required": ["id", "ref"]
+		"required": ["id", "hash"]
 	}
 
 	getPreviewOutput = {
@@ -167,6 +167,17 @@ module.exports = class Schemas {
 				"items": {"$ref": "/GitRef"}
 			}
 		}
+	}
+
+// deleteFile(id) -> nothing returned
+
+	deleteFileInput = {
+		"id": "/deleteFile",
+		"type": "object",
+		"properties": {
+			"id": {"type": "string"}
+		},
+		"required": ["id"]
 	}
 
 
