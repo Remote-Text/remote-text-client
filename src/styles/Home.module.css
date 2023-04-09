@@ -1,3 +1,45 @@
+.table {
+  border-spacing: 10px;
+  table-layout: fixed;
+  width: 90vw;
+}
+
+.nameRow {
+  text-align: left;
+  width: 40vw;
+  overflow: hidden;
+}
+
+.dateRow {
+  text-align: left;
+  width: 20vw;
+  overflow: hidden;
+}
+
+.fileButton {
+  font-family : inherit;
+  font-size: 1em;
+  padding: 0.5rem;
+}
+
+.createFileButton {
+  font-family : inherit;
+  font-size: 1em;
+  padding: 0.5rem;
+  width: 10vw
+}
+
+.filesMain {
+  display: flex;
+  flex-direction: column;
+  justify-content: top;
+  align-items: left;
+  padding: 10vw;
+  gap: 20px;
+}
+
+/* Below here was default CSS from React, above is new CSS for the file view page */
+
 .main {
   display: flex;
   flex-direction: column;
@@ -59,6 +101,16 @@
   transition: transform 200ms;
 }
 
+.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow: auto;
+  background: white; /* Just to visualize the extent */
+  
+}
 .card h2 {
   font-weight: 600;
   margin-bottom: 0.7rem;
