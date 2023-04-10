@@ -1,5 +1,5 @@
 import React from 'react'
-import Home from '../../src/pages/text_editor'
+import Home from '../../src/pages/editor'
 
 describe('<Home />', () => {
     it('render and displays expected content', () => {
