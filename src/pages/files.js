@@ -23,12 +23,7 @@ async function listFilesData() {
 // read data from createFile API call and open new file
 async function createNewFile() {
   let name = document.getElementById("fileName").value
-  let fileData = remoteTextApi.createFile(name)
-  let filePromise = new Promise((resolve) => {
-    if (fileData != undefined) {
-      resolve(fileData)
-    }
-  })
+  await remoteTextApi.createFile(name)
   .then(fileData=>{
     openFile("history", fileData["id"])
   })
