@@ -9,8 +9,6 @@ function openFile(nextPage, id) {  // parameter nextPage is a string indicating 
   window.open(document.location.origin+"/"+nextPage+"?id="+id)
 }
 
-// Note: using "test-page" as placeholder in URL for the name of the file history viewing page
-
 // dealing with API call listFiles promise
 async function listFilesData() {
   let fileData = remoteTextApi.listFiles()
@@ -32,7 +30,7 @@ async function createNewFile() {
     }
   })
   .then(fileData=>{
-    openFile("test-page", fileData["id"])
+    openFile("history", fileData["id"])
   })
 }
 
@@ -86,9 +84,9 @@ export default function Files() {
 
   useEffect(() => {
     listFilesData()
-   .then(data =>
-     setFileData(data)
-   )
+    .then(data =>
+      setFileData(data)
+    )
   }, [])  // gets async data^
 
   let fileTable = <></>
@@ -104,7 +102,7 @@ export default function Files() {
     let fileList = fileData.map(f =>
     <tr key={f.id}>
       <td className={styles.nameRow}>
-        <button className={styles.fileButton} onClick={()=>openFile("test-page", f.id)}>{f.name}</button>
+        <button className={styles.fileButton} onClick={()=>openFile("history", f.id)}>{f.name}</button>
       </td>
       <td className={styles.dateRow}>{f.created_time}</td>
       <td className={styles.dateRow}>{f.edited_time}</td>
