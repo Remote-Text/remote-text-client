@@ -43,22 +43,37 @@ function setContent(content, flag) {
     }
 }
 
-//  send new contents back to API & return hash & parent from API call
-async function saveFile(name, id, newContent) {
-    const fileObject = {
-        name: name,
-        id: id,
-        content: newContent
+// saves new contents to some branch branch
+async function saveFile(fileObject, hash) {
+    let newContent = document.getElementById("editor").innerHTML
+    let newBranchName = document.getElementById("branchName").value
+    const newFileObject = {
+        name: fileObject.name,
+        id: fileObject.id,
+        content: newContent,
+        parent: hash,  // does parent also change when branch changes?
+        branch: newBranchName
     }
-    await remoteTextApi.saveFile(fileObject)
-    .then(saveResponse=>
-        console.log("File saved! API response:", saveResponse)  // unsure what we're supposed to do with this info (hash & parent)
-    )
+    await remoteTextApi.saveFile(newFileObject)
+    .then(saveResponse=>{
+        console.log("File saved to branch '"+newBranchName+"'. API response:", saveResponse)  // unsure what we're supposed to do with this info (hash & parent)
+        hideSaveFile()
+    })
+}
+
+// show hidden html elements for saveAs
+function showSaveFile() {
+    document.getElementById("saveAs").hidden = false
+}
+
+function hideSaveFile() {
+    document.getElementById("saveAs").hidden = true
 }
 
 // main
 export default function Editor() {
     const [fileData, setFileData] = useState({})
+    const [currentHash, setCurrentHash] = useState({})
     const [contentLoadedFlag, setContentLoadedFlag] = useState({})
     useEffect(() => {
         getQueryString()
@@ -66,9 +81,10 @@ export default function Editor() {
             const urlParams = new URLSearchParams(data)
             const fileID = urlParams.get('id')
             const fileHash = urlParams.get('hash')
+            setCurrentHash(fileHash)
 
             getFileData(fileID, fileHash)
-            .then(data => {setFileData(data)})
+            .then(data => {setFileData(data)}) // fileData currently contains name, id, & content. Would like to have it also include the branch & parent of the file, to use as default params for saveFile.
             setContentLoadedFlag(false)
         })        
     }, [])   // ^this runs only once on load
@@ -82,8 +98,13 @@ export default function Editor() {
             </Head>
             <main className={styles.main}>
                 <div className="editor" contentEditable="true" id="editor"></div>
-                <button onClick={()=>saveFile(fileData.name, fileData.id, document.getElementById("editor").innerHTML)}>SaveFile</button>
-            </main >
+                <button onClick={showSaveFile}>Save File</button>
+                <div id="saveAs" hidden={true}>
+                    <label htmlFor="branchName">Name of branch to save to:</label>
+                    <input type="text" id="branchName" name="branchName" required minLength="1" maxLength="64" size="10"></input>
+                    <button onClick={()=>saveFile(fileData, currentHash)}>Save to Branch</button>
+                </div>
+            </main>
         </>
     )
 }

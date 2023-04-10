@@ -26,12 +26,17 @@ async function createNewFile() {
   await remoteTextApi.createFile(name)
   .then(fileData=>{
     openFile(fileData["id"])
+    hideCreateFile()
   })
 }
 
 // show hidden html elements for naming a new file
 function showCreateFile() {
   document.getElementById("createFile").hidden = false
+}
+
+function hideCreateFile() {
+  document.getElementById("createFile").hidden = true
 }
 
 // open file explorer to select a file to upload
@@ -41,7 +46,6 @@ function chooseUploadFile() {
 function formatTimestamp(s) {
   let fileDate = new Date(s)
   let todaysDate = new Date()
-  console.log(s, fileDate, todaysDate)
   if (s.includes(" ")) {  // eliminates some dates for some reason getting formatted twice
     return s
   }

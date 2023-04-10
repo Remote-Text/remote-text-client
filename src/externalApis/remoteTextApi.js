@@ -90,26 +90,16 @@ module.exports = class RemoteTextApi {
 	}
 
 	async saveFile(file) {
-		const filenameObject = {
-			name: file.name,
-			id: file.id,
-			content: file.content
-		}
-		//const filenameObject = { id: file }
 		try {
-			console.log(filenameObject, this.schemas.saveFileInput)
-			this.validate(filenameObject, this.schemas.saveFileInput)
+			this.validate(file, this.schemas.saveFileInput)
 		} catch (error) {
 			throw error
 		}
 
-		return axios.put(this.url + '/saveFile', filenameObject)
+		return axios.put(this.url + '/saveFile', file)
 			.then(response => {
 				var data = response.data
-
-				console.log(data, this.schemas.saveFileOutput)
 				this.validate(data, this.schemas.saveFileOutput) //Think this isn't quite right? Gonna double check
-
 				return data;
 			})
 			.catch(error => {

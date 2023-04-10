@@ -68,7 +68,9 @@ module.exports = class Schemas {
 		"properties": {
 			"name": { "type": "string" },
 			"id": { "type": "string" },
-			"content": { "type": "string" }
+			"content": { "type": "string" },
+			"parent": {"type": "string"},
+			"branch": {"type": "string"}
 		}
 	}
 
