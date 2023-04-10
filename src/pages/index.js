@@ -85,11 +85,10 @@ export default function Home() {
 				<button id="getFile" onClick={logGetFile}>GetFile</button>
 				<button id="getHistory" onClick={logGetHistory}>GetHistory</button>
 				<button id="openEditor" onClick={openEditor}>openEditor</button>
-				<a href="/text_editor?id=thisIsAnID&hash=thisIsAHash">Text Editor</a>
 				<button id="deleteFile" onClick={logDeleteFile}>DeleteFile</button>
+				<Link href="/text_editor?id=thisIsAnID&hash=thisIsAHash">Text Editor</Link>
 				<Link id="historyPageLink" href="/history">History Page</Link>
 			</main>
-
 		</>
 	)
 
