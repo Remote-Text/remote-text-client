@@ -5,8 +5,8 @@ import React, { useEffect, useState } from "react"
 
 const remoteTextApi = new RemoteTextApi()
 
-function openFile(nextPage, id) {  // parameter nextPage is a string indicating whether to open file tree or editor
-  window.open(document.location.origin+"/"+nextPage+"?id="+id)
+function openFile(id) {
+  window.open(document.location.origin+"/history?id="+id)
 }
 
 // dealing with API call listFiles promise
@@ -25,7 +25,7 @@ async function createNewFile() {
   let name = document.getElementById("fileName").value
   await remoteTextApi.createFile(name)
   .then(fileData=>{
-    openFile("history", fileData["id"])
+    openFile(fileData["id"])
   })
 }
 
@@ -87,7 +87,7 @@ export default function Files() {
   let fileTable = <></>
 
   if (fileData.length > 0) {
-    // iterate through files to reformat timestamps (couldn"t do this while in map for some reason)
+    // iterate through files to reformat timestamps (couldn't do this while in map for some reason)
     fileData.forEach(file => {
       file.created_time = formatTimestamp(file.created_time)
       file.edited_time = formatTimestamp(file.edited_time)
@@ -97,7 +97,7 @@ export default function Files() {
     let fileList = fileData.map(f =>
     <tr key={f.id}>
       <td className={styles.nameRow}>
-        <button className={styles.fileButton} onClick={()=>openFile("history", f.id)}>{f.name}</button>
+        <button className={styles.fileButton} onClick={()=>openFile(f.id)}>{f.name}</button>
       </td>
       <td className={styles.dateRow}>{f.created_time}</td>
       <td className={styles.dateRow}>{f.edited_time}</td>

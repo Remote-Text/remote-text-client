@@ -5,7 +5,20 @@ import RemoteTextApi from '../externalApis/remoteTextApi.js'
 
 const remoteTextApi = new RemoteTextApi();
 
-/* Commented out are original API test buttons.
+export default function Home() {
+
+	return (
+		<>
+			<main className={styles.main}>
+				<div className={styles.description}>
+					<p>Welcome to RemoteText! Click "continue" to view remote files.</p>
+					<button><Link href="/files">continue</Link></button>
+				</div>
+			</main>
+		</>
+	)
+
+/* This was the original API test buttons, which it seems like we're past needing:
 
 // a function like this could get our git history, get a file and load the editor, etc
 // right now it just console logs
@@ -66,24 +79,7 @@ async function logDeleteFile() {
 }
 */
 
-export default function Home() {
-
-	return (
-		<>
-			<main className={styles.main}>
-				<div className={styles.description}>
-					<p>Welcome to RemoteText! Click "continue" to view remote files.</p>
-					<button><Link href="/files">continue</Link></button>
-				</div>
-				<div>
-					<Link href="/editor?id=thisIsAnID&hash=thisIsAHash">Jump to Text Editor</Link>
-					<br></br>
-					<Link id="historyPageLink" href="/history?id=thisIsAnID">Jump to History Page</Link>
-				</div>
-			</main>
-		</>
-	)
-/*
+/*  This was from the returned HTML:
 	return (
 		<>
 				<div className={styles.description}>
@@ -100,6 +96,8 @@ export default function Home() {
 				<button id="getHistory" onClick={logGetHistory}>GetHistory</button>
 				<button id="openEditor" onClick={openEditor}>openEditor</button>
 				<button id="deleteFile" onClick={logDeleteFile}>DeleteFile</button>
+				<Link href="/editor?id=thisIsAnID&hash=thisIsAHash">Jump to Text Editor</Link>
+				<Link id="historyPageLink" href="/history?id=thisIsAnID">Jump to History Page</Link>
 		</>
 	)
 */

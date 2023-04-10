@@ -1,5 +1,5 @@
 import RemoteTextApi from '../externalApis/remoteTextApi.js'
-import style from '../styles/historyTree.module.css'
+import styles from '../styles/historyTree.module.css'
 import React, {useCallback, useState, useLayoutEffect} from "react"
 import Link from 'next/link'
 import Tree from 'react-d3-tree';
@@ -67,7 +67,11 @@ async function getHistoryAndMakeTree(id) {
 		refMap.set(ref.hash, ref.name)
 	}
 
-	let rootHash = commitMap.get(null)[0]
+	let hashes = commitMap.get(null)
+	if (!hashes) {
+		return null
+	}
+	let rootHash = hashes[0]
 	let tree = createHistoryTree(commitMap, refMap, rootHash)
 
 	let treePromise = new Promise((resolve) => {
@@ -79,8 +83,10 @@ async function getHistoryAndMakeTree(id) {
 }
 
 // Here is how to extract the hash from pressing on a node
-function logNode(event) {
-	console.log(event.data.properties.hash)
+function openNodeFile(event) {
+	let hash = event.data.properties.hash
+	let id = event.data.properties.id
+	window.open(document.location.origin+"/editor?id="+id+"&hash="+hash,"_self")
 }
 
 // a way to have prettier node names
@@ -141,8 +147,8 @@ export default function HistoryPage() {
 
 					)
 			}
-			)
-	})
+		)
+	}, [])
 	// const foreignObjectProps = {width: nodeSize.x, height: nodeSize.y, x: 20};
 
 
@@ -151,34 +157,37 @@ export default function HistoryPage() {
 
 		return (
 
-			<div className={style.fullscreen} ref={containerRef} id="treeWrapper" >
+			<div className={styles.fullscreen} ref={containerRef} id="treeWrapper" >
 				<Tree
 					data={historyTree}
 					translate={translate}
 					draggable={true}
-					onNodeClick={logNode}
+					onNodeClick={openNodeFile}
 					collapsible={false}
-					rootNodeClassName={style.node__root}
-					branchNodeClassName={style.node__branch}
+					rootNodeClassName={styles.node__root}
+					branchNodeClassName={styles.node__branch}
 					nodeSize={nodeSize}
 					textLayout={textLayout}
 					// renderCustomNodeElement={(rd3tProps) =>
 					// 	renderForeignObjectNode({...rd3tProps, foreignObjectProps})
 					// }
-					leafNodeClassName={style.node__leaf} />
+					leafNodeClassName={styles.node__leaf} />
 			</div>
 
 		)
 	} else {
 		return (
-
 			<div id="404div">
-
-				<h1>Something went wrong! Please go home and try again</h1>
-				<Link id="HomePageLink" href="/">Home</Link>
+				<pre>
+	{	`		__ 
+               / _) 
+      _.----._/ / 
+     /  error  / 
+  __/ (  | (  | 
+ /__.-'|_|--|_| `}
+ 				</pre>
+				Something went wrong! Please refresh to try again.
 			</div>
 		)
 	}
-
-
 }
