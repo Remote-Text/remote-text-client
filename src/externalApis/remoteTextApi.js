@@ -97,7 +97,8 @@ module.exports = class RemoteTextApi {
 		}
 		//const filenameObject = { id: file }
 		try {
-			this.validate(filenameObject, this.schemas.saveFileOutput)
+			console.log(filenameObject, this.schemas.saveFileInput)
+			this.validate(filenameObject, this.schemas.saveFileInput)
 		} catch (error) {
 			throw error
 		}
@@ -106,6 +107,7 @@ module.exports = class RemoteTextApi {
 			.then(response => {
 				var data = response.data
 
+				console.log(data, this.schemas.saveFileOutput)
 				this.validate(data, this.schemas.saveFileOutput) //Think this isn't quite right? Gonna double check
 
 				return data;

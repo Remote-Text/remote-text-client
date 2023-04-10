@@ -11,7 +11,7 @@ export default function Home() {
 		<>
 			<main className={styles.main}>
 				<div className={styles.description}>
-					<p>Welcome to RemoteText! Click "continue" to view remote files.</p>
+					<p>Welcome to RemoteText! Continue to view remote files.</p>
 					<button><Link href="/files">continue</Link></button>
 				</div>
 			</main>

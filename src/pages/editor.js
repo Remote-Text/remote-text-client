@@ -17,33 +17,17 @@ async function getQueryString() {
     return queryStringPromise
 }
 
-function readQueryString() {
-    const [queryString, setQueryString] = useState({})
-    useEffect(() => {
-      getQueryString()
-     .then(data =>
-       setQueryString(data)
-      )
-    })
-  
-    const urlParams = new URLSearchParams(queryString)
-    const fileID = urlParams.get('id')
-    const fileHash = urlParams.get('hash')
-  
-    return [fileID, fileHash]
-  }
-
 // for dealing with API calls:
 async function getFileData(id, hash) {
-//    let fileData = remoteTextApi.getFile(id, hash)
-    let fileData = {        // Note: currently getting a gnarly validator error, so using dummy call
+/*    let fileData = {        // Dummy data
         name: "foo.txt",
         id: "aec23664ae26d76ab66cedfb1206b9c9",
         content: "hello world! is this working? I think it is",
-    }
+    }*/
+    let fileData = await remoteTextApi.getFile(id, hash)
     let filePromise = new Promise((resolve) => {
-        if (fileData.content != undefined) {
-        resolve(fileData)
+        if (fileData != undefined) {
+            resolve(fileData)
         }
     })
     return filePromise
@@ -74,14 +58,19 @@ async function saveFile(name, id, newContent) {
 
 // main
 export default function Editor() {
-    let [fileID, fileHash] = readQueryString()
-
     const [fileData, setFileData] = useState({})
     const [contentLoadedFlag, setContentLoadedFlag] = useState({})
     useEffect(() => {
-        getFileData(fileID, fileHash)
-        .then(data => setFileData(data))
-        setContentLoadedFlag(fileData.content)
+        getQueryString()
+        .then(data =>{
+            const urlParams = new URLSearchParams(data)
+            const fileID = urlParams.get('id')
+            const fileHash = urlParams.get('hash')
+
+            getFileData(fileID, fileHash)
+            .then(data => {setFileData(data)})
+            setContentLoadedFlag(false)
+        })        
     }, [])   // ^this runs only once on load
 
     setContent(fileData.content, contentLoadedFlag)

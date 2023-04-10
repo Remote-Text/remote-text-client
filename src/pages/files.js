@@ -38,38 +38,17 @@ function showCreateFile() {
 function chooseUploadFile() {
 }
 
-// reformat date/time strings received from server
 function formatTimestamp(s) {
-  let parts = s.split("T")
-  if (parts.length > 1) {  // because for some reason it was running date strings through this twice
-    let date = parts[0]
-    let time = (parts[1]).split(".")[0]
-
-    let today = new Date()
-    let todaysDate = (today.getFullYear()).toString() + (today.getMonth() + 1).toString() + (today.getDate()).toString() // need to adjust month by 1 because js date format has months start from 0
-
-    if (date == todaysDate) {
-      let timeParts = time.split(":")
-      let hour = timeParts[0]
-      let minute = timeParts[1]
-      let formattedTime = ""
-      if (hour>12) {
-        formattedTime = (hour-12) + ":" + minute + "pm"
-      } else {
-        formattedTime = (hour) + ":" + minute + "am"
-      }
-      return formattedTime
-
-    } else {
-      let dateParts = date.split("-")
-      let year = dateParts[0]
-      let month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][dateParts[1]-1]
-      let day = dateParts[2]
-      return (month + " " + day + ", " + year)
-    }
-
-  } else {
+  let fileDate = new Date(s)
+  let todaysDate = new Date()
+  console.log(s, fileDate, todaysDate)
+  if (s.includes(" ")) {  // eliminates some dates for some reason getting formatted twice
     return s
+  }
+  if (fileDate.getDate() == todaysDate.getDate()) {
+    return fileDate.toLocaleTimeString()
+  } else {
+    return fileDate.toDateString()
   }
 }
 

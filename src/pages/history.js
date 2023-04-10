@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Tree from 'react-d3-tree';
 
 const remoteTextApi = new RemoteTextApi();
-
+var fileID
 
 function createHistoryTree(commitMap, refMap, rootHash) {
 
@@ -83,10 +83,9 @@ async function getHistoryAndMakeTree(id) {
 }
 
 // Here is how to extract the hash from pressing on a node
-function openNodeFile(event) {
+function openNodeFile(event) {  // debug note from Alan: I wasn't sure how to pass the ID to this function & couldn't trace back where event is being given to it, so I just made fileID global. Maybe not best practice, but it works.
 	let hash = event.data.properties.hash
-	let id = event.data.properties.id
-	window.open(document.location.origin+"/editor?id="+id+"&hash="+hash,"_self")
+	window.open(document.location.origin+"/editor?id="+fileID+"&hash="+hash,"_self")
 }
 
 // a way to have prettier node names
@@ -133,13 +132,12 @@ export default function HistoryPage() {
 	const [translate, containerRef] = useCenteredTree();
 	const textLayout = {attribute: {dy: "5em", x: 200000}};
 	const nodeSize = {x: 200, y: 200};
-	const [queryString, setQueryString] = useState("1".repeat(32))
 	useLayoutEffect(() => {
 		getQueryString()
 			.then(data => {
 
 				const urlParams = new URLSearchParams(data)
-				const fileID = urlParams.get('id')
+				fileID = urlParams.get('id')
 				getHistoryAndMakeTree(fileID)
 					.then(tree => {
 						setHistoryTree(tree)
