@@ -14,5 +14,6 @@ describe('<Home />', () => {
 	  cy.get('[id=getPreview]').should('be.visible')
 	  cy.get('[id=getFile]').should('be.visible')
 	  cy.get('[id=getHistory]').should('be.visible')
+	  cy.get('[id=historyPageLink]').should('be.visible')
   })
 })

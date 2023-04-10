@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import Link from 'next/link'
 import styles from '../styles/Home.module.css'
 import RemoteTextApi from '../externalApis/remoteTextApi.js'
 
@@ -16,8 +17,6 @@ async function logCreateFile() {
 	console.log(await remoteTextApi.createFile("foo.txt"));
 }
 
-
-
 async function logSaveFile() {
 	var testFile = {
 		name: "foo.txt",
@@ -27,13 +26,20 @@ async function logSaveFile() {
 	console.log(await remoteTextApi.saveFile(testFile));
 }
 
+async function logPreviewFile() {
+	var testFile = {
+		id: "aec23664ae26d76ab66cedfb1206b9c9",
+		hash: "aceaaec23664ae26d76ab66cedfb1206b9c972b1"
+	}
+	console.log(await remoteTextApi.previewFile(testFile.id, testFile.hash))
+}
+
 async function logGetPreview() {
 	var testFile = {
-		name: "foo.txt",
 		id: "aec23664ae26d76ab66cedfb1206b9c9",
-		content: "hello world!",
+		hash: "aceaaec23664ae26d76ab66cedfb1206b9c972b1"
 	}
-	console.log(await remoteTextApi.getPreview(testFile))
+	console.log(await remoteTextApi.getPreview(testFile.id, testFile.hash))
 }
 
 async function logGetFile() {
@@ -43,6 +49,7 @@ async function logGetFile() {
 async function logGetHistory() {
 	console.log(await remoteTextApi.getHistory("0".repeat(32)))
 }
+
 async function openEditor() {
 	var testFile = {
 		name: "foo.txt",
@@ -52,14 +59,19 @@ async function openEditor() {
 	window.open(document.location.origin + "/text_editor?id=" + testFile.id)
 }
 
+async function logDeleteFile() {
+	console.log(await remoteTextApi.deleteFile("0".repeat(32)))
+}
+
 export default function Home() {
 
 	return (
 		<>
-			<Head>
-				<title>Hello World</title>
-			</Head>
 			<main className={styles.main}>
+				<div className={styles.description}>
+					<p>Welcome to RemoteText! Click "continue" to view remote files.</p>
+					<button><Link href="/files">continue</Link></button>
+				</div>
 				<div className={styles.description}>
 					<p>
 						Hello World! Press buttons to see API calls in console
@@ -68,11 +80,14 @@ export default function Home() {
 				<button id="listFiles" onClick={logListFiles}>ListFiles</button>
 				<button id="createFile" onClick={logCreateFile}>CreateFile</button>
 				<button id="saveFile" onClick={logSaveFile}>SaveFile</button>
-				<button id="getPreview" onClick={logGetPreview}>getPreview</button>
+				<button id="previewFile" onClick={logPreviewFile}>PreviewFile</button>
+				<button id="getPreview" onClick={logGetPreview}>GetPreview</button>
 				<button id="getFile" onClick={logGetFile}>GetFile</button>
 				<button id="getHistory" onClick={logGetHistory}>GetHistory</button>
 				<button id="openEditor" onClick={openEditor}>openEditor</button>
 				<a href="/text_editor?id=thisIsAnID&hash=thisIsAHash">Text Editor</a>
+				<button id="deleteFile" onClick={logDeleteFile}>DeleteFile</button>
+				<Link id="historyPageLink" href="/history">History Page</Link>
 			</main>
 
 		</>
