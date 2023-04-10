@@ -5,6 +5,8 @@ import RemoteTextApi from '../externalApis/remoteTextApi.js'
 
 const remoteTextApi = new RemoteTextApi();
 
+/* Commented out are original API test buttons.
+
 // a function like this could get our git history, get a file and load the editor, etc
 // right now it just console logs
 async function logListFiles() {
@@ -42,17 +44,27 @@ async function logGetPreview() {
 	console.log(await remoteTextApi.getPreview(testFile.id, testFile.hash))
 }
 
-async function logGetFile(){
+async function logGetFile() {
 	console.log(await remoteTextApi.getFile("0".repeat(32)))
 }
 
-async function logGetHistory(){
+async function logGetHistory() {
 	console.log(await remoteTextApi.getHistory("0".repeat(32)))
+}
+
+async function openEditor() {
+	var testFile = {
+		name: "foo.txt",
+		id: "00000000-0000-0000-0000-000000000000",
+		content: "hello world!",
+	}
+	window.open(document.location.origin + "/text_editor?id=" + testFile.id)
 }
 
 async function logDeleteFile() {
 	console.log(await remoteTextApi.deleteFile("0".repeat(32)))
 }
+*/
 
 export default function Home() {
 
@@ -63,6 +75,17 @@ export default function Home() {
 					<p>Welcome to RemoteText! Click "continue" to view remote files.</p>
 					<button><Link href="/files">continue</Link></button>
 				</div>
+				<div>
+					<Link href="/editor?id=thisIsAnID&hash=thisIsAHash">Jump to Text Editor</Link>
+					<br></br>
+					<Link id="historyPageLink" href="/history?id=thisIsAnID">Jump to History Page</Link>
+				</div>
+			</main>
+		</>
+	)
+/*
+	return (
+		<>
 				<div className={styles.description}>
 					<p>
 						Hello World! Press buttons to see API calls in console
@@ -75,10 +98,10 @@ export default function Home() {
 				<button id="getPreview" onClick={logGetPreview}>GetPreview</button>
 				<button id="getFile" onClick={logGetFile}>GetFile</button>
 				<button id="getHistory" onClick={logGetHistory}>GetHistory</button>
+				<button id="openEditor" onClick={openEditor}>openEditor</button>
 				<button id="deleteFile" onClick={logDeleteFile}>DeleteFile</button>
-				<Link id="historyPageLink" href="/history">History Page</Link>
-			</main>
 		</>
 	)
+*/
 
 }
