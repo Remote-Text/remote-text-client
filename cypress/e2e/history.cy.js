@@ -1,4 +1,3 @@
-import React from 'react'
 
 describe('History', () => {
 	it('render and displays expected content', () => {
