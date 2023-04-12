@@ -1,0 +1,14 @@
+[
+	{
+		"name": "foo1.txt",
+		"edited_time": "sometime",
+		"created_time": "anothertime",
+		"id": "00000000000000000000000000000000"
+	},
+	{
+		"name": "foo2.txt",
+		"edited_time": "sometime",
+		"created_time": "anothertime",
+		"id": "10000000000000000000000000000000"
+	}
+]
