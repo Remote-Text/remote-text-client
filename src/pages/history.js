@@ -1,5 +1,6 @@
 import RemoteTextApi from '../externalApis/remoteTextApi.js'
 import styles from '../styles/historyTree.module.css'
+import Head from "next/head"
 import React, {useCallback, useState, useLayoutEffect} from "react"
 import Link from 'next/link'
 import Tree from 'react-d3-tree';
@@ -153,8 +154,10 @@ export default function HistoryPage() {
 
 	if (historyTree != null) {
 
-		return (
-
+		return ( <>
+			<Head>
+                <title>History - RemoteText</title>
+            </Head>
 			<div className={styles.fullscreen} ref={containerRef} id="treeWrapper" >
 				<Tree
 					data={historyTree}
@@ -171,21 +174,9 @@ export default function HistoryPage() {
 					// }
 					leafNodeClassName={styles.node__leaf} />
 			</div>
-
+			</>
 		)
 	} else {
-		return (
-			<div id="404div">
-				<pre>
-	{	`		__ 
-               / _) 
-      _.----._/ / 
-     /  error  / 
-  __/ (  | (  | 
- /__.-'|_|--|_| `}
- 				</pre>
-				Something went wrong! Please refresh to try again.
-			</div>
-		)
+		window.open(window.location.origin+"/error","_self")
 	}
 }
