@@ -28,6 +28,13 @@ async function createNewFile(name, fileContent="") {
     openFile(fileData["id"])
     hideCreateFile()
   })
+  window.location.reload()
+}
+
+async function deleteFile(id) {
+  await remoteTextApi.deleteFile(id)
+  .then()
+  window.location.reload()
 }
 
 // open file explorer to select a file to upload
@@ -122,7 +129,7 @@ export default function Files() {
     // map file data to html elements
     let fileList = fileData.map(f =>
     <tr key={f.id}>
-      <td><button id="deleteFile" onClick={()=>remoteTextApi.deleteFile(f.id)}>Delete</button></td>
+      <td><button id="deleteFile" onClick={()=>deleteFile(f.id)}>Delete</button></td>
       <td><button id="downloadFile" onClick={()=>downloadFile(f.id, f.name)}>Download</button>
         <div id={"listBranches-"+f.id}></div>
       </td>
