@@ -2,6 +2,7 @@ import Head from "next/head"
 import styles from "../styles/Home.module.css"
 import RemoteTextApi from "../externalApis/remoteTextApi.js"
 import React, { useEffect, useState } from "react"
+import { saveAs } from 'file-saver'
 
 const remoteTextApi = new RemoteTextApi()
 
@@ -44,9 +45,30 @@ async function uploadFile(event){
   }
 }
 
-async function downloadFile(id){
-
+async function downloadFile(id, name){
+  await remoteTextApi.getFile(id, "hash-placeholder")  // ERROR: need to handle branch hash
+  .then(fileObj=>{
+    var blob = new Blob([fileObj.content.slice(0, -4)], {  // the slice is to remove an extra "<br>" that the editor for some reason inserts at the end.
+      type: "text/plain;charset=utf-8"
+    })
+    saveAs(blob, name)
+  })
+  branchMenu.hidden = true
 }
+
+/*
+async function showBranches(id, fileName) {
+  let branchMenu = document.getElementById("selectBranch-"+id)
+  branchMenu.hidden = false
+  await remoteTextApi.getHistory(id)
+  .then(branchData=>{
+    let branchList = branchData.refs.map(b => 
+      <button id={b.hash} onClick={()=>downloadFile(id, fileName, b.hash)}></button>
+    )
+    return branchList
+  })
+}
+*/
 
 // show hidden html elements for naming a new file
 function showCreateFile() {
@@ -94,7 +116,7 @@ export default function Files() {
     let fileList = fileData.map(f =>
     <tr key={f.id}>
       <td><button id="deleteFile" onClick={()=>remoteTextApi.deleteFile(f.id)}>Delete</button></td>
-      <td><button id="downloadFile" onClick={()=>downloadFile(id)}>Download</button></td>
+      <td><button id="downloadFile" onClick={()=>downloadFile(f.id, f.name)}>Download</button></td>
       <td className={styles.nameRow}>
         <button className={styles.fileButton} onClick={()=>openFile(f.id)}>{f.name}</button>
       </td>
