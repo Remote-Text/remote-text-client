@@ -102,7 +102,7 @@ export default function Editor() {
 				<div id="saveAs" hidden={true}>
 					<label htmlFor="branchName">Name of branch to save to:</label>
 					<input type="text" id="branchName" name="branchName" required minLength="1" maxLength="64" size="10"></input>
-					<button onClick={() => saveFile(fileData, currentHash)}>Save to Branch</button>
+					<button id="saveToBranch" onClick={() => saveFile(fileData, currentHash)}>Save to Branch</button>
 				</div>
 			</main>
 		</>
