@@ -46,29 +46,36 @@ async function uploadFile(event){
 }
 
 async function downloadFile(id, name){
-  await remoteTextApi.getFile(id, "hash-placeholder")  // ERROR: need to handle branch hash
+  await remoteTextApi.getHistory(id)
+  .then(histData=>{
+    let branchView = document.getElementById("listBranches-"+id)
+    let branchList=""
+    histData.refs.forEach(b=>{
+      branchList += "<button id="+b.hash+">"+b.name+"</button>"
+    })
+    branchView.innerHTML = branchList
+    histData.refs.forEach(b=>{
+      let branchFileName = name
+      if (name.includes(".")){  // check for file ext before renaming
+        branchFileName = name.split(".")[0]+"_"+b.name+"."+name.split(".")[1]
+      } else {
+        branchFileName = name+"_"+b.name
+      }
+      document.getElementById(b.hash).addEventListener("click", ()=>{downloadBranchFile(id, branchFileName, b.hash)})
+    })
+  })
+}
+
+async function downloadBranchFile(id, name, hash) {
+  await remoteTextApi.getFile(id, hash)
   .then(fileObj=>{
     var blob = new Blob([fileObj.content.slice(0, -4)], {  // the slice is to remove an extra "<br>" that the editor for some reason inserts at the end.
       type: "text/plain;charset=utf-8"
     })
     saveAs(blob, name)
   })
-  branchMenu.hidden = true
+  document.getElementById("listBranches-"+id).innerHTML=""
 }
-
-/*
-async function showBranches(id, fileName) {
-  let branchMenu = document.getElementById("selectBranch-"+id)
-  branchMenu.hidden = false
-  await remoteTextApi.getHistory(id)
-  .then(branchData=>{
-    let branchList = branchData.refs.map(b => 
-      <button id={b.hash} onClick={()=>downloadFile(id, fileName, b.hash)}></button>
-    )
-    return branchList
-  })
-}
-*/
 
 // show hidden html elements for naming a new file
 function showCreateFile() {
@@ -116,7 +123,9 @@ export default function Files() {
     let fileList = fileData.map(f =>
     <tr key={f.id}>
       <td><button id="deleteFile" onClick={()=>remoteTextApi.deleteFile(f.id)}>Delete</button></td>
-      <td><button id="downloadFile" onClick={()=>downloadFile(f.id, f.name)}>Download</button></td>
+      <td><button id="downloadFile" onClick={()=>downloadFile(f.id, f.name)}>Download</button>
+        <div id={"listBranches-"+f.id}></div>
+      </td>
       <td className={styles.nameRow}>
         <button className={styles.fileButton} onClick={()=>openFile(f.id)}>{f.name}</button>
       </td>
