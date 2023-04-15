@@ -1,5 +1,5 @@
 
-describe('History', () => {
+describe('Editor', () => {
 	it('render and displays expected content', () => {
 		cy.intercept('**/api/getFile', {fixture: 'exampleFile'}).as('getFile')
 		cy.visit({

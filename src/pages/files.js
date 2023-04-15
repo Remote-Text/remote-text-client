@@ -109,12 +109,12 @@ export default function Files() {
 			<main className={styles.filesMain}>
 				<h2>RemoteText Files</h2>
 				<div>
-					<button className={styles.createFileButton} onClick={showCreateFile}>Create New File</button>
+					<button id="createFileButton" className={styles.createFileButton} onClick={showCreateFile}>Create New File</button>
 					<button className={styles.createFileButton} onClick={chooseUploadFile}>Upload File</button>
 					<div id="createFile" hidden={true}>
 						<label htmlFor="fileName">New file name:</label>
 						<input type="text" id="fileName" name="fileName" required minLength="1" maxLength="64" size="10"></input>
-						<button onClick={createNewFile}>Create</button>
+						<button id="createFileWithGivenName" onClick={createNewFile}>Create</button>
 					</div>
 				</div>
 				<div>{fileTable}</div>
