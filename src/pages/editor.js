@@ -44,30 +44,35 @@ function setContent(content, flag) {
 }
 
 // saves new contents to some branch branch
-async function saveFile(fileObject, hash) {
+async function saveFileToBranch(fileObject, hash, branchName) {
     let newContent = document.getElementById("editor").innerHTML
-    let newBranchName = document.getElementById("branchName").value
     const newFileObject = {
         name: fileObject.name,
         id: fileObject.id,
         content: newContent,
         parent: hash,  // does parent also change when branch changes?
-        branch: newBranchName
+        branch: branchName
     }
     await remoteTextApi.saveFile(newFileObject)
     .then(saveResponse=>{
-        console.log("File saved to branch '"+newBranchName+"'. API response:", saveResponse)  // unsure what we're supposed to do with this info (hash & parent)
-        hideSaveFile()
+        console.log("File saved to branch '"+branchName+"'. API response:", saveResponse)  // unsure what we're supposed to do with this info (hash & parent)
     })
+    document.getElementById("branchList").innerHTML = ""
 }
 
-// show hidden html elements for saveAs
-function showSaveFile() {
-    document.getElementById("saveAs").hidden = false
-}
-
-function hideSaveFile() {
-    document.getElementById("saveAs").hidden = true
+async function saveFile(fileObject, hash){
+    await remoteTextApi.getHistory(fileObject.id)
+    .then(histData=>{
+        let branchView = document.getElementById("branchList")
+        let branchList=""
+        histData.refs.forEach(b=>{
+            branchList += "<button id="+b.hash+">"+b.name+"</button>"
+        })
+        branchView.innerHTML = branchList
+        histData.refs.forEach(b=>{
+            document.getElementById(b.hash).addEventListener("click", ()=>{saveFileToBranch(fileObject, hash, b.name)})
+        })
+    })
 }
 
 // main
@@ -97,13 +102,12 @@ export default function Editor() {
                 <title>{fileData.name}</title>
             </Head>
             <main className={styles.main}>
-                <div className="editor" contentEditable="true" id="editor"></div>
-                <button onClick={showSaveFile}>Save File</button>
-                <div id="saveAs" hidden={true}>
-                    <label htmlFor="branchName">Name of branch to save to:</label>
-                    <input type="text" id="branchName" name="branchName" required minLength="1" maxLength="64" size="10"></input>
-                    <button onClick={()=>saveFile(fileData, currentHash)}>Save to Branch</button>
+                <div id="editorHeader">
+                    <button onClick={()=>saveFile(fileData, currentHash)}>Save File</button>
+                    <div id="branchList"></div>
                 </div>
+            
+                <div className="editor" contentEditable="true" id="editor"></div>
             </main>
         </>
     )
