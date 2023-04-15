@@ -44,6 +44,10 @@ async function uploadFile(event){
   }
 }
 
+async function downloadFile(id){
+
+}
+
 // show hidden html elements for naming a new file
 function showCreateFile() {
   document.getElementById("createFile").hidden = false
@@ -89,6 +93,8 @@ export default function Files() {
     // map file data to html elements
     let fileList = fileData.map(f =>
     <tr key={f.id}>
+      <td><button id="deleteFile" onClick={()=>remoteTextApi.deleteFile(f.id)}>Delete</button></td>
+      <td><button id="downloadFile" onClick={()=>downloadFile(id)}>Download</button></td>
       <td className={styles.nameRow}>
         <button className={styles.fileButton} onClick={()=>openFile(f.id)}>{f.name}</button>
       </td>
@@ -99,6 +105,8 @@ export default function Files() {
     // fill html table with file elements
     fileTable = <table className={styles.table}>
       <thead><tr>
+        <th></th>
+        <th></th>
         <th className={styles.nameRow}>Name</th>
         <th className={styles.dateRow}>Created</th>
         <th className={styles.dateRow}>Modified</th>

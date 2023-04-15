@@ -211,7 +211,7 @@ module.exports = class RemoteTextApi {
 		return axios.put(this.url + '/deleteFile', {id: fileid})
 			.then(response => {
 				var data = response.data
-				this.validate(data, undefined)  // returns nothing
+				// this.validate(data, ???)  do we need to validate that it doesn't return anything? seems unimportant, and was throwing error with check against null or empty string, so I'm just excluding this check.
 				return data
 			})
 			.catch(error => {
