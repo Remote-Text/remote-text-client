@@ -21,13 +21,27 @@ async function listFilesData() {
 }
 
 // read data from createFile API call and open new file
-async function createNewFile() {
-  let name = document.getElementById("fileName").value
-  await remoteTextApi.createFile(name)
+async function createNewFile(name, fileContent="") {
+  await remoteTextApi.createFile(name, fileContent)
   .then(fileData=>{
     openFile(fileData["id"])
     hideCreateFile()
   })
+}
+
+// open file explorer to select a file to upload
+async function uploadFile(event){
+  var selectedFile = event.target.files[0]
+  var name = selectedFile.name
+  
+  var contentReader = new FileReader()
+  contentReader.readAsText(selectedFile)
+  
+  let content = null
+  contentReader.onload = function(event) {
+    content = event.target.result  // ERROR: doesn't display newlines.
+    createNewFile(name, content)
+  }
 }
 
 // show hidden html elements for naming a new file
@@ -37,10 +51,6 @@ function showCreateFile() {
 
 function hideCreateFile() {
   document.getElementById("createFile").hidden = true
-}
-
-// open file explorer to select a file to upload
-function chooseUploadFile() {
 }
 
 function formatTimestamp(s) {
@@ -109,12 +119,13 @@ export default function Files() {
       <main className = {styles.filesMain}>
         <h2>RemoteText Files</h2>
         <div>
-          <button className={styles.createFileButton} onClick={showCreateFile}>Create New File</button>
-          <button className={styles.createFileButton} onClick={chooseUploadFile}>Upload File</button>
+          <button id="createFileButton" className={styles.createFileButton} onClick={showCreateFile}>Create New File</button>
+          <button id="uploadFileButton" className={styles.createFileButton} onClick={()=>document.getElementById("uploadFileInput").click()}>Upload File</button>
+          <input id="uploadFileInput" type="file" onChange={()=>uploadFile(event)} hidden={true}></input>
           <div id="createFile" hidden={true}>
             <label htmlFor="fileName">New file name:</label>
             <input type="text" id="fileName" name="fileName" required minLength="1" maxLength="64" size="10"></input>
-            <button onClick={createNewFile}>Create</button>
+            <button onClick={()=>createNewFile(document.getElementById("fileName").value)}>Create</button>
           </div>
         </div>
         <div>{fileTable}</div>
