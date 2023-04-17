@@ -44,7 +44,7 @@ function setContent(content, flag) {
 }
 
 // saves new contents to some branch branch
-async function saveFileToBranch(fileObject, hash, branchName) {
+async function saveAs(fileObject, hash, branchName) {
     let newContent = document.getElementById("editor").innerHTML
     const newFileObject = {
         name: fileObject.name,
@@ -55,12 +55,12 @@ async function saveFileToBranch(fileObject, hash, branchName) {
     }
     await remoteTextApi.saveFile(newFileObject)
     .then(saveResponse=>{
-        console.log("File saved to branch '"+branchName+"'. API response:", saveResponse)  // unsure what we're supposed to do with this info (hash & parent)
+        window.open(document.location.origin+"/editor?id="+fileObject.id+"&name="+fileObject.name+"&hash="+saveResponse.hash, "_self")  // reload to new save
     })
-    document.getElementById("branchList").innerHTML = ""
 }
 
 async function saveFile(fileObject, hash){
+    document.getElementById("createBranch").hidden = false
     await remoteTextApi.getHistory(fileObject.id)
     .then(histData=>{
         let branchView = document.getElementById("branchList")
@@ -70,8 +70,21 @@ async function saveFile(fileObject, hash){
         })
         branchView.innerHTML = branchList
         histData.refs.forEach(b=>{
-            document.getElementById(b.hash).addEventListener("click", ()=>{saveFileToBranch(fileObject, hash, b.name)})
+            document.getElementById(b.hash).addEventListener("click", ()=>{saveAs(fileObject, hash, b.name)})
         })
+    })
+}
+
+async function openPreview(id, name, hash) {
+    console.log(id, name, hash)
+    await remoteTextApi.previewFile(id, hash)
+    .then(response=>{
+        console.log(response)
+        if (response.state == "FAILURE") {
+            document.getElementById("previewResponse").innerHTML = "Failed to compile preview :("
+        } else if (response.state == "SUCCESS") {
+            window.open(document.location.origin+"/preview?id="+id+"&name="+name+"&hash="+hash)
+        }
     })
 }
 
@@ -89,7 +102,7 @@ export default function Editor() {
             setCurrentHash(fileHash)
 
             getFileData(fileID, fileHash)
-            .then(data => {setFileData(data)}) // fileData currently contains name, id, & content. Would like to have it also include the branch & parent of the file, to use as default params for saveFile.
+            .then(data => {setFileData(data)}) // fileData contains name, id, & content.
             setContentLoadedFlag(false)
         })        
     }, [])   // ^this runs only once on load
@@ -99,12 +112,21 @@ export default function Editor() {
     return (
         <>
             <Head>
-                <title>{fileData.name}</title>
+                <title>{fileData.name} - Editor</title>
             </Head>
             <main className={styles.main}>
                 <div id="editorHeader">
-                    <button onClick={()=>saveFile(fileData, currentHash)}>Save File</button>
-                    <div id="branchList"></div>
+                    <div id="saveTools">
+                        <button id="saveButton" onClick={()=>saveFile(fileData, currentHash)}>Save File</button>
+                        <div id="branchList"></div>
+                        <div id="createBranch" hidden={true}>
+                            <label htmlFor="branchName">New branch:</label>
+                            <input type="text" id="branchName" name="branchName" required minLength="1" maxLength="64" size="10"></input>
+                            <button onClick={()=>saveAs(fileData, currentHash, document.getElementById("branchName").value)}>Create new branch</button>
+                        </div>
+                    </div>
+                    <button id="previewButton" onClick={()=>openPreview(fileData.id, currentHash, fileData.name)}>Preview File</button>
+                    <div id="previewResponse"></div>
                 </div>
             
                 <div className="editor" contentEditable="true" id="editor"></div>

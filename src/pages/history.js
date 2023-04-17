@@ -7,6 +7,7 @@ import Tree from 'react-d3-tree';
 
 const remoteTextApi = new RemoteTextApi();
 var fileID
+var fileName
 
 function createHistoryTree(commitMap, refMap, rootHash) {
 
@@ -86,7 +87,7 @@ async function getHistoryAndMakeTree(id) {
 // Here is how to extract the hash from pressing on a node
 function openNodeFile(event) {  // debug note from Alan: I wasn't sure how to pass the ID to this function & couldn't trace back where event is being given to it, so I just made fileID global. Maybe not best practice, but it works.
 	let hash = event.data.properties.hash
-	window.open(document.location.origin+"/editor?id="+fileID+"&hash="+hash)  // to open in same window, add "_self" parameter. removed this do people can jump to a different branch more easily.
+	window.open(document.location.origin+"/editor?id="+fileID+"&name="+fileName+"&hash="+hash)  // to open in same window, add "_self" parameter. removed this do people can jump to a different branch more easily.
 }
 
 // a way to have prettier node names
@@ -139,6 +140,7 @@ export default function HistoryPage() {
 
 				const urlParams = new URLSearchParams(data)
 				fileID = urlParams.get('id')
+				fileName = urlParams.get('name')
 				getHistoryAndMakeTree(fileID)
 					.then(tree => {
 						setHistoryTree(tree)
@@ -156,7 +158,7 @@ export default function HistoryPage() {
 
 		return ( <>
 			<Head>
-                <title>History - RemoteText</title>
+                <title>{fileName} - History</title>
             </Head>
 			<div className={styles.fullscreen} ref={containerRef} id="treeWrapper" >
 				<Tree

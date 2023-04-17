@@ -6,8 +6,8 @@ import { saveAs } from 'file-saver'
 
 const remoteTextApi = new RemoteTextApi()
 
-function openFile(id) {
-  window.open(document.location.origin+"/history?id="+id)
+function openFile(id, fileName) {
+  window.open(document.location.origin+"/history?id="+id+"&name="+fileName)
 }
 
 // dealing with API call listFiles promise
@@ -25,7 +25,7 @@ async function listFilesData() {
 async function createNewFile(name, fileContent="") {
   await remoteTextApi.createFile(name, fileContent)
   .then(fileData=>{
-    openFile(fileData["id"])
+    openFile(fileData["id"], name)
     hideCreateFile()
   })
   window.location.reload()
@@ -134,7 +134,7 @@ export default function Files() {
         <div id={"listBranches-"+f.id}></div>
       </td>
       <td className={styles.nameRow}>
-        <button className={styles.fileButton} onClick={()=>openFile(f.id)}>{f.name}</button>
+        <button className={styles.fileButton} onClick={()=>openFile(f.id, f.name)}>{f.name}</button>
       </td>
       <td className={styles.dateRow}>{f.created_time}</td>
       <td className={styles.dateRow}>{f.edited_time}</td>
