@@ -168,11 +168,10 @@ module.exports = class RemoteTextApi {
 					//get HTTP error code
 					console.log(error.response.status)
 				} else {
-					var error_throw = "                __ \n               / _) \n      _.----._/ / \n     /   error / \n  __/ (  | (  | \n /__.-'|_|--|_|"
-					var useful_error = filenameObject
+					var error_throw = "                __ \n               / _) \n      _.----._/ / \n     /  error  / \n  __/ (  | (  | \n /__.-'|_|--|_|"
 					// should we have some more sophisticated error logs?
-					console.log(useful_error)
-					console.log(error)
+					console.log(error_throw)
+					return error  // it's not an error, it's a feature :D
 				}
 			})
 	}
