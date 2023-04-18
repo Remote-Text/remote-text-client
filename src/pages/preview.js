@@ -18,14 +18,17 @@ async function getQueryString() {
 
 export default function Preview() {
     const [previewData, setPreviewData] = useState({})
-    const [fileName, setFileName] = useState({})
+    const [labels, setLabels] = useState({})
     useEffect(() => {
         getQueryString()
         .then(data =>{
             const urlParams = new URLSearchParams(data)
             const fileID = urlParams.get('id')
             const fileHash = urlParams.get('hash')
-            setFileName(urlParams.get('name'))
+            setLabels({
+                        fileName: urlParams.get('name'),
+                        branchName: urlParams.get('branch')
+                    })
             remoteTextApi.getPreview(fileID, fileHash)
             .then(file => {setPreviewData(file)})
         })
@@ -35,7 +38,7 @@ export default function Preview() {
 
     return <>
         <Head>
-            <title>{fileName} - Preview</title>
+            <title>{labels.fileName} ({labels.branchName}) - Preview</title>
         </Head>
         <main>
             ...
