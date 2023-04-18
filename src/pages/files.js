@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react"
 const remoteTextApi = new RemoteTextApi()
 
 function openFile(id) {
-  window.open(document.location.origin+"/history?id="+id)
+  window.open(document.location.origin + "/history?id=" + id)
 }
 
 // dealing with API call listFiles promise
@@ -24,10 +24,10 @@ async function listFilesData() {
 async function createNewFile() {
   let name = document.getElementById("fileName").value
   await remoteTextApi.createFile(name)
-  .then(fileData=>{
-    openFile(fileData["id"])
-    hideCreateFile()
-  })
+    .then(fileData => {
+      openFile(fileData["id"])
+      hideCreateFile()
+    })
 }
 
 // show hidden html elements for naming a new file
@@ -57,14 +57,14 @@ function formatTimestamp(s) {
 }
 
 // main export
-export default function Files() {  
+export default function Files() {
   const [fileData, setFileData] = useState({})
 
   useEffect(() => {
     listFilesData()
-    .then(data =>
-      setFileData(data)
-    )
+      .then(data =>
+        setFileData(data)
+      )
   }, [])  // gets async data^
 
   let fileTable = <></>
@@ -78,13 +78,13 @@ export default function Files() {
 
     // map file data to html elements
     let fileList = fileData.map(f =>
-    <tr key={f.id}>
-      <td className={styles.nameRow}>
-        <button className={styles.fileButton} onClick={()=>openFile(f.id)}>{f.name}</button>
-      </td>
-      <td className={styles.dateRow}>{f.created_time}</td>
-      <td className={styles.dateRow}>{f.edited_time}</td>
-    </tr>)
+      <tr key={f.id}>
+        <td className={styles.nameRow}>
+          <button className={styles.fileButton} onClick={() => openFile(f.id)}>{f.name}</button>
+        </td>
+        <td className={styles.dateRow}>{f.created_time}</td>
+        <td className={styles.dateRow}>{f.edited_time}</td>
+      </tr>)
 
     // fill html table with file elements
     fileTable = <table className={styles.table}>
@@ -101,12 +101,15 @@ export default function Files() {
   }
 
   // page html
-  return(
+  return (
     <>
+      <div className={styles.imageHeader}>
+        <img src="/logo.png" alt="my_Logo"></img>
+      </div>
       <Head>
         <title>Files - RemoteText</title>
       </Head>
-      <main className = {styles.filesMain}>
+      <main className={styles.filesMain}>
         <h2>RemoteText Files</h2>
         <div>
           <button className={styles.createFileButton} onClick={showCreateFile}>Create New File</button>
