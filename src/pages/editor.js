@@ -1,4 +1,4 @@
-import styles from './index.js'
+import styles from "../styles/Home.module.css"
 import Head from "next/head"
 import React, { useEffect, useState } from 'react'
 import RemoteTextApi from '../externalApis/remoteTextApi.js'
@@ -19,11 +19,11 @@ async function getQueryString() {
 
 // for dealing with API calls:
 async function getFileData(id, hash) {
-/*    let fileData = {        // Dummy data
-        name: "foo.txt",
-        id: "aec23664ae26d76ab66cedfb1206b9c9",
-        content: "hello world! is this working? I think it is",
-    }*/
+    /*    let fileData = {        // Dummy data
+            name: "foo.txt",
+            id: "aec23664ae26d76ab66cedfb1206b9c9",
+            content: "hello world! is this working? I think it is",
+        }*/
     let fileData = await remoteTextApi.getFile(id, hash)
     let filePromise = new Promise((resolve) => {
         if (fileData != undefined) {
@@ -55,10 +55,10 @@ async function saveFile(fileObject, hash) {
         branch: newBranchName
     }
     await remoteTextApi.saveFile(newFileObject)
-    .then(saveResponse=>{
-        console.log("File saved to branch '"+newBranchName+"'. API response:", saveResponse)  // unsure what we're supposed to do with this info (hash & parent)
-        hideSaveFile()
-    })
+        .then(saveResponse => {
+            console.log("File saved to branch '" + newBranchName + "'. API response:", saveResponse)  // unsure what we're supposed to do with this info (hash & parent)
+            hideSaveFile()
+        })
 }
 
 // show hidden html elements for saveAs
@@ -77,33 +77,39 @@ export default function Editor() {
     const [contentLoadedFlag, setContentLoadedFlag] = useState({})
     useEffect(() => {
         getQueryString()
-        .then(data =>{
-            const urlParams = new URLSearchParams(data)
-            const fileID = urlParams.get('id')
-            const fileHash = urlParams.get('hash')
-            setCurrentHash(fileHash)
+            .then(data => {
+                const urlParams = new URLSearchParams(data)
+                const fileID = urlParams.get('id')
+                const fileHash = urlParams.get('hash')
+                setCurrentHash(fileHash)
 
-            getFileData(fileID, fileHash)
-            .then(data => {setFileData(data)}) // fileData currently contains name, id, & content. Would like to have it also include the branch & parent of the file, to use as default params for saveFile.
-            setContentLoadedFlag(false)
-        })        
+                getFileData(fileID, fileHash)
+                    .then(data => { setFileData(data) }) // fileData currently contains name, id, & content. Would like to have it also include the branch & parent of the file, to use as default params for saveFile.
+                setContentLoadedFlag(false)
+            })
     }, [])   // ^this runs only once on load
 
     setContent(fileData.content, contentLoadedFlag)
 
     return (
         <>
+            <div className={styles.imageHeader}>
+                <img src="/logo.png" alt="my_Logo"></img>
+            </div>
             <Head>
                 <title>{fileData.name}</title>
             </Head>
-            <main className={styles.main}>
-                <div className="editor" contentEditable="true" id="editor"></div>
-                <button onClick={showSaveFile}>Save File</button>
+
+            <main className={styles.filesMain}>
+                <h2>RemoteText Editor</h2>
+                <button className={styles.save} onClick={showSaveFile}>Save File</button>
                 <div id="saveAs" hidden={true}>
                     <label htmlFor="branchName">Name of branch to save to:</label>
                     <input type="text" id="branchName" name="branchName" required minLength="1" maxLength="64" size="10"></input>
-                    <button onClick={()=>saveFile(fileData, currentHash)}>Save to Branch</button>
+                    <button onClick={() => saveFile(fileData, currentHash)}>Save to Branch</button>
+                    <button onClick={hideSaveFile}>Cancel</button>
                 </div>
+                <div className={styles.editor} contentEditable="true" id="editor"></div>
             </main>
         </>
     )

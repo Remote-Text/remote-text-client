@@ -1,24 +1,12 @@
-/* custom-tree.css */
-
-.node__root > circle {
-  fill: red;
+.rd3t-label__title {
+  fill: white !important;
+  stroke: none;
+  font-weight: bolder;
 }
 
-.node__branch > circle {
-  fill: yellow;
-}
-
-.fullscreen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  overflow: auto;
-  background: white; /* Just to visualize the extent */
-  
-}
-
-.node__leaf > circle {
-  fill: green;
+svg .rd3t-node {
+  stroke-width: 0px;
+  fill: white !important;
+  stroke: none;
+  font-weight: bolder;
 }
