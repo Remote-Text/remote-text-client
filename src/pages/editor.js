@@ -88,6 +88,14 @@ async function openPreview(id, name, hash) {
     })
 }
 
+function saveNew(fileObj, hash, name) {
+    if (name != "") {  // check if valid name (should we make these criteria more specific?)
+        saveAs(fileObj, hash, name)
+    } else{
+        document.getElementById("invalidBranchName").hidden = false
+    }
+}
+
 // main
 export default function Editor() {
     const [fileData, setFileData] = useState({})
@@ -122,7 +130,8 @@ export default function Editor() {
                         <div id="createBranch" hidden={true}>
                             <label htmlFor="branchName">New branch:</label>
                             <input type="text" id="branchName" name="branchName" required minLength="1" maxLength="64" size="10"></input>
-                            <button onClick={()=>saveAs(fileData, currentHash, document.getElementById("branchName").value)}>Create new branch</button>
+                            <button onClick={()=>saveNew(fileData, currentHash, document.getElementById("branchName").value)}>Create new branch</button>
+                            <p id="invalidBranchName" hidden={true}>Not a valid branch name.</p>
                         </div>
                     </div>
                     <button id="previewButton" onClick={()=>openPreview(fileData.id, currentHash, fileData.name)}>Preview File</button>
