@@ -16,6 +16,14 @@ async function getQueryString() {
     return queryStringPromise
 }
 
+function loadPreview(previewStr) {
+    if (previewStr != undefined && previewStr.slice(1, 4) == "PDF") {
+        // ???
+    } else {
+        return previewStr
+    }
+}
+
 export default function Preview() {
     const [previewData, setPreviewData] = useState({})
     const [labels, setLabels] = useState({})
@@ -34,14 +42,17 @@ export default function Preview() {
         })
     }, [])   // ^this runs only once on load
 
-    console.log(previewData)
+    let previewStr = ""
+    if (previewData != undefined) {
+        previewStr = previewData.instance
+    }
 
     return <>
         <Head>
             <title>{labels.fileName} ({labels.branchName}) - Preview</title>
         </Head>
         <main>
-            ...
+            <div id="preview" dangerouslySetInnerHTML={{ __html: loadPreview(previewStr)}}></div>
         </main>
     </>
 }

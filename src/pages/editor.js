@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import RemoteTextApi from '../externalApis/remoteTextApi.js'
 //var error_throw = "                __ \n               / _) \n      _.----._/ / \n     /   error / \n  __/ (  | (  | \n /__.-'|_|--|_|"
 
-const remoteTextApi = new RemoteTextApi();
+const remoteTextApi = new RemoteTextApi()
 
 // for dealing with parameters
 async function getQueryString() {
@@ -36,7 +36,8 @@ async function getFileData(id, hash) {
 // this seems like a strange work-around to only loading correct content once, but I couldn't figure out a better alternative.
 function setContent(content, flag) {
     if (content != undefined && !flag) {
-        document.getElementById("editor").innerHTML = content
+        let contentHTML = content.replaceAll("\n", "<br>")
+        document.getElementById("editor").innerHTML = contentHTML
         return true
     } else {
         return false
@@ -45,12 +46,13 @@ function setContent(content, flag) {
 
 // saves new contents to some branch branch
 async function saveAs(fileData, branchData, name) {
-    let newContent = document.getElementById("editor").innerHTML
+    let contentElement = document.getElementById("editor")
+    let newContentStr = contentElement.innerHTML.replaceAll("<br>", "\n")
     const newFileObject = {
         name: fileData.name,
         id: fileData.id,
-        content: newContent,
-        parent: branchData.hash,  // does parent also change when branch changes?
+        content: newContentStr,
+        parent: branchData.hash,
         branch: name
     }
     await remoteTextApi.saveFile(newFileObject)
@@ -84,10 +86,8 @@ function saveNew(fileData, branchData, name) {
 }
 
 async function openPreview(fileData, branchData) {
-    console.log(fileData.id, branchData.hash)
     await remoteTextApi.previewFile(fileData.id, branchData.hash)
     .then(response=>{
-        console.log(response)
         if (response.state == "FAILURE") {
             document.getElementById("previewResponse").innerHTML = "Failed to compile preview :("
         } else if (response.state == "SUCCESS") {

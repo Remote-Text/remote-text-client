@@ -76,7 +76,7 @@ async function downloadFile(id, name){
 async function downloadBranchFile(id, name, hash) {
   await remoteTextApi.getFile(id, hash)
   .then(fileObj=>{
-    var blob = new Blob([fileObj.content.slice(0, -4)], {  // the slice is to remove an extra "<br>" that the editor for some reason inserts at the end.
+    var blob = new Blob([fileObj.content], {
       type: "text/plain;charset=utf-8"
     })
     saveAs(blob, name)
