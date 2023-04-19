@@ -107,14 +107,14 @@ function formatTimestamp(s) {
 }
 
 // main export
-export default function Files() {  
+export default function Files() {
   const [fileData, setFileData] = useState({})
 
   useEffect(() => {
     listFilesData()
-    .then(data =>
-      setFileData(data)
-    )
+      .then(data =>
+        setFileData(data)
+      )
   }, [])  // gets async data^
 
   let fileTable = <></>
@@ -129,8 +129,11 @@ export default function Files() {
     // map file data to html elements
     let fileList = fileData.map(f =>
     <tr key={f.id}>
-      <td><button id="deleteFile" onClick={()=>deleteFile(f.id)}>Delete</button></td>
-      <td><button id="downloadFile" onClick={()=>downloadFile(f.id, f.name)}>Download</button>
+      <td>
+        <button id="deleteFile" onClick={()=>deleteFile(f.id)}>Delete</button>
+      </td>
+      <td>
+        <button id="downloadFile" onClick={()=>downloadFile(f.id, f.name)}>Download</button>
         <div id={"listBranches-"+f.id}></div>
       </td>
       <td className={styles.nameRow}>
@@ -157,12 +160,15 @@ export default function Files() {
   }
 
   // page html
-  return(
+  return (
     <>
+      <div className={styles.imageHeader}>
+        <img src="/logo.png" alt="my_Logo"></img>
+      </div>
       <Head>
         <title>Files - RemoteText</title>
       </Head>
-      <main className = {styles.filesMain}>
+      <main className={styles.filesMain}>
         <h2>RemoteText Files</h2>
         <div>
           <button id="createFileButton" className={styles.createFileButton} onClick={showCreateFile}>Create New File</button>

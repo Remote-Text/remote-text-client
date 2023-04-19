@@ -1,4 +1,4 @@
-import styles from './index.js'
+import styles from "../styles/Home.module.css"
 import Head from "next/head"
 import React, { useEffect, useState } from 'react'
 import RemoteTextApi from '../externalApis/remoteTextApi.js'
@@ -20,11 +20,11 @@ async function getQueryString() {
 
 // for dealing with API calls:
 async function getFileData(id, hash) {
-/*    let fileData = {        // Dummy data
-        name: "foo.txt",
-        id: "aec23664ae26d76ab66cedfb1206b9c9",
-        content: "hello world! is this working? I think it is",
-    }*/
+    /*    let fileData = {        // Dummy data
+            name: "foo.txt",
+            id: "aec23664ae26d76ab66cedfb1206b9c9",
+            content: "hello world! is this working? I think it is",
+        }*/
     let fileData = await remoteTextApi.getFile(id, hash)
     let filePromise = new Promise((resolve) => {
         if (fileData != undefined) {
@@ -132,26 +132,31 @@ export default function Editor() {
 
     return (
         <>
+            <div className={styles.imageHeader}>
+                <img src="/logo.png" alt="my_Logo"></img>
+            </div>
             <Head>
                 <title>{fileData.name} ({branchData.name}) - Editor</title>
             </Head>
-            <main className={styles.main}>
-                <div id="editorHeader">
+            <main className={styles.filesMain}>
+                <h2>RemoteText Editor</h2>
+                <div id="toolbar">
                     <div id="saveTools">
-                        <button id="saveButton" onClick={()=>saveToBranch(fileData, branchData)}>Save File</button>
+                        <button className={styles.save} id="saveButton" onClick={()=>saveToBranch(fileData, branchData)}>Save File</button>
                         <div id="branchList"></div>
                         <div id="createBranch" hidden={true}>
                             <label htmlFor="branchName">New branch:</label>
                             <input type="text" id="branchName" name="branchName" required minLength="1" maxLength="64" size="10"></input>
                             <button onClick={()=>saveNew(fileData, branchData, document.getElementById("branchName").value)}>Create new branch</button>
                             <p id="invalidBranchName" hidden={true}>Not a valid branch name.</p>
+                            <button onClick={hideSaveFile}>Cancel</button>
                         </div>
                     </div>
                     <button id="previewButton" onClick={()=>openPreview(fileData, branchData)}>Preview File</button>
                     <div id="previewResponse"></div>
                 </div>
-            
-                <div className="editor" contentEditable="true" id="editor"></div>
+           
+                <div id="editor" className={styles.editor} contentEditable="true" id="editor"></div>
             </main>
         </>
     )
