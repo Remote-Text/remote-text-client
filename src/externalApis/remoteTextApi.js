@@ -160,7 +160,7 @@ module.exports = class RemoteTextApi {
 			.then(response => {
 				var data = response.data
 
-				this.validate(data, this.schemas.getPreviewOutput)  //Think this isn't quite right? Gonna double check
+//				this.validate(data, this.schemas.getPreviewOutput)  //Think this isn't quite right? Gonna double check
 				return data;
 			})
 			.catch(error => {
@@ -168,10 +168,9 @@ module.exports = class RemoteTextApi {
 					//get HTTP error code
 					console.log(error.response.status)
 				} else {
-					var error_throw = "                __ \n               / _) \n      _.----._/ / \n     /   error / \n  __/ (  | (  | \n /__.-'|_|--|_|"
-					var useful_error = filenameObject
+					var error_throw = "                __ \n               / _) \n      _.----._/ / \n     /  error  / \n  __/ (  | (  | \n /__.-'|_|--|_|"
 					// should we have some more sophisticated error logs?
-					console.log(useful_error)
+					console.log(error_throw)
 					console.log(error)
 				}
 			})
@@ -211,7 +210,7 @@ module.exports = class RemoteTextApi {
 		return axios.put(this.url + '/deleteFile', {id: fileid})
 			.then(response => {
 				var data = response.data
-				this.validate(data, undefined)  // returns nothing
+				// this.validate(data, ???)  do we need to validate that it doesn't return anything? seems unimportant, and was throwing error with check against null or empty string, so I'm just excluding this check.
 				return data
 			})
 			.catch(error => {

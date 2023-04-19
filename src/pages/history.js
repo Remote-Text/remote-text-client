@@ -1,12 +1,14 @@
 import RemoteTextApi from '../externalApis/remoteTextApi.js'
 import styles from "../styles/Home.module.css"
 import React, { useCallback, useState, useLayoutEffect } from "react"
+import Head from "next/head"
 import Link from 'next/link'
 import Tree from 'react-d3-tree';
 import "../styles/historyTree.module.css"
 
 const remoteTextApi = new RemoteTextApi();
 var fileID
+var fileName
 
 
 function createHistoryTree(commitMap, refMap, rootHash) {
@@ -87,7 +89,14 @@ async function getHistoryAndMakeTree(id) {
 // Here is how to extract the hash from pressing on a node
 function openNodeFile(event) {  // debug note from Alan: I wasn't sure how to pass the ID to this function & couldn't trace back where event is being given to it, so I just made fileID global. Maybe not best practice, but it works.
 	let hash = event.data.properties.hash
-	window.open(document.location.origin + "/editor?id=" + fileID + "&hash=" + hash, "_self")
+	let branchName = ""
+	if (event.data.hasOwnProperty("attributes")) {
+		branchName = event.data.attributes.name
+	} else {
+		branchName = event.data.name
+	}
+	window.open(document.location.origin+"/editor?id="+fileID+"&name="+fileName+"&hash="+hash+"&branch="+branchName)
+      // to open in same window, add "_self" parameter. removed this do people can jump to a different branch more easily.
 }
 
 // a way to have prettier node names
@@ -140,6 +149,7 @@ export default function HistoryPage() {
 
 				const urlParams = new URLSearchParams(data)
 				fileID = urlParams.get('id')
+				fileName = urlParams.get('name')
 				getHistoryAndMakeTree(fileID)
 					.then(tree => {
 						setHistoryTree(tree)
@@ -152,10 +162,12 @@ export default function HistoryPage() {
 	// const foreignObjectProps = {width: nodeSize.x, height: nodeSize.y, x: 20};
 
 
-
 	if (historyTree != null) {
-
-		return (
+  
+		return ( <>
+      <Head>
+        <title>{fileName} - History</title>
+      </Head>
 			<div>
 				<div className={styles.imageHeader}>
 					<img src="/logo.png" alt="my_Logo"></img>
@@ -179,22 +191,9 @@ export default function HistoryPage() {
 						leafNodeClassName={styles.node__leaf} />
 				</div>
 			</div>
-
-
-		)
+	  </> )
+    
 	} else {
-		return (
-			<div id="404div">
-				<pre>
-					{`		__ 
-               / _) 
-      _.----._/ / 
-     /  error  / 
-  __/ (  | (  | 
- /__.-'|_|--|_| `}
-				</pre>
-				Something went wrong! Please refresh to try again.
-			</div>
-		)
+		window.open(window.location.origin+"/error","_self")
 	}
 }
