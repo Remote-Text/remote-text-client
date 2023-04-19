@@ -141,22 +141,20 @@ export default function Editor() {
             <main className={styles.filesMain}>
                 <h2>RemoteText Editor</h2>
                 <div id="toolbar">
-                    <div id="saveTools">
-                        <button className={styles.save} id="saveButton" onClick={()=>saveToBranch(fileData, branchData)}>Save File</button>
-                        <div id="branchList"></div>
-                        <div id="createBranch" hidden={true}>
-                            <label htmlFor="branchName">New branch:</label>
-                            <input type="text" id="branchName" name="branchName" required minLength="1" maxLength="64" size="10"></input>
-                            <button onClick={()=>saveNew(fileData, branchData, document.getElementById("branchName").value)}>Create new branch</button>
-                            <p id="invalidBranchName" hidden={true}>Not a valid branch name.</p>
-                            <button onClick={hideSaveFile}>Cancel</button>
-                        </div>
+                    <button className={styles.save} id="saveButton" onClick={()=>saveToBranch(fileData, branchData)}>Save File</button>
+                    <div id="branchList"></div>
+                    <div id="createBranch" hidden={true}>
+                        <label htmlFor="branchName">New branch:</label>
+                        <input type="text" id="branchName" name="branchName" required minLength="1" maxLength="64" size="10"></input>
+                        <button onClick={()=>saveNew(fileData, branchData, document.getElementById("branchName").value)}>Create new branch</button>
+                        <p id="invalidBranchName" hidden={true}>Not a valid branch name.</p>
+                        <button onClick={()=>document.getElementById("createBranch").hidden=true}>Cancel</button>
                     </div>
                     <button id="previewButton" onClick={()=>openPreview(fileData, branchData)}>Preview File</button>
                     <div id="previewResponse"></div>
                 </div>
            
-                <div id="editor" className={styles.editor} contentEditable="true" id="editor"></div>
+                <div id="editor" className={styles.editor} contentEditable="true"></div>
             </main>
         </>
     )
