@@ -62,11 +62,13 @@ async function downloadFile(id, name){
     })
     branchView.innerHTML = branchList
     histData.refs.forEach(b=>{
+      var re = /(?:\.([^.]+))?$/
+      let ext = re.exec(name)[1]
       let branchFileName = name
-      if (name.includes(".")){  // check for file ext before renaming
-        branchFileName = name.split(".")[0]+"_"+b.name+"."+name.split(".")[1]
+      if (ext != undefined){  // check for file ext before renaming
+        branchFileName = name.replace(/\.[^/.]+$/, "") + "_" + b.name + "." + ext
       } else {
-        branchFileName = name+"_"+b.name
+        branchFileName = name + "_" + b.name
       }
       document.getElementById(b.hash).addEventListener("click", ()=>{downloadBranchFile(id, branchFileName, b.hash)})
     })
@@ -76,9 +78,7 @@ async function downloadFile(id, name){
 async function downloadBranchFile(id, name, hash) {
   await remoteTextApi.getFile(id, hash)
   .then(fileObj=>{
-    var blob = new Blob([fileObj.content], {
-      type: "text/plain;charset=utf-8"
-    })
+    var blob = new Blob([fileObj.content], {type: "text/plain;charset=utf-8"})
     saveAs(blob, name)
   })
   document.getElementById("listBranches-"+id).innerHTML=""

@@ -116,7 +116,7 @@ module.exports = class Schemas {
 		"required": ["id", "hash"]
 	}
 
-	getPreviewOutput = {
+/*	getPreviewOutput = {		// don't need this since this API call is now not returning a json, just preview string
 		"id": "/getPreview",
 		"type": "object",
 		"properties": {
@@ -125,7 +125,7 @@ module.exports = class Schemas {
 			"type": { "type": "string" },  // {"HTML", "PDF"}
 			"data": { "type": "string" }
 		}
-	}
+	} */
 
 // getHistory(id) -> list of commit objects & list of ref objects
 

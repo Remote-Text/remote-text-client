@@ -5,6 +5,7 @@ import RemoteTextApi from '../externalApis/remoteTextApi.js'
 //var error_throw = "                __ \n               / _) \n      _.----._/ / \n     /   error / \n  __/ (  | (  | \n /__.-'|_|--|_|"
 
 const remoteTextApi = new RemoteTextApi()
+const { convert } = require('html-to-text')
 
 // for dealing with parameters
 async function getQueryString() {
@@ -33,10 +34,20 @@ async function getFileData(id, hash) {
     return filePromise
 }
 
+function htmlEscape(str) {
+    return str
+            .replaceAll(/&/g, '&amp;')
+            .replaceAll(/"/g, '&quot;')
+            .replaceAll(/'/g, '&#39;')
+            .replaceAll(/</g, '&lt;')
+            .replaceAll(/>/g, '&gt;')
+            .replaceAll("\n", "<br>")
+}
+
 // this seems like a strange work-around to only loading correct content once, but I couldn't figure out a better alternative.
 function setContent(content, flag) {
     if (content != undefined && !flag) {
-        let contentHTML = content.replaceAll("\n", "<br>")
+        let contentHTML = htmlEscape(content)
         document.getElementById("editor").innerHTML = contentHTML
         return true
     } else {
@@ -45,9 +56,9 @@ function setContent(content, flag) {
 }
 
 // saves new contents to some branch branch
-async function saveAs(fileData, branchData, name) {
+async function saveFile(fileData, branchData, name) {
     let contentElement = document.getElementById("editor")
-    let newContentStr = contentElement.innerHTML.replaceAll("<br>", "\n")
+    let newContentStr = convert(contentElement.innerHTML, {wordwrap: null})
     const newFileObject = {
         name: fileData.name,
         id: fileData.id,
@@ -61,7 +72,7 @@ async function saveAs(fileData, branchData, name) {
     })
 }
 
-async function saveFile(fileData, branchData){
+async function saveToBranch(fileData, branchData){
     document.getElementById("createBranch").hidden = false
     await remoteTextApi.getHistory(fileData.id)
     .then(histData=>{
@@ -72,14 +83,14 @@ async function saveFile(fileData, branchData){
         })
         branchView.innerHTML = branchList
         histData.refs.forEach(b=>{
-            document.getElementById(b.hash).addEventListener("click", ()=>{saveAs(fileData, branchData, b.name)})
+            document.getElementById(b.hash).addEventListener("click", ()=>{saveFile(fileData, branchData, b.name)})
         })
     })
 }
 
 function saveNew(fileData, branchData, name) {
     if (name != "") {  // check if valid name (should we make these criteria more specific?)
-        saveAs(fileData, branchData, name)
+        saveFile(fileData, branchData, name)
     } else{
         document.getElementById("invalidBranchName").hidden = false
     }
@@ -88,6 +99,7 @@ function saveNew(fileData, branchData, name) {
 async function openPreview(fileData, branchData) {
     await remoteTextApi.previewFile(fileData.id, branchData.hash)
     .then(response=>{
+        console.log(response.log)
         if (response.state == "FAILURE") {
             document.getElementById("previewResponse").innerHTML = "Failed to compile preview :("
         } else if (response.state == "SUCCESS") {
@@ -126,7 +138,7 @@ export default function Editor() {
             <main className={styles.main}>
                 <div id="editorHeader">
                     <div id="saveTools">
-                        <button id="saveButton" onClick={()=>saveFile(fileData, branchData)}>Save File</button>
+                        <button id="saveButton" onClick={()=>saveToBranch(fileData, branchData)}>Save File</button>
                         <div id="branchList"></div>
                         <div id="createBranch" hidden={true}>
                             <label htmlFor="branchName">New branch:</label>

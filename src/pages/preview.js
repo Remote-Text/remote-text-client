@@ -2,6 +2,7 @@ import Head from "next/head"
 import styles from "../styles/Home.module.css"
 import RemoteTextApi from "../externalApis/remoteTextApi.js"
 import React, { useEffect, useState } from "react"
+import { saveAs } from 'file-saver'
 
 const remoteTextApi = new RemoteTextApi()
 
@@ -16,12 +17,24 @@ async function getQueryString() {
     return queryStringPromise
 }
 
-function loadPreview(previewStr) {
-    if (previewStr != undefined && previewStr.slice(1, 4) == "PDF") {
-        // ???
+function loadPdf(preview, labels) {
+    // just dealing with file naming:
+    let fname = labels.fileName
+    let bname = labels.branchName
+    var re = /(?:\.([^.]+))?$/
+    let ext = re.exec(fname)[1]
+    let branchFileName = ""
+    if (ext != undefined){  // check for file ext before renaming
+        branchFileName = fname.replace(/\.[^/.]+$/, "") + "_" + bname + ".pdf"
     } else {
-        return previewStr
+        branchFileName = fname + "_" + bname
     }
+    // saving pdf:
+    var blob = new Blob([preview], {type: 'application/pdf' })
+    saveAs(blob, branchFileName)
+    setTimeout(function(){
+        window.close()
+    }, 50)
 }
 
 export default function Preview() {
@@ -38,13 +51,18 @@ export default function Preview() {
                         branchName: urlParams.get('branch')
                     })
             remoteTextApi.getPreview(fileID, fileHash)
-            .then(file => {setPreviewData(file)})
+            .then(data => {setPreviewData(data)})
         })
     }, [])   // ^this runs only once on load
 
-    let previewStr = ""
-    if (previewData != undefined) {
-        previewStr = previewData.instance
+    let htmlPreview = ""
+    console.log(previewData)
+    if (typeof previewData == "string") {
+        if (previewData.slice(1, 4) == "PDF") {
+            loadPdf(previewData, labels)
+        } else {
+            htmlPreview = previewData
+        }
     }
 
     return <>
@@ -52,7 +70,7 @@ export default function Preview() {
             <title>{labels.fileName} ({labels.branchName}) - Preview</title>
         </Head>
         <main>
-            <div id="preview" dangerouslySetInnerHTML={{ __html: loadPreview(previewStr)}}></div>
+            <div id="preview" dangerouslySetInnerHTML={{ __html: htmlPreview}}></div>
         </main>
     </>
 }

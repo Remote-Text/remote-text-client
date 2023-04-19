@@ -160,7 +160,7 @@ module.exports = class RemoteTextApi {
 			.then(response => {
 				var data = response.data
 
-				this.validate(data, this.schemas.getPreviewOutput)  //Think this isn't quite right? Gonna double check
+//				this.validate(data, this.schemas.getPreviewOutput)  //Think this isn't quite right? Gonna double check
 				return data;
 			})
 			.catch(error => {
@@ -171,7 +171,7 @@ module.exports = class RemoteTextApi {
 					var error_throw = "                __ \n               / _) \n      _.----._/ / \n     /  error  / \n  __/ (  | (  | \n /__.-'|_|--|_|"
 					// should we have some more sophisticated error logs?
 					console.log(error_throw)
-					return error  // it's not an error, it's a feature :D
+					console.log(error)
 				}
 			})
 	}
