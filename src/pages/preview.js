@@ -34,7 +34,7 @@ function loadPdf(preview, labels) {
     saveAs(blob, branchFileName)
     setTimeout(function(){
         window.close()
-    }, 50)
+    }, 10)
 }
 
 export default function Preview() {
@@ -56,12 +56,13 @@ export default function Preview() {
     }, [])   // ^this runs only once on load
 
     let htmlPreview = ""
-    console.log(previewData)
-    if (typeof previewData == "string") {
-        if (previewData.slice(1, 4) == "PDF") {
+    if (previewData.byteLength > 0) {
+        let decoder = new TextDecoder("utf-8")
+        let typeData = new DataView(previewData, 1, 3)  
+        if (decoder.decode(typeData) == "PDF") {
             loadPdf(previewData, labels)
         } else {
-            htmlPreview = previewData
+            htmlPreview = decoder.decode(previewData, {stream:true})
         }
     }
 
