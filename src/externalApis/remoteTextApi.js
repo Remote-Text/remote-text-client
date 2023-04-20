@@ -156,12 +156,9 @@ module.exports = class RemoteTextApi {
 			throw error
 		}
 
-		return axios.put(this.url + '/getPreview', filenameObject)
+		return axios.put(this.url + '/getPreview', filenameObject, { responseType: 'arraybuffer' })
 			.then(response => {
-				var data = response.data
-
-//				this.validate(data, this.schemas.getPreviewOutput)  //Think this isn't quite right? Gonna double check
-				return data;
+				return response.data
 			})
 			.catch(error => {
 				if (error.response) {
