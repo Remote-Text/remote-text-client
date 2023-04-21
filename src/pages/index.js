@@ -16,7 +16,7 @@ export default function Home() {
 
 				<div className={styles.description}>
 					<p>Welcome to RemoteText! Continue to view remote files.</p>
-					<button><Link href="/files">continue</Link></button>
+					<Link href="/files"><button>continue</button></Link>
 				</div>
 				<div className={styles.image}>
 					<img src="/logo.png" alt="my_Logo"></img>
