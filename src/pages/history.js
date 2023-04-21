@@ -1,6 +1,6 @@
 import RemoteTextApi from '../externalApis/remoteTextApi.js'
 import styles from "../styles/Home.module.css"
-import React, { useCallback, useState, useLayoutEffect } from "react"
+import React, {useCallback, useState, useLayoutEffect} from "react"
 import Head from "next/head"
 import Link from 'next/link'
 import Tree from 'react-d3-tree';
@@ -10,9 +10,12 @@ const remoteTextApi = new RemoteTextApi();
 var fileID
 var fileName
 
-
+// commitMap : dictionary of <parent hash>:[<child hash>]
+// refMap : dictionary of <hash>:<string>
+// rootHash : hash <string>
 function createHistoryTree(commitMap, refMap, rootHash) {
 
+	// add the hash to the attributes
 	var historyTree = {
 		name: rootHash.substring(0, 7),
 		properties: {
@@ -22,8 +25,9 @@ function createHistoryTree(commitMap, refMap, rootHash) {
 
 	var ref = refMap.get(rootHash)
 
+	// add name if one exists
 	if (ref) {
-		historyTree.attributes = { name: ref }
+		historyTree.attributes = {name: ref}
 	}
 
 
@@ -95,8 +99,8 @@ function openNodeFile(event) {  // debug note from Alan: I wasn't sure how to pa
 	} else {
 		branchName = event.data.name
 	}
-	window.open(document.location.origin+"/editor?id="+fileID+"&name="+fileName+"&hash="+hash+"&branch="+branchName)
-      // to open in same window, add "_self" parameter. removed this do people can jump to a different branch more easily.
+	window.open(document.location.origin + "/editor?id=" + fileID + "&name=" + fileName + "&hash=" + hash + "&branch=" + branchName)
+	// to open in same window, add "_self" parameter. removed this do people can jump to a different branch more easily.
 }
 
 // a way to have prettier node names
@@ -117,12 +121,12 @@ function openNodeFile(event) {  // debug note from Alan: I wasn't sure how to pa
 // );
 
 // centers the tree
-export const useCenteredTree = (defaultTranslate = { x: 0, y: 0 }) => {
+export const useCenteredTree = (defaultTranslate = {x: 0, y: 0}) => {
 	const [translate, setTranslate] = useState(defaultTranslate);
 	const containerRef = useCallback((containerElem) => {
 		if (containerElem !== null) {
-			const { width, height } = containerElem.getBoundingClientRect();
-			setTranslate({ x: width / 2, y: height / 2 });
+			const {width, height} = containerElem.getBoundingClientRect();
+			setTranslate({x: width / 2, y: height / 2});
 		}
 	}, []);
 	return [translate, containerRef];
@@ -141,8 +145,8 @@ async function getQueryString() {
 export default function HistoryPage() {
 	const [historyTree, setHistoryTree] = useState({});
 	const [translate, containerRef] = useCenteredTree();
-	const textLayout = { attribute: { dy: "5em", x: 200000 } };
-	const nodeSize = { x: 200, y: 200 };
+	const textLayout = {attribute: {dy: "5em", x: 200000}};
+	const nodeSize = {x: 200, y: 200};
 	useLayoutEffect(() => {
 		getQueryString()
 			.then(data => {
@@ -163,11 +167,11 @@ export default function HistoryPage() {
 
 
 	if (historyTree != null) {
-  
-		return ( <>
-      <Head>
-        <title>{fileName} - History</title>
-      </Head>
+
+		return (<>
+			<Head>
+				<title>{fileName} - History</title>
+			</Head>
 			<div>
 				<div className={styles.imageHeader}>
 					<img src="/logo.png" alt="my_Logo"></img>
@@ -191,9 +195,9 @@ export default function HistoryPage() {
 						leafNodeClassName={styles.node__leaf} />
 				</div>
 			</div>
-	  </> )
-    
+		</>)
+
 	} else {
-		window.open(window.location.origin+"/error","_self")
+		window.open(window.location.origin + "/error", "_self")
 	}
 }
