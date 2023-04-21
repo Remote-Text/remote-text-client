@@ -1,3 +1,100 @@
+.image {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  justify-content: top;
+  width: 50vw;
+  height: 30vw;
+}
+
+.imageHeader {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  justify-content: top;
+  width: 15vw;
+  height: 0vw;
+}
+
+
+.save {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  justify-content: left;
+  width: 3.5vw;
+  height: 1vw;
+}
+
+.editor {
+  display: flex;
+  border-radius: var(--border-radius);
+  background: rgba(var(--card-rgb), 0);
+  border: 1px, solid;
+  font-family: inherit;
+  color: black;
+  background: white;
+  overflow: auto;
+  font-size: 1em;
+  padding: 0.5rem;
+  height: 30vw;
+}
+
+/* custom-tree.css */
+.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow: auto;
+  font-size: 25px;
+  background: white;
+  fill: white !important;
+
+  /* Just to visualize the extent */
+
+}
+
+
+.rd3t-label__title {
+  fill: white !important;
+  stroke: none;
+  font-weight: bolder;
+}
+
+.rd3t_label_title {
+  fill: white;
+  stroke: none;
+  font-weight: bolder;
+}
+
+.node_text {
+  fill: white;
+}
+
+.node_link {
+  stroke: white;
+  font-size: 10em;
+}
+
+.node__root>circle {
+  fill: red;
+  font-size: 10px;
+  color: fuchsia;
+}
+
+.node__branch>circle {
+  fill: yellow;
+}
+
+
+
+.node__leaf>circle {
+  fill: green;
+}
+
+/* Above is Josh's messing around with styles to make things pretty */
 .table {
   border-spacing: 10px;
   table-layout: fixed;
@@ -17,13 +114,13 @@
 }
 
 .fileButton {
-  font-family : inherit;
+  font-family: inherit;
   font-size: 1em;
   padding: 0.5rem;
 }
 
 .createFileButton {
-  font-family : inherit;
+  font-family: inherit;
   font-size: 1em;
   padding: 0.5rem;
   width: 10vw
@@ -44,7 +141,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: center;
+  align-items: left;
   padding: 6rem;
   min-height: 100vh;
 }
@@ -101,16 +198,8 @@
   transition: transform 200ms;
 }
 
-.fullscreen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  overflow: auto;
-  background: white; /* Just to visualize the extent */
-  
-}
+
+
 .card h2 {
   font-weight: 600;
   margin-bottom: 0.7rem;
@@ -195,11 +284,9 @@
   inset: 0;
   padding: 1px;
   border-radius: var(--border-radius);
-  background: linear-gradient(
-    to bottom right,
-    rgba(var(--tile-start-rgb), 1),
-    rgba(var(--tile-end-rgb), 1)
-  );
+  background: linear-gradient(to bottom right,
+      rgba(var(--tile-start-rgb), 1),
+      rgba(var(--tile-end-rgb), 1));
   background-clip: content-box;
 }
 
@@ -278,11 +365,9 @@
     border-radius: 0;
     border: none;
     border-bottom: 1px solid rgba(var(--callout-border-rgb), 0.25);
-    background: linear-gradient(
-      to bottom,
-      rgba(var(--background-start-rgb), 1),
-      rgba(var(--callout-rgb), 0.5)
-    );
+    background: linear-gradient(to bottom,
+        rgba(var(--background-start-rgb), 1),
+        rgba(var(--callout-rgb), 0.5));
     background-clip: padding-box;
     backdrop-filter: blur(24px);
   }
@@ -293,11 +378,9 @@
     inset: auto 0 0;
     padding: 2rem;
     height: 200px;
-    background: linear-gradient(
-      to bottom,
-      transparent 0%,
-      rgb(var(--background-end-rgb)) 40%
-    );
+    background: linear-gradient(to bottom,
+        transparent 0%,
+        rgb(var(--background-end-rgb)) 40%);
     z-index: 1;
   }
 }
@@ -324,6 +407,7 @@
   from {
     transform: rotate(360deg);
   }
+
   to {
     transform: rotate(0deg);
   }
