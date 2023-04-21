@@ -12,16 +12,17 @@ function openFile(id, fileName) {
 
 // dealing with API call listFiles promise
 async function listFilesData() {
-  let fileData = remoteTextApi.listFiles()
-  let filePromise = new Promise((resolve) => {
-    if (fileData != undefined) {
-      resolve(fileData)
-    }
-  })
-  return filePromise
+	let fileData = remoteTextApi.listFiles()
+	let filePromise = new Promise((resolve) => {
+		if (fileData != undefined) {
+			resolve(fileData)
+		}
+	})
+	return filePromise
 }
 
 // read data from createFile API call and open new file
+
 async function createNewFile(name, fileContent="") {
   await remoteTextApi.createFile(name, fileContent)
   .then(fileData=>{
@@ -86,28 +87,29 @@ async function downloadBranchFile(id, name, hash) {
 
 // show hidden html elements for naming a new file
 function showCreateFile() {
-  document.getElementById("createFile").hidden = false
+	document.getElementById("createFile").hidden = false
 }
 
 function hideCreateFile() {
-  document.getElementById("createFile").hidden = true
+	document.getElementById("createFile").hidden = true
 }
 
 function formatTimestamp(s) {
-  let fileDate = new Date(s)
-  let todaysDate = new Date()
-  if (s.includes(" ")) {  // eliminates some dates for some reason getting formatted twice
-    return s
-  }
-  if (fileDate.getDate() == todaysDate.getDate()) {
-    return fileDate.toLocaleTimeString()
-  } else {
-    return fileDate.toDateString()
-  }
+	let fileDate = new Date(s)
+	let todaysDate = new Date()
+	if (s.includes(" ")) {  // eliminates some dates for some reason getting formatted twice
+		return s
+	}
+	if (fileDate.getDate() == todaysDate.getDate()) {
+		return fileDate.toLocaleTimeString()
+	} else {
+		return fileDate.toDateString()
+	}
 }
 
 // main export
 export default function Files() {
+
   const [fileData, setFileData] = useState({})
 
   useEffect(() => {
@@ -144,7 +146,7 @@ export default function Files() {
     </tr>)
 
     // fill html table with file elements
-    fileTable = <table className={styles.table}>
+    fileTable = <table id="fileTable" className={styles.table}>
       <thead><tr>
         <th></th>
         <th></th>

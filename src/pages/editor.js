@@ -1,6 +1,6 @@
 import styles from "../styles/Home.module.css"
 import Head from "next/head"
-import React, { useEffect, useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import RemoteTextApi from '../externalApis/remoteTextApi.js'
 //var error_throw = "                __ \n               / _) \n      _.----._/ / \n     /   error / \n  __/ (  | (  | \n /__.-'|_|--|_|"
 
@@ -9,17 +9,18 @@ const { convert } = require('html-to-text')
 
 // for dealing with parameters
 async function getQueryString() {
-    let queryString = window.location.search
-    let queryStringPromise = new Promise((resolve) => {
-        if (queryString != undefined) {
-            resolve(queryString)
-        }
-    })
-    return queryStringPromise
+	let queryString = window.location.search
+	let queryStringPromise = new Promise((resolve) => {
+		if (queryString != undefined) {
+			resolve(queryString)
+		}
+	})
+	return queryStringPromise
 }
 
 // for dealing with API calls:
 async function getFileData(id, hash) {
+
     /*    let fileData = {        // Dummy data
             name: "foo.txt",
             id: "aec23664ae26d76ab66cedfb1206b9c9",
@@ -46,6 +47,7 @@ function htmlEscape(str) {
 
 // this seems like a strange work-around to only loading correct content once, but I couldn't figure out a better alternative.
 function setContent(content, flag) {
+
     if (content != undefined && !flag) {
         let contentHTML = htmlEscape(content)
         document.getElementById("editor").innerHTML = contentHTML
@@ -110,6 +112,7 @@ async function openPreview(fileData, branchData) {
 
 // main
 export default function Editor() {
+
     const [fileData, setFileData] = useState({})
     const [branchData, setBranchData] = useState({})
     const [contentLoadedFlag, setContentLoadedFlag] = useState({})
@@ -128,7 +131,8 @@ export default function Editor() {
         })        
     }, [])   // ^this runs only once on load
 
-    setContent(fileData.content, contentLoadedFlag)
+	setContent(fileData.content, contentLoadedFlag)
+
 
     return (
         <>
@@ -141,14 +145,14 @@ export default function Editor() {
             <main className={styles.filesMain}>
                 <h2>RemoteText Editor</h2>
                 <div id="toolbar">
-                    <button className={styles.save} id="saveButton" onClick={()=>saveToBranch(fileData, branchData)}>Save File</button>
+                    <button className={styles.save} id="SaveFile" onClick={()=>saveToBranch(fileData, branchData)}>Save File</button>
                     <div id="branchList"></div>
-                    <div id="createBranch" hidden={true}>
+                    <div id="saveAs"  hidden={true}>
                         <label htmlFor="branchName">New branch:</label>
                         <input type="text" id="branchName" name="branchName" required minLength="1" maxLength="64" size="10"></input>
-                        <button onClick={()=>saveNew(fileData, branchData, document.getElementById("branchName").value)}>Create new branch</button>
+                        <button  id="saveToBranch" onClick={()=>saveNew(fileData, branchData, document.getElementById("branchName").value)}>Create new branch</button>
                         <p id="invalidBranchName" hidden={true}>Not a valid branch name.</p>
-                        <button onClick={()=>document.getElementById("createBranch").hidden=true}>Cancel</button>
+                        <button  onClick={()=>document.getElementById("createBranch").hidden=true}>Cancel</button>
                     </div>
                     <button id="previewButton" onClick={()=>openPreview(fileData, branchData)}>Preview File</button>
                     <div id="previewResponse"></div>
@@ -158,4 +162,5 @@ export default function Editor() {
             </main>
         </>
     )
+
 }
