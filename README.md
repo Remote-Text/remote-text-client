@@ -23,3 +23,12 @@ npm run dev
 ```
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+
+### Running production
+
+To run on production, don't `run dev`. Do
+
+```
+npm run build
+npm run start
+```
