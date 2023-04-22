@@ -2,6 +2,10 @@
 const axios = require('axios');
 const schemas = require('./remoteTextApiValidator')
 
+function redirectError(errorCode="") {
+	window.open(window.location.origin+"/error?err="+errorCode,"_self")
+}
+
 module.exports = class RemoteTextApi {
 
 	constructor() {
@@ -27,7 +31,7 @@ module.exports = class RemoteTextApi {
 			.catch(error => {
 				if (error.response) {
 					//get HTTP error code
-					console.log(error.response.status)
+					redirectError(error.response.status)
 				} else {
 					// should we have some more sophisticated error logs?
 					console.log('listFiles Schema Error')
@@ -56,7 +60,7 @@ module.exports = class RemoteTextApi {
 			.catch(error => {
 				if (error.response) {
 					//get HTTP error code
-					console.log(error.response.status)
+					redirectError(error.response.status)
 				} else {
 					// should we have some more sophisticated error logs?
 					console.log('createFile Schema Error')
@@ -65,7 +69,9 @@ module.exports = class RemoteTextApi {
 			})
 	}
 
-	async getFile(fileid, githash='HEAD') {
+	async getFile(fileid, githash) {
+		if (!fileid || !githash) {redirectError("404")}
+
 		const fileObject = {id: fileid, hash: githash}
 		try {
 			this.validate(fileObject, this.schemas.getFileInput)
@@ -81,7 +87,7 @@ module.exports = class RemoteTextApi {
 			})
 			.catch(error => {
 				if (error.response) {
-					console.log(error.response.status)
+					redirectError(error.response.status)
 				} else {
 					console.log('getFile Schema Error')
 					console.log(error)
@@ -106,7 +112,7 @@ module.exports = class RemoteTextApi {
 				if (error.response) {
 
 					//get HTTP error code
-					console.log(error.response.status)
+					redirectError(error.response.status)
 				} else {
 					// should we have some more sophisticated error logs?
 					console.log('saveFile Schema Error')
@@ -136,7 +142,7 @@ module.exports = class RemoteTextApi {
 			.catch(error => {
 				if (error.response) {
 					//get HTTP error code
-					console.log(error.response.status)
+					redirectError(error.response.status)
 				} else {
 					// should we have some more sophisticated error logs?
 					console.log('previewFile Schema Error')
@@ -146,6 +152,8 @@ module.exports = class RemoteTextApi {
 	}
 
 	async getPreview(fileid, githash) {
+		if (!fileid || !githash) {redirectError("404")}
+
 		const filenameObject = {
 			id: fileid,
 			hash: githash
@@ -163,7 +171,7 @@ module.exports = class RemoteTextApi {
 			.catch(error => {
 				if (error.response) {
 					//get HTTP error code
-					console.log(error.response.status)
+					redirectError(error.response.status)
 				} else {
 					var error_throw = "                __ \n               / _) \n      _.----._/ / \n     /  error  / \n  __/ (  | (  | \n /__.-'|_|--|_|"
 					// should we have some more sophisticated error logs?
@@ -172,8 +180,10 @@ module.exports = class RemoteTextApi {
 				}
 			})
 	}
-  
+
 	async getHistory(fileID) {  // Parameters: File ID. Returns: A list of GitCommit objects, and a list of GitRef objects
+		if (!fileID) {redirectError("404")}
+
 		const fileidObject={id: fileID}
 		try {
 			this.validate(fileidObject, this.schemas.getHistoryInput)
@@ -188,7 +198,7 @@ module.exports = class RemoteTextApi {
 			})
 			.catch(error => {
 				if (error.response) {
-					console.log(error.response.status)
+					redirectError(error.response.status)
 				} else {
 					console.log('Schema Error')
 					console.log(error)
@@ -212,7 +222,7 @@ module.exports = class RemoteTextApi {
 			})
 			.catch(error => {
 				if (error.response) {
-					console.log(error.response.status)
+					redirectError(error.response.status)
 				} else {
 					console.log('deleteFile Schema Error')
 					console.log(error)
