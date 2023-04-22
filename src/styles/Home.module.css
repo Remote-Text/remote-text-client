@@ -34,7 +34,9 @@
   font-family: inherit;
   color: black;
   background: white;
-  overflow: auto;
+  display:inline-block;
+  overflow: scroll;
+  overflow-wrap: break-word;
   font-size: 1em;
   padding: 0.5rem;
   height: 30vw;
