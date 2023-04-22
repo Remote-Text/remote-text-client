@@ -34,6 +34,7 @@ export default function Error() {
 
     if (errorCode == "404" ) { message = "Oops, we couldn't find that file." }
     else if (errorCode == "500") { message = "An internal server error occurred."}
+    else if (errorCode == "503") { message = "The RemoteText server is down, please try again later."}
     else if (errorCode == "???" ) { message = "... ....... ???" }
 
     return ( <>

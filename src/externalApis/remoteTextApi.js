@@ -25,7 +25,12 @@ module.exports = class RemoteTextApi {
 				var data = response.data
 
 				// make sure data follows expected format and return
-				this.validate(data, this.schemas.listFilesOutput)
+				try {
+					this.validate(data, this.schemas.listFilesOutput)
+				} catch (error) {
+					console.log('listFiles output Schema Error')
+					throw error
+				}
 				return data;
 			})
 			.catch(error => {
@@ -33,9 +38,7 @@ module.exports = class RemoteTextApi {
 					//get HTTP error code
 					redirectError(error.response.status)
 				} else {
-					// should we have some more sophisticated error logs?
-					console.log('listFiles Schema Error')
-					console.log(error)
+					redirectError("503")  // this occurs when the server response is undefined, ie server can't respond.
 				}
 			})
 	}
@@ -45,6 +48,7 @@ module.exports = class RemoteTextApi {
 		try {
 			this.validate(newfileObject, this.schemas.createFileInput)
 		} catch (error) {
+			console.log('createFile input Schema Error')
 			throw error
 		}
 
@@ -54,7 +58,12 @@ module.exports = class RemoteTextApi {
 				var data = response.data
 
 				// make sure data follows expected format and return
-				this.validate(data, this.schemas.fileSummarySchema)
+				try {
+					this.validate(data, this.schemas.fileSummarySchema)
+				} catch (error) {
+					console.log('createFile output Schema Error')
+					throw error
+				}
 				return data;
 			})
 			.catch(error => {
@@ -62,9 +71,7 @@ module.exports = class RemoteTextApi {
 					//get HTTP error code
 					redirectError(error.response.status)
 				} else {
-					// should we have some more sophisticated error logs?
-					console.log('createFile Schema Error')
-					console.log(error)
+					redirectError("503")
 				}
 			})
 	}
@@ -76,21 +83,26 @@ module.exports = class RemoteTextApi {
 		try {
 			this.validate(fileObject, this.schemas.getFileInput)
 		} catch (error) {
+			console.log('getFile input Schema Error')
 			throw error
 		}
 
 		return axios.put(this.url + '/getFile', {id: fileid, hash: githash})
 			.then(response => {
 				var data = response.data
-				this.validate(data, this.schemas.fileSummarySchema)
+				try {
+					this.validate(data, this.schemas.fileSummarySchema)
+				} catch (error) {
+					console.log('getFile output Schema Error')
+					throw error
+				}
 				return data;
 			})
 			.catch(error => {
 				if (error.response) {
 					redirectError(error.response.status)
 				} else {
-					console.log('getFile Schema Error')
-					console.log(error)
+					redirectError("503")
 				}
 			})
 	}
@@ -99,24 +111,26 @@ module.exports = class RemoteTextApi {
 		try {
 			this.validate(file, this.schemas.saveFileInput)
 		} catch (error) {
+			console.log('saveFile input Schema Error')
 			throw error
 		}
 
 		return axios.put(this.url + '/saveFile', file)
 			.then(response => {
 				var data = response.data
-				this.validate(data, this.schemas.saveFileOutput) //Think this isn't quite right? Gonna double check
+				try {
+					this.validate(data, this.schemas.saveFileOutput)
+				} catch (error) {
+					console.log('saveFile output Schema Error')
+					throw error
+				}
 				return data;
 			})
 			.catch(error => {
 				if (error.response) {
-
-					//get HTTP error code
 					redirectError(error.response.status)
 				} else {
-					// should we have some more sophisticated error logs?
-					console.log('saveFile Schema Error')
-					console.log(error)
+					redirectError("503")
 				}
 			})
 	}
@@ -129,6 +143,7 @@ module.exports = class RemoteTextApi {
 		try {
 			this.validate(filenameObject, this.schemas.previewFileInput)
 		} catch (error) {
+			console.log('previewFile input Schema Error')
 			throw error
 		}
 
@@ -136,7 +151,12 @@ module.exports = class RemoteTextApi {
 			.then(response => {
 				var data = response.data
 
-				this.validate(data, this.schemas.previewFileOutput)  //Think this isn't quite right? Gonna double check
+				try {
+					this.validate(data, this.schemas.previewFileOutput)
+				} catch (error) {
+					console.log('previewFile output Schema Error')
+					throw error
+				}
 				return data;
 			})
 			.catch(error => {
@@ -144,9 +164,7 @@ module.exports = class RemoteTextApi {
 					//get HTTP error code
 					redirectError(error.response.status)
 				} else {
-					// should we have some more sophisticated error logs?
-					console.log('previewFile Schema Error')
-					console.log(error)
+					redirectError("503")
 				}
 			})
 	}
@@ -161,11 +179,13 @@ module.exports = class RemoteTextApi {
 		try {
 			this.validate(filenameObject, this.schemas.getPreviewInput)
 		} catch (error) {
+			console.log('getPreview input Schema Error')
 			throw error
 		}
 
 		return axios.put(this.url + '/getPreview', filenameObject, { responseType: 'arraybuffer' })
 			.then(response => {
+				// this doesn't return a json so no need to validate
 				return response.data
 			})
 			.catch(error => {
@@ -173,10 +193,7 @@ module.exports = class RemoteTextApi {
 					//get HTTP error code
 					redirectError(error.response.status)
 				} else {
-					var error_throw = "                __ \n               / _) \n      _.----._/ / \n     /  error  / \n  __/ (  | (  | \n /__.-'|_|--|_|"
-					// should we have some more sophisticated error logs?
-					console.log(error_throw)
-					console.log(error)
+					redirectError("503")
 				}
 			})
 	}
@@ -188,20 +205,25 @@ module.exports = class RemoteTextApi {
 		try {
 			this.validate(fileidObject, this.schemas.getHistoryInput)
 		} catch (error) {
+			console.log('getHistory input Schema Error')
 			throw error
 		}
 		return axios.put(this.url + '/getHistory', fileidObject)
 			.then(response => {
 				var data = response.data
-				this.validate(data, this.schemas.getHistoryOutput)
+				try {
+					this.validate(data, this.schemas.getHistoryOutput)
+				} catch (error) {
+					console.log('getHistory output Schema Error')
+					throw error
+				}
 				return data;
 			})
 			.catch(error => {
 				if (error.response) {
 					redirectError(error.response.status)
 				} else {
-					console.log('Schema Error')
-					console.log(error)
+					redirectError("503")
 				}
 			})
 	}
@@ -211,21 +233,21 @@ module.exports = class RemoteTextApi {
 		try {
 			this.validate(fileidObject, this.schemas.deleteFileInput)
 		} catch (error) {
+			console.log('deleteFile input Schema Error')
 			throw error
 		}
 
 		return axios.put(this.url + '/deleteFile', {id: fileid})
 			.then(response => {
 				var data = response.data
-				// this.validate(data, ???)  do we need to validate that it doesn't return anything? seems unimportant, and was throwing error with check against null or empty string, so I'm just excluding this check.
+				// unsure why we're even returning anything here
 				return data
 			})
 			.catch(error => {
 				if (error.response) {
 					redirectError(error.response.status)
 				} else {
-					console.log('deleteFile Schema Error')
-					console.log(error)
+					redirectError("503")
 				}
 			})
 	}
