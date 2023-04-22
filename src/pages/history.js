@@ -164,15 +164,12 @@ export default function HistoryPage() {
 			)
 	}, [])
 	// const foreignObjectProps = {width: nodeSize.x, height: nodeSize.y, x: 20};
-
-
-	if (historyTree != null) {
-
-		return (<>
+  
+	return (<>
 			<Head>
 				<title>{fileName} - History</title>
 			</Head>
-			<div>
+			<main>
 				<div className={styles.imageHeader}>
 					<img src="/logo.png" alt="my_Logo"></img>
 				</div>
@@ -194,10 +191,6 @@ export default function HistoryPage() {
 						// }
 						leafNodeClassName={styles.node__leaf} />
 				</div>
-			</div>
-		</>)
-
-	} else {
-		window.open(window.location.origin + "/error", "_self")
-	}
+			</main>
+	</> )
 }
