@@ -1,9 +1,17 @@
 // this is an example of calling an external api
 const axios = require('axios');
 const schemas = require('./remoteTextApiValidator')
+const validator = require('validator')
 
-function redirectError(errorCode="") {
-	window.open(window.location.origin+"/error?err="+errorCode,"_self")
+async function redirectError(errorCode) {
+	if (errorCode=="other") {  // extra check to prevent other errors getting overwritten by this
+		axios.get(`${process.env.REMOTE_TEXT_API_URL}`+ '/listFiles') // is there a different (faster) way to just ping the server?
+		.catch(error=>{
+			window.location = window.location.origin+"/error?err=503","_self"
+		})
+	} else {
+		window.location = location.origin+"/error?err="+errorCode,"_self"
+	}
 }
 
 module.exports = class RemoteTextApi {
@@ -38,7 +46,7 @@ module.exports = class RemoteTextApi {
 					//get HTTP error code
 					redirectError(error.response.status)
 				} else {
-					redirectError("503")  // this occurs when the server response is undefined, ie server can't respond.
+					redirectError("other")  // this occurs when the server response is undefined, ie server can't respond, but also occurs in other API calls as a duplicate after processing a 404 error.
 				}
 			})
 	}
@@ -71,13 +79,15 @@ module.exports = class RemoteTextApi {
 					//get HTTP error code
 					redirectError(error.response.status)
 				} else {
-					redirectError("503")
+					redirectError("other")
 				}
 			})
 	}
 
 	async getFile(fileid, githash) {
-		if (!fileid || !githash) {redirectError("404")}
+		if (!validator.isUUID(fileid)) {
+			return redirectError("404")
+		}
 
 		const fileObject = {id: fileid, hash: githash}
 		try {
@@ -102,12 +112,16 @@ module.exports = class RemoteTextApi {
 				if (error.response) {
 					redirectError(error.response.status)
 				} else {
-					redirectError("503")
+					redirectError("other")
 				}
 			})
 	}
 
 	async saveFile(file) {
+		if (!validator.isUUID(file.id)) {
+			return redirectError("404")
+		}
+
 		try {
 			this.validate(file, this.schemas.saveFileInput)
 		} catch (error) {
@@ -130,12 +144,16 @@ module.exports = class RemoteTextApi {
 				if (error.response) {
 					redirectError(error.response.status)
 				} else {
-					redirectError("503")
+					redirectError("other")
 				}
 			})
 	}
 
 	async previewFile(fileid, githash) {
+		if (!validator.isUUID(fileid)) {
+			return redirectError("404")
+		}
+
 		const filenameObject = {
 			id: fileid,
 			hash: githash
@@ -164,13 +182,15 @@ module.exports = class RemoteTextApi {
 					//get HTTP error code
 					redirectError(error.response.status)
 				} else {
-					redirectError("503")
+					redirectError("other")
 				}
 			})
 	}
 
 	async getPreview(fileid, githash) {
-		if (!fileid || !githash) {redirectError("404")}
+		if (!validator.isUUID(fileid)) {
+			return redirectError("404")
+		}
 
 		const filenameObject = {
 			id: fileid,
@@ -193,13 +213,15 @@ module.exports = class RemoteTextApi {
 					//get HTTP error code
 					redirectError(error.response.status)
 				} else {
-					redirectError("503")
+					redirectError("other")
 				}
 			})
 	}
 
 	async getHistory(fileID) {  // Parameters: File ID. Returns: A list of GitCommit objects, and a list of GitRef objects
-		if (!fileID) {redirectError("404")}
+		if (!validator.isUUID(fileID)) {
+			return redirectError("404")
+		}
 
 		const fileidObject={id: fileID}
 		try {
@@ -223,12 +245,16 @@ module.exports = class RemoteTextApi {
 				if (error.response) {
 					redirectError(error.response.status)
 				} else {
-					redirectError("503")
+					redirectError("other")
 				}
 			})
 	}
 
 	async deleteFile(fileid) {
+		if (!validator.isUUID(fileid)) {
+			return redirectError("404")
+		}
+
 		const fileidObject = {id: fileid}
 		try {
 			this.validate(fileidObject, this.schemas.deleteFileInput)
@@ -247,7 +273,7 @@ module.exports = class RemoteTextApi {
 				if (error.response) {
 					redirectError(error.response.status)
 				} else {
-					redirectError("503")
+					redirectError("other")
 				}
 			})
 	}

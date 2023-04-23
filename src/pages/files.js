@@ -121,7 +121,7 @@ export default function Files() {
 
   let fileTable = <></>
 
-  if (fileData.length > 0) {
+  if (fileData && fileData.length > 0) {
     // iterate through files to reformat timestamps (couldn't do this while in map for some reason)
     fileData.forEach(file => {
       file.created_time = formatTimestamp(file.created_time)

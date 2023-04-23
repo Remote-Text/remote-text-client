@@ -32,11 +32,11 @@ export default function Error() {
 
     var message = ""
 
-    if (errorCode == "404" ) { message = "Oops, we couldn't find that file." }
-    else if (errorCode == "500") { message = "An internal server error occurred."}
-    else if (errorCode == "503") { message = "The RemoteText server is down, please try again later."}
-    else if (errorCode == "???" ) { message = "... ....... ???" }
-    else { message = "Something went wrong!" }
+    if (errorCode == "404" ) { message = "(404) Oops, we couldn't find that file." }
+    else if (errorCode == "500") { message = "(500) An internal server error occurred." }
+    else if (errorCode == "503") { message = "(503) The RemoteText server is down, please try again later." }
+    else if (errorCode == "400") { message = "(400) Bad request: we couldn't find a version of this file with that hash." }
+    else { message = "("+errorCode+") Oops, something went wrong." }
 
     return ( <>
             <Head>
