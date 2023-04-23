@@ -1,6 +1,18 @@
 // this is an example of calling an external api
 const axios = require('axios');
 const schemas = require('./remoteTextApiValidator')
+const validator = require('validator')
+
+async function redirectError(errorCode) {
+	if (errorCode=="other") {  // extra check to prevent other errors getting overwritten by this
+		axios.get(`${process.env.REMOTE_TEXT_API_URL}`+ '/listFiles') // is there a different (faster) way to just ping the server?
+		.catch(error=>{
+			window.location = window.location.origin+"/error?err=503","_self"
+		})
+	} else {
+		window.location = location.origin+"/error?err="+errorCode,"_self"
+	}
+}
 
 module.exports = class RemoteTextApi {
 
@@ -21,17 +33,20 @@ module.exports = class RemoteTextApi {
 				var data = response.data
 
 				// make sure data follows expected format and return
-				this.validate(data, this.schemas.listFilesOutput)
+				try {
+					this.validate(data, this.schemas.listFilesOutput)
+				} catch (error) {
+					console.log('listFiles output Schema Error')
+					throw error
+				}
 				return data;
 			})
 			.catch(error => {
 				if (error.response) {
 					//get HTTP error code
-					console.log(error.response.status)
+					redirectError(error.response.status)
 				} else {
-					// should we have some more sophisticated error logs?
-					console.log('listFiles Schema Error')
-					console.log(error)
+					redirectError("other")  // this occurs when the server response is undefined, ie server can't respond, but also occurs in other API calls as a duplicate after processing a 404 error.
 				}
 			})
 	}
@@ -41,6 +56,7 @@ module.exports = class RemoteTextApi {
 		try {
 			this.validate(newfileObject, this.schemas.createFileInput)
 		} catch (error) {
+			console.log('createFile input Schema Error')
 			throw error
 		}
 
@@ -50,72 +66,94 @@ module.exports = class RemoteTextApi {
 				var data = response.data
 
 				// make sure data follows expected format and return
-				this.validate(data, this.schemas.fileSummarySchema)
+				try {
+					this.validate(data, this.schemas.fileSummarySchema)
+				} catch (error) {
+					console.log('createFile output Schema Error')
+					throw error
+				}
 				return data;
 			})
 			.catch(error => {
 				if (error.response) {
 					//get HTTP error code
-					console.log(error.response.status)
+					redirectError(error.response.status)
 				} else {
-					// should we have some more sophisticated error logs?
-					console.log('createFile Schema Error')
-					console.log(error)
+					redirectError("other")
 				}
 			})
 	}
 
-	async getFile(fileid, githash='HEAD') {
+	async getFile(fileid, githash) {
+		if (!validator.isUUID(fileid)) {
+			return redirectError("404")
+		}
+
 		const fileObject = {id: fileid, hash: githash}
 		try {
 			this.validate(fileObject, this.schemas.getFileInput)
 		} catch (error) {
+			console.log('getFile input Schema Error')
 			throw error
 		}
 
 		return axios.put(this.url + '/getFile', {id: fileid, hash: githash})
 			.then(response => {
 				var data = response.data
-				this.validate(data, this.schemas.fileSummarySchema)
+				try {
+					this.validate(data, this.schemas.fileSummarySchema)
+				} catch (error) {
+					console.log('getFile output Schema Error')
+					throw error
+				}
 				return data;
 			})
 			.catch(error => {
 				if (error.response) {
-					console.log(error.response.status)
+					redirectError(error.response.status)
 				} else {
-					console.log('getFile Schema Error')
-					console.log(error)
+					redirectError("other")
 				}
 			})
 	}
 
 	async saveFile(file) {
+		if (!validator.isUUID(file.id)) {
+			return redirectError("404")
+		}
+
 		try {
 			this.validate(file, this.schemas.saveFileInput)
 		} catch (error) {
+			console.log('saveFile input Schema Error')
 			throw error
 		}
 
 		return axios.put(this.url + '/saveFile', file)
 			.then(response => {
 				var data = response.data
-				this.validate(data, this.schemas.saveFileOutput) //Think this isn't quite right? Gonna double check
+				try {
+					this.validate(data, this.schemas.saveFileOutput)
+				} catch (error) {
+					console.log('saveFile output Schema Error')
+					throw error
+				}
 				return data;
 			})
 			.catch(error => {
 				if (error.response) {
-
-					//get HTTP error code
-					console.log(error.response.status)
+					redirectError(error.response.status)
 				} else {
-					// should we have some more sophisticated error logs?
-					console.log('saveFile Schema Error')
-					console.log(error)
+					redirectError("other")
 				}
 			})
 	}
 
 	async previewFile(fileid, githash) {
+		if (!validator.isUUID(fileid)) {
+			return redirectError("404")
+		}
+
 		const filenameObject = {
 			id: fileid,
 			hash: githash
@@ -123,6 +161,7 @@ module.exports = class RemoteTextApi {
 		try {
 			this.validate(filenameObject, this.schemas.previewFileInput)
 		} catch (error) {
+			console.log('previewFile input Schema Error')
 			throw error
 		}
 
@@ -130,22 +169,29 @@ module.exports = class RemoteTextApi {
 			.then(response => {
 				var data = response.data
 
-				this.validate(data, this.schemas.previewFileOutput)  //Think this isn't quite right? Gonna double check
+				try {
+					this.validate(data, this.schemas.previewFileOutput)
+				} catch (error) {
+					console.log('previewFile output Schema Error')
+					throw error
+				}
 				return data;
 			})
 			.catch(error => {
 				if (error.response) {
 					//get HTTP error code
-					console.log(error.response.status)
+					redirectError(error.response.status)
 				} else {
-					// should we have some more sophisticated error logs?
-					console.log('previewFile Schema Error')
-					console.log(error)
+					redirectError("other")
 				}
 			})
 	}
 
 	async getPreview(fileid, githash) {
+		if (!validator.isUUID(fileid)) {
+			return redirectError("404")
+		}
+
 		const filenameObject = {
 			id: fileid,
 			hash: githash
@@ -153,69 +199,81 @@ module.exports = class RemoteTextApi {
 		try {
 			this.validate(filenameObject, this.schemas.getPreviewInput)
 		} catch (error) {
+			console.log('getPreview input Schema Error')
 			throw error
 		}
 
 		return axios.put(this.url + '/getPreview', filenameObject, { responseType: 'arraybuffer' })
 			.then(response => {
+				// this doesn't return a json so no need to validate
 				return response.data
 			})
 			.catch(error => {
 				if (error.response) {
 					//get HTTP error code
-					console.log(error.response.status)
+					redirectError(error.response.status)
 				} else {
-					var error_throw = "                __ \n               / _) \n      _.----._/ / \n     /  error  / \n  __/ (  | (  | \n /__.-'|_|--|_|"
-					// should we have some more sophisticated error logs?
-					console.log(error_throw)
-					console.log(error)
+					redirectError("other")
 				}
 			})
 	}
-  
+
 	async getHistory(fileID) {  // Parameters: File ID. Returns: A list of GitCommit objects, and a list of GitRef objects
+		if (!validator.isUUID(fileID)) {
+			return redirectError("404")
+		}
+
 		const fileidObject={id: fileID}
 		try {
 			this.validate(fileidObject, this.schemas.getHistoryInput)
 		} catch (error) {
+			console.log('getHistory input Schema Error')
 			throw error
 		}
 		return axios.put(this.url + '/getHistory', fileidObject)
 			.then(response => {
 				var data = response.data
-				this.validate(data, this.schemas.getHistoryOutput)
+				try {
+					this.validate(data, this.schemas.getHistoryOutput)
+				} catch (error) {
+					console.log('getHistory output Schema Error')
+					throw error
+				}
 				return data;
 			})
 			.catch(error => {
 				if (error.response) {
-					console.log(error.response.status)
+					redirectError(error.response.status)
 				} else {
-					console.log('Schema Error')
-					console.log(error)
+					redirectError("other")
 				}
 			})
 	}
 
 	async deleteFile(fileid) {
+		if (!validator.isUUID(fileid)) {
+			return redirectError("404")
+		}
+
 		const fileidObject = {id: fileid}
 		try {
 			this.validate(fileidObject, this.schemas.deleteFileInput)
 		} catch (error) {
+			console.log('deleteFile input Schema Error')
 			throw error
 		}
 
 		return axios.put(this.url + '/deleteFile', {id: fileid})
 			.then(response => {
 				var data = response.data
-				// this.validate(data, ???)  do we need to validate that it doesn't return anything? seems unimportant, and was throwing error with check against null or empty string, so I'm just excluding this check.
+				// unsure why we're even returning anything here
 				return data
 			})
 			.catch(error => {
 				if (error.response) {
-					console.log(error.response.status)
+					redirectError(error.response.status)
 				} else {
-					console.log('deleteFile Schema Error')
-					console.log(error)
+					redirectError("other")
 				}
 			})
 	}
