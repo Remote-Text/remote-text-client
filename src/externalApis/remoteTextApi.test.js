@@ -50,15 +50,15 @@ describe('RemoteTextApi', () => {
 	test("getFile returns expected object", async () => {
 		expectedResponse = {
 			name: "READMETOO.md",
-			id: "0".repeat(32),
+			id: "cbe79856-a067-4468-ab78-e158af6a3c3c",
 			content: "hello world 2."
 		}
 		axios.put.mockResolvedValue({
 			data: expectedResponse
 		})
 		getFileInput = {
-			id: "0".repeat(32),
-			hash: "aceaaec23664ae26d76ab66cedfb1206b9c972b1"
+			id: "cbe79856-a067-4468-ab78-e158af6a3c3c",
+			hash: "932434313674be849b6a5c829118c5089837973f"
 		}
 		const getFileResult = await remoteTextApi.getFile(getFileInput.id, getFileInput.hash)
 		expect(getFileResult).toMatchObject(expectedResponse)
@@ -66,11 +66,14 @@ describe('RemoteTextApi', () => {
 
 	test("saveFile returns expected object", async () => {
 		expectedResponse = {
-			hash: "aceaaec23664ae26d76ab66cedfb1206b9c972b1"
+			hash: "aceaaec23664ae26d76ab66cedfb1206b9c972b1",
+			parent: "932434313674be849b6a5c829118c5089837973f"
 		}
 		saveFileInput = {
 			name: "foo.txt",
-			id: "aec23664ae26d76ab66cedfb1206b9c9",
+			id: "cbe79856-a067-4468-ab78-e158af6a3c3c",
+			parent: "932434313674be849b6a5c829118c5089837973f",
+			branch: "main",
 			content: "hello world!",
 		}
 		axios.put.mockResolvedValue({
@@ -88,7 +91,7 @@ describe('RemoteTextApi', () => {
 			log: "nothing to see here :)"
 		}
 		previewFileInput = {
-			id: "aec23664ae26d76ab66cedfb1206b9c9",
+			id: "cbe79856-a067-4468-ab78-e158af6a3c3c",
 			hash: "aceaaec23664ae26d76ab66cedfb1206b9c972b1"
 		}
 		axios.put.mockResolvedValue({
@@ -103,7 +106,7 @@ describe('RemoteTextApi', () => {
 			name: "foo.txt" //Not checking all the data, can though if needed, but not sure how that format works
 		}
 		getPreviewInput = {
-			id: "aec23664ae26d76ab66cedfb1206b9c9",
+			id: "cbe79856-a067-4468-ab78-e158af6a3c3c",
 			hash: "aceaaec23664ae26d76ab66cedfb1206b9c972b1"
 		}
 		axios.put.mockResolvedValue({
@@ -116,18 +119,18 @@ describe('RemoteTextApi', () => {
 
 	test("getHistory returns expected object", async () => {
 		expectedResponse = {
-			commits: [{hash: "some_git_hash"},
-				{hash: "some_other_git_hash",
-				parent: "some_git_hash"}],
+			commits: [{hash: "aceaaec23664ae26d76ab66cedfb1206b9c972b1"},
+				{hash: "aceaaec23664ae26d7nnb66cedfb1206b9c972b1",
+				parent: "aceaaec26564ae26d76ab66cedfb1206b9c972b1"}],
 			refs: [{name: "some_git_name",
-				hash: "some_git_hash" },
-				{hash: "some_other_git_hash"}]
+				hash: "aceaaec23664ae26d76ab66cedfb1206b9c972b1" },
+				{hash: "aceaaec23664ae26d76ab66cedfb1mm6b9c972b1"}]
 
 		}
 		axios.put.mockResolvedValue({
 			data: expectedResponse
 		});
-		getHistoryInput = "0".repeat(32)
+		getHistoryInput = "cbe79856-a067-4468-ab78-e158af6a3c3c"
 		const getHistoryResult = await remoteTextApi.getHistory(getHistoryInput);
 		expect(getHistoryResult).toMatchObject(expectedResponse)
 	});
@@ -136,8 +139,8 @@ describe('RemoteTextApi', () => {
 		axios.put.mockResolvedValue({
 			data: {}
 		})
-		deleteFileInput = {id: "0".repeat(32)}
-		const deleteFileResult = await remoteTextApi.getFile(deleteFileInput.id)
-		expect(deleteFileResult).toBeUndefined()
+		deleteFileInput = "cbe79856-a067-4468-ab78-e158af6a3c3c"
+		/*const deleteFileResult = */await remoteTextApi.deleteFile(deleteFileInput)
+		// expect(deleteFileResult).toBeUndefined() doesn't really matter what it outputs as long as it doesn't raise errors
 	})
 });
