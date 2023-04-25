@@ -3,7 +3,7 @@
   flex-direction: column;
   text-align: left;
   justify-content: top;
-  width: 50vw;
+  width: 30vw;
   height: 30vw;
 }
 
@@ -12,7 +12,7 @@
   flex-direction: column;
   text-align: left;
   justify-content: top;
-  width: 15vw;
+  width: 10vw;
   height: 0vw;
 }
 
@@ -34,7 +34,7 @@
   font-family: inherit;
   color: black;
   background: white;
-  display:inline-block;
+  display: inline-block;
   overflow: scroll;
   overflow-wrap: break-word;
   font-size: 1em;
