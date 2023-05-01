@@ -32,12 +32,6 @@ async function createNewFile(name, fileContent="") {
   window.location.reload()
 }
 
-async function deleteFile(id) {
-  await remoteTextApi.deleteFile(id)
-  .then()
-  window.location.reload()
-}
-
 // open file explorer to select a file to upload
 async function uploadFile(event){
   var selectedFile = event.target.files[0]
@@ -48,9 +42,19 @@ async function uploadFile(event){
   
   let content = null
   contentReader.onload = function(event) {
-    content = event.target.result  // ERROR: doesn't display newlines.
+    content = event.target.result  // ERROR: doesn't display newlines (is this fixed???)
     createNewFile(name, content)
   }
+}
+
+async function deleteFiles() {
+  var table = document.getElementById("fileTable")
+  for (var i = 0, row; row = table.rows[i]; i++) {
+    if (row.id && row.cells[0].firstChild.checked) {
+      await remoteTextApi.deleteFile(row.id)
+    }
+  }
+  window.location.reload()
 }
 
 async function downloadFile(id, name){
@@ -107,6 +111,17 @@ function formatTimestamp(s) {
 	}
 }
 
+function selectAll(fileList) {
+  fileList.forEach(f => {
+    document.getElementById("select"+f.id).checked = document.getElementById("selectAll").checked
+    selectFile(f.id)
+  })
+}
+
+function selectFile(id) {
+  document.getElementById("selectOptions").hidden = !document.getElementById("select"+id).checked && !document.getElementById("selectAll").checked
+}
+
 // main export
 export default function Files() {
 
@@ -130,29 +145,29 @@ export default function Files() {
 
     // map file data to html elements
     let fileList = fileData.map(f =>
-    <tr key={f.id}>
+    <tr key={f.id} id={f.id}>
       <td>
-        <button id="deleteFile" onClick={()=>deleteFile(f.id)}>Delete</button>
-      </td>
-      <td>
-        <button id="downloadFile" onClick={()=>downloadFile(f.id, f.name)}>Download</button>
-        <div id={"listBranches-"+f.id}></div>
+        <input type="checkbox" id={"select"+f.id} onClick={()=>selectFile(f.id)}></input>
       </td>
       <td className={styles.nameRow}>
         <button className={styles.fileButton} onClick={()=>openFile(f.id, f.name)}>{f.name}</button>
       </td>
       <td className={styles.dateRow}>{f.created_time}</td>
       <td className={styles.dateRow}>{f.edited_time}</td>
+      <td>
+        <button onClick={()=>downloadFile(f.id, f.name)}>Download</button>
+        <div id={"listBranches-"+f.id}></div>
+      </td>
     </tr>)
 
     // fill html table with file elements
     fileTable = <table id="fileTable" className={styles.table}>
       <thead><tr>
-        <th></th>
-        <th></th>
+        <th className={styles.selectRow}><input type="checkbox" id="selectAll" onClick={()=>selectAll(fileData)}></input></th>
         <th className={styles.nameRow}>Name</th>
         <th className={styles.dateRow}>Created</th>
         <th className={styles.dateRow}>Modified</th>
+        <th className={styles.downloadRow}>Download</th>
       </tr></thead>
       <tbody>{fileList}</tbody>
     </table>
@@ -172,7 +187,7 @@ export default function Files() {
       </Head>
       <main className={styles.filesMain}>
         <h2>RemoteText Files</h2>
-        <div>
+        <div id="filesHeader">
           <button id="createFileButton" className={styles.createFileButton} onClick={showCreateFile}>Create New File</button>
           <button id="uploadFileButton" className={styles.createFileButton} onClick={()=>document.getElementById("uploadFileInput").click()}>Upload File</button>
           <input id="uploadFileInput" type="file" onChange={()=>uploadFile(event)} hidden={true}></input>
@@ -180,6 +195,9 @@ export default function Files() {
             <label htmlFor="fileName">New file name:</label>
             <input type="text" id="fileName" name="fileName" required minLength="1" maxLength="64" size="10"></input>
             <button onClick={()=>createNewFile(document.getElementById("fileName").value)}>Create</button>
+          </div>
+          <div id="selectOptions" hidden={true}>
+            <button id="deleteFiles" onClick={deleteFiles}>Delete</button>
           </div>
         </div>
         <div>{fileTable}</div>

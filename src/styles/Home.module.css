@@ -97,21 +97,33 @@
 }
 
 /* Above is Josh's messing around with styles to make things pretty */
+
+/*below here is alan's poorly written CSS for fileslist page */
 .table {
   border-spacing: 10px;
   table-layout: fixed;
-  width: 90vw;
+  width: 85vw;
+}
+
+.selectRow {
+  text-align: left;
+  width: 1em;
+}
+
+.downloadRow {
+  text-align: left;
+  width: 5em;
 }
 
 .nameRow {
   text-align: left;
-  width: 40vw;
+  width: 30vw;
   overflow: hidden;
 }
 
 .dateRow {
   text-align: left;
-  width: 20vw;
+  width: 5em;
   overflow: hidden;
 }
 
