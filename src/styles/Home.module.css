@@ -17,13 +17,16 @@
 }
 
 
-.save {
+.editorButtons {
   display: flex;
+	margin-bottom: 20px;
+	margin-top: 20px;
+  font-family: inherit;
   flex-direction: column;
   text-align: left;
   justify-content: left;
-  width: 3.5vw;
-  height: 1vw;
+  width: auto;
+  height: auto;
 }
 
 .editor {

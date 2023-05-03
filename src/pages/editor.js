@@ -143,9 +143,9 @@ export default function Editor() {
 				<title>{fileData.name} ({branchData.name}) - Editor</title>
 			</Head>
 			<main className={styles.filesMain}>
-				<h2>RemoteText Editor</h2>
+				<h2>RemoteText Editor: {fileData.name}</h2>
 				<div id="toolbar">
-					<button className={styles.save} id="SaveFile" onClick={() => saveToBranch(fileData, branchData)}>Save File</button>
+					<button className={styles.editorButtons} id="SaveFile" onClick={() => saveToBranch(fileData, branchData)}>Save File</button>
 					<div id="branchList"></div>
 					<div id="createBranch" hidden={true}>
 						<label htmlFor="branchName">New branch:</label>
@@ -154,7 +154,7 @@ export default function Editor() {
 						<p id="invalidBranchName" hidden={true}>Not a valid branch name.</p>
 						<button onClick={() => document.getElementById("createBranch").hidden = true}>Cancel</button>
 					</div>
-					<button id="previewButton" onClick={() => openPreview(fileData, branchData)}>Preview File</button>
+					<button className={styles.editorButtons} id="previewButton" onClick={() => openPreview(fileData, branchData)}>Preview File</button>
 					<div id="previewResponse"></div>
 				</div>
 
