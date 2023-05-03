@@ -1,7 +1,7 @@
 
 describe('creationAndEditing', () => {
 
-	var fileId;
+	var historyPageUrl;
 	let inputString = "Here is a dummy input string."
 
 	// you must have the server set up and running for this test to succeed
@@ -13,8 +13,9 @@ describe('creationAndEditing', () => {
 		})
 
 		cy.window().then((win) => {
-			fileId = cy.stub(win, 'open').as('windowOpen').args
+			historyPageUrl = cy.stub(win, 'open').as('windowOpen').args
 		})
+
 		// make sure the button is there
 		let createFileButton = cy.get('[id=createFileButton]')
 		createFileButton.should('be.visible')
@@ -40,35 +41,41 @@ describe('creationAndEditing', () => {
 		createFileWithGivenName.click()
 
 		//should open a new window
-		cy.window().its('open').should("be.called")
+		cy.get('@windowOpen').should('be.called')
+
 	})
 
 
+	var editorPageURL
 
-	it('able to see the history of the file edit the file, and save the file', () => {
-		// should be an id
-		fileId = fileId[0][0].split("id=")[1]
-		assert(fileId.length == 36)
-		cy.visit({
-			url: 'http://localhost:3000/history',
-			method: 'GET',
-			qs: {
-				id: fileId
-			}
+	it('able to see the history of the file', () => {
+		// should be an url once we trim
+		historyPageUrl = historyPageUrl[0][0]
+		cy.visit(historyPageUrl)
 
+		cy.window().then((win) => {
+			editorPageURL = cy.stub(win, 'open').as('windowOpen').args
 		})
-
 		cy.get('[id=treeWrapper]').should('be.visible')
 
 		cy.wait(1000)
-		// checking console logs suck
+
 		// we can test this once something actually happens on button press
-		let fileNode = cy.get('*[class^="rd3t-leaf-node historyTree_node__root"]').get('circle')
+		let fileNode = cy.get('*[class^="rd3t-leaf-node Home_node__root"]').get('circle')
 		fileNode.should("be.visible")
 		fileNode.click()
 
-		// make sure we have switched to editor
-		cy.url().should('include', 'editor')
+		//should open a new window
+		cy.get('@windowOpen').should('be.called')
+
+	})
+
+
+	it('edit and save file and see history', () => {
+
+		// should be an url once we trim
+		editorPageURL = editorPageURL[0][0]
+		cy.visit(editorPageURL)
 
 		// A window to put a file name should show up
 		let editorInput = cy.get("[id=editor]")
@@ -82,6 +89,7 @@ describe('creationAndEditing', () => {
 		cy.wait(1000)
 		saveFile.click()
 
+		cy.wait(1000)
 
 		let branchNameForm = cy.get("[id=branchName]")
 		branchNameForm.should('be.visible')
@@ -95,16 +103,8 @@ describe('creationAndEditing', () => {
 		saveToBranchButton.click()
 
 		cy.wait(1000)
-
 		// visit the history page
-		cy.visit({
-			url: 'http://localhost:3000/history',
-			method: 'GET',
-			qs: {
-				id: fileId
-			}
-
-		})
+		cy.visit(historyPageUrl)
 
 		cy.wait(1000)
 		// make sure the file history has been updated
@@ -113,38 +113,40 @@ describe('creationAndEditing', () => {
 		cy.get('[id=treeWrapper]').within(() => {
 
 			// see the root
-			cy.get('*[class^="rd3t-node historyTree_node__root"]').should('be.visible')
+			cy.get('*[class^="rd3t-node Home_node__root"]').should('be.visible')
 
 			// should have one leaf
-			cy.get('*[class^="rd3t-leaf-node historyTree_node__leaf"]').should('have.length', 1).should('be.visible')
+			cy.get('*[class^="rd3t-leaf-node Home_node__leaf"]').should('have.length', 1).should('be.visible')
 
 
 		})
 	})
 
 
-
-	it('save to another branch on the same file', () => {
+	it('enter editor on different branch of history', () => {
 		// should be an id
-		assert(fileId.length == 36)
-		cy.visit({
-			url: 'http://localhost:3000/history',
-			method: 'GET',
-			qs: {
-				id: fileId
-			}
+		cy.visit(historyPageUrl)
 
+		cy.window().then((win) => {
+			editorPageURL = cy.stub(win, 'open').as('windowOpen').args
 		})
-
 		cy.get('[id=treeWrapper]').should('be.visible')
 
 		cy.wait(1000)
-		let fileNode = cy.get('*[class^="rd3t-node historyTree_node__root"]').get('circle').first()
+		let fileNode = cy.get('*[class^="rd3t-node Home_node__root"]').get('circle').first()
 		fileNode.should("be.visible")
 		fileNode.click({multiple: true})
 
-		// make sure we have switched to editor
-		cy.url().should('include', 'editor')
+		//should open a new window
+		cy.get('@windowOpen').should('be.called')
+	})
+
+	it('save to new branch', () => {
+		console.log(editorPageURL)
+
+		// should be an url once we trim
+		editorPageURL = editorPageURL[0][0]
+		cy.visit(editorPageURL)
 
 		// A window to put a file name should show up
 		let editorInput = cy.get("[id=editor]")
@@ -173,14 +175,7 @@ describe('creationAndEditing', () => {
 		cy.wait(1000)
 
 		// visit the history page
-		cy.visit({
-			url: 'http://localhost:3000/history',
-			method: 'GET',
-			qs: {
-				id: fileId
-			}
-
-		})
+		cy.visit(historyPageUrl)
 
 		cy.wait(1000)
 		// make sure the file history has been updated
@@ -189,13 +184,12 @@ describe('creationAndEditing', () => {
 		cy.get('[id=treeWrapper]').within(() => {
 
 			// see the root
-			cy.get('*[class^="rd3t-node historyTree_node__root"]').should('be.visible')
+			cy.get('*[class^="rd3t-node Home_node__root"]').should('be.visible')
 
 			// should have one leaf
-			cy.get('*[class^="rd3t-leaf-node historyTree_node__leaf"]').should('have.length', 2).should('be.visible')
+			cy.get('*[class^="rd3t-leaf-node Home_node__leaf"]').should('have.length', 2).should('be.visible')
 
 
 		})
 	})
-
 })
