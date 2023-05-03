@@ -59,6 +59,7 @@
 }
 
 
+
 .rd3t-label__title {
   fill: white !important;
   stroke: none;
@@ -115,13 +116,23 @@
   overflow: hidden;
 }
 
+/* buttons */
+.button {
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
 .fileButton {
+	margin-left: 30px;
+	margin-right: 30px;
   font-family: inherit;
   font-size: 1em;
   padding: 0.5rem;
 }
 
 .createFileButton {
+	margin-left: 20px;
+	margin-right: 20px;
   font-family: inherit;
   font-size: 1em;
   padding: 0.5rem;
@@ -414,3 +425,4 @@
     transform: rotate(0deg);
   }
 }
+

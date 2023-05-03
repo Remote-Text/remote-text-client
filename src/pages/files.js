@@ -130,16 +130,16 @@ export default function Files() {
 
 		// map file data to html elements
 		let fileList = fileData.map(f =>
-			<tr key={f.id}>
+			<tr id={f.id} key={f.id}>
 				<td>
-					<button id="deleteFile" onClick={() => deleteFile(f.id)}>Delete</button>
+					<button className={styles.button} id="deleteFile" onClick={() => deleteFile(f.id)}>Delete</button>
 				</td>
 				<td>
-					<button id="downloadFile" onClick={() => downloadFile(f.id, f.name)}>Download</button>
+					<button className={styles.button} id="downloadFile" onClick={() => downloadFile(f.id, f.name)}>Download</button>
 					<div id={"listBranches-" + f.id}></div>
 				</td>
 				<td className={styles.nameRow}>
-					<button className={styles.fileButton} onClick={() => openFile(f.id, f.name)}>{f.name}</button>
+					<button className={styles.fileButton} id="name" onClick={() => openFile(f.id, f.name)}>{f.name}</button>
 				</td>
 				<td className={styles.dateRow}>{f.created_time}</td>
 				<td className={styles.dateRow}>{f.edited_time}</td>
@@ -150,7 +150,7 @@ export default function Files() {
 			<thead><tr>
 				<th></th>
 				<th></th>
-				<th className={styles.nameRow}>Name</th>
+				<th className={styles.nameRow}>   Name</th>
 				<th className={styles.dateRow}>Created</th>
 				<th className={styles.dateRow}>Modified</th>
 			</tr></thead>
@@ -172,6 +172,7 @@ export default function Files() {
 			</Head>
 			<main className={styles.filesMain}>
 				<h2>RemoteText Files</h2>
+				<h3>Click a filename to view that file's history</h3>
 				<div>
 					<button id="createFileButton" className={styles.createFileButton} onClick={showCreateFile}>Create New File</button>
 					<button id="uploadFileButton" className={styles.createFileButton} onClick={() => document.getElementById("uploadFileInput").click()}>Upload File</button>
@@ -182,7 +183,7 @@ export default function Files() {
 						<button id='createFileWithGivenName' onClick={() => createNewFile(document.getElementById("fileName").value)}>Create</button>
 					</div>
 				</div>
-				<div>{fileTable}</div>
+				<div id="fileTable" >{fileTable}</div>
 			</main>
 		</>
 	)
