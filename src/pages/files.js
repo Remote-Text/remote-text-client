@@ -150,7 +150,7 @@ export default function Files() {
 			<thead><tr>
 				<th></th>
 				<th></th>
-				<th className={styles.nameRow}>   Name</th>
+				<th className={styles.nameRow}>Name</th>
 				<th className={styles.dateRow}>Created</th>
 				<th className={styles.dateRow}>Modified</th>
 			</tr></thead>
@@ -172,7 +172,7 @@ export default function Files() {
 			</Head>
 			<main className={styles.filesMain}>
 				<h2>RemoteText Files</h2>
-				<h3>Click a filename to view that file's history</h3>
+				<h3>Click a filename to view the file history</h3>
 				<div>
 					<button id="createFileButton" className={styles.createFileButton} onClick={showCreateFile}>Create New File</button>
 					<button id="uploadFileButton" className={styles.createFileButton} onClick={() => document.getElementById("uploadFileInput").click()}>Upload File</button>
