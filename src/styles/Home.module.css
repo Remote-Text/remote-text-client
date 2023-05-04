@@ -1,12 +1,55 @@
-.image {
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-  justify-content: top;
-  width: 50vw;
-  height: 30vw;
+
+.indexPage{
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow: auto;
+  font-size: 25px;
 }
 
+.indexPage img {
+  flex-direction: column;
+  text-align: right;
+  float: left;
+  width: 50%;
+  height: 50%;
+}
+
+.indexPage button {
+border: 2px solid #ccc; /* border style */
+float: right;
+margin-right: 40px;
+margin-top: 40px;
+font-size: 1em;
+  text-align: center;
+  border-radius: 10px; /* border radius to make it rounded */
+  padding: 10px; 
+  padding: 10px;
+  background-color: SlateGray;
+  color: black;
+
+  border: 1px solid #ccc;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+}
+.indexPage div{
+border: 2px solid #ccc; /* border style */
+float: right;
+margin-right: 40px;
+margin-top: 40px;
+  text-align: center;
+  border-radius: 10px; /* border radius to make it rounded */
+  padding: 10px; 
+  padding: 10px;
+  background-color: DarkGray;
+  color: black;
+
+  border: 1px solid #ccc;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+}
 .imageHeader {
   display: flex;
   justify-content: flex-start;
