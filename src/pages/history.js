@@ -171,7 +171,7 @@ export default function HistoryPage() {
 			<title>{fileName} - History</title>
 		</Head>
 		<main>
-			<Header />
+			<Header helpText="The tree below represents the history of this file. The nodes are versions of the file, and the numbers are the hashes of that file version. The names are the branch names. To edit a version of the file, just click on the node that represents that version. " />
 			<div className={styles.fullscreen} ref={containerRef} id="treeWrapper" >
 				<Tree
 					rd3t-label_title={styles.rd3t_label_title}

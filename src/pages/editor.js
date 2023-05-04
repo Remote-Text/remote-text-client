@@ -1,4 +1,5 @@
 import styles from "../styles/Home.module.css"
+import {Header} from '../components/Header';
 import Head from "next/head"
 import React, {useEffect, useState} from 'react'
 import RemoteTextApi from '../externalApis/remoteTextApi.js'
@@ -140,9 +141,7 @@ export default function Editor() {
 			<div className={styles.imageHeader}>
 				<img src="/logo.png" alt="my_Logo"></img>
 			</div>
-			<Head>
-				<title>{fileData.name} ({branchData.name}) - Editor</title>
-			</Head>
+			<Header helpText="Edit the file in the window below. To Save the File, click 'Save File' and follow the instructions. To preview the compiled version of the file, click 'Preview File'. " />
 			<main className={styles.filesMain}>
 				<h2>RemoteText Editor: {fileData.name}</h2>
 				<div id="toolbar">

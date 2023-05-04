@@ -165,7 +165,7 @@ export default function Files() {
 	// page html
 	return (
 		<>
-			<Header />
+			<Header helpText="To create a new File, click the 'Create New File' button. To upload a file, click 'Upload File'. Existing Files are listed below; click a filename to start editing. " />
 			<Head>
 				<title>Files - RemoteText</title>
 			</Head>

@@ -2,7 +2,7 @@ import React from 'react';
 import styles from "../styles/Home.module.css"
 import Link from 'next/link'
 
-const Header = () => {
+const Header = (props) => {
 	return (
 		<div className={styles.imageHeader}>
 			<Link href="/files">
@@ -11,6 +11,8 @@ const Header = () => {
 			</Link>
 			<div class={styles.helpMenu} >
 				<button>?</button>
+				<div className={styles.helpTip}> {props.helpText}
+					Click the RemoteText Logo to return to the Files page.</div>
 			</div>
 
 		</div>

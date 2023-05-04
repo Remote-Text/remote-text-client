@@ -50,6 +50,25 @@ border-radius: 50%;
   cursor: pointer;
   font-size: 2em;
 }
+.helpTip {
+border: 2px solid #ccc; /* border style */
+  border-radius: 10px; /* border radius to make it rounded */
+  padding: 10px; 
+  visibility: hidden;
+  padding: 10px;
+  background-color: #fff;
+  color: black;
+  width: 200px;
+  border: 1px solid #ccc;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.helpMenu button:hover + .helpTip {
+  display: block;
+  opacity:1;
+  visibility:visible;
+}
 
 .editorButtons {
   display: flex;
