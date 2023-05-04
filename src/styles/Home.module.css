@@ -63,8 +63,29 @@
 
 }
 
+.indented {
+	padding-left: 20px;
+}
 
+.branchName{
+	background: Gray;
+	  border: 2px solid #ccc; /* border style */
+	margin-top: 30px;
+	margin-bottom: 30px;
+  font-family: inherit;
+  border-radius: 10px; /* border radius to make it rounded */
+  padding: 10px; 
+}
 
+.newBranchName{
+	background: DarkGray;
+	  border: 2px solid #ccc; /* border style */
+	margin-top: 30px;
+	margin-bottom: 30px;
+  font-family: inherit;
+  border-radius: 10px; /* border radius to make it rounded */
+  padding: 10px; 
+}
 .rd3t-label__title {
   fill: white !important;
   stroke: none;

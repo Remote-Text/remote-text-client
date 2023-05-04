@@ -86,6 +86,7 @@ async function saveToBranch(fileData, branchData) {
 			branchView.innerHTML = branchList
 			histData.refs.forEach(b => {
 				document.getElementById(b.hash).addEventListener("click", () => {saveFile(fileData, branchData, b.name)})
+				document.getElementById(b.hash).className = styles.editorButtons
 			})
 		})
 }
@@ -146,13 +147,18 @@ export default function Editor() {
 				<h2>RemoteText Editor: {fileData.name}</h2>
 				<div id="toolbar">
 					<button className={styles.editorButtons} id="SaveFile" onClick={() => saveToBranch(fileData, branchData)}>Save File</button>
-					<div id="branchList"></div>
-					<div id="createBranch" hidden={true}>
-						<label htmlFor="branchName">New branch:</label>
-						<input type="text" id="branchName" name="branchName" required minLength="1" maxLength="64" size="10"></input>
-						<button id="saveToBranch" onClick={() => saveNew(fileData, branchData, document.getElementById("branchName").value)}>Create new branch</button>
-						<p id="invalidBranchName" hidden={true}>Not a valid branch name.</p>
-						<button onClick={() => document.getElementById("createBranch").hidden = true}>Cancel</button>
+					<div class={styles.indented} id="createBranch" hidden={true}>
+						<div className={styles.branchName}>
+							<p>Click a branch name to save to that branch, or enter a new branch name</p>
+							<div id="branchList"></div>
+							<div className={styles.newBranchName}>
+								<label htmlFor="branchName">New branch name:</label>
+								<input type="text" id="branchName" name="branchName" required minLength="1" maxLength="64" size="10"></input>
+								<button className={styles.editorButtons} id="saveToBranch" onClick={() => saveNew(fileData, branchData, document.getElementById("branchName").value)}>Save to new branch</button>
+								<p id="invalidBranchName" hidden={true}>Not a valid branch name.</p>
+							</div>
+							<button onClick={() => document.getElementById("createBranch").hidden = true}>Cancel</button>
+						</div>
 					</div>
 					<button className={styles.editorButtons} id="previewButton" onClick={() => openPreview(fileData, branchData)}>Preview File</button>
 					<div id="previewResponse"></div>
