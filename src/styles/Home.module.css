@@ -14,6 +14,8 @@
   justify-content: top;
   width: 15vw;
   height: 0vw;
+  position:fixed;
+  z-index:9999;
 }
 
 

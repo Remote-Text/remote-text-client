@@ -1,4 +1,5 @@
 import Head from "next/head"
+import {Header} from '../components/Header';
 import styles from "../styles/Home.module.css"
 import RemoteTextApi from "../externalApis/remoteTextApi.js"
 import React, {useEffect, useState} from "react"
@@ -164,9 +165,7 @@ export default function Files() {
 	// page html
 	return (
 		<>
-			<div className={styles.imageHeader}>
-				<img src="/logo.png" alt="my_Logo"></img>
-			</div>
+			<Header />
 			<Head>
 				<title>Files - RemoteText</title>
 			</Head>

@@ -1,5 +1,6 @@
 import RemoteTextApi from '../externalApis/remoteTextApi.js'
 import styles from "../styles/Home.module.css"
+import {Header} from '../components/Header';
 import React, {useCallback, useState, useLayoutEffect} from "react"
 import Head from "next/head"
 import Link from 'next/link'
@@ -164,33 +165,31 @@ export default function HistoryPage() {
 			)
 	}, [])
 	// const foreignObjectProps = {width: nodeSize.x, height: nodeSize.y, x: 20};
-  
+
 	return (<>
-			<Head>
-				<title>{fileName} - History</title>
-			</Head>
-			<main>
-				<div className={styles.imageHeader}>
-					<img src="/logo.png" alt="my_Logo"></img>
-				</div>
-				<div className={styles.fullscreen} ref={containerRef} id="treeWrapper" >
-					<Tree
-						rd3t-label_title={styles.rd3t_label_title}
-						data={historyTree}
-						translate={translate}
-						draggable={true}
-						onNodeClick={openNodeFile}
-						collapsible={false}
-						rootNodeClassName={styles.node__root}
-						branchNodeClassName={styles.node__branch}
-						pathClassFunc={styles.node_link}
-						nodeSize={nodeSize}
-						textLayout={styles.node_text}
-						// renderCustomNodeElement={(rd3tProps) =>
-						// 	renderForeignObjectNode({...rd3tProps, foreignObjectProps})
-						// }
-						leafNodeClassName={styles.node__leaf} />
-				</div>
-			</main>
-	</> )
+		<Head>
+			<title>{fileName} - History</title>
+		</Head>
+		<main>
+			<Header />
+			<div className={styles.fullscreen} ref={containerRef} id="treeWrapper" >
+				<Tree
+					rd3t-label_title={styles.rd3t_label_title}
+					data={historyTree}
+					translate={translate}
+					draggable={true}
+					onNodeClick={openNodeFile}
+					collapsible={false}
+					rootNodeClassName={styles.node__root}
+					branchNodeClassName={styles.node__branch}
+					pathClassFunc={styles.node_link}
+					nodeSize={nodeSize}
+					textLayout={styles.node_text}
+					// renderCustomNodeElement={(rd3tProps) =>
+					// 	renderForeignObjectNode({...rd3tProps, foreignObjectProps})
+					// }
+					leafNodeClassName={styles.node__leaf} />
+			</div>
+		</main>
+	</>)
 }
