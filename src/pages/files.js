@@ -65,38 +65,6 @@ async function uploadFile(event) {
 	}
 }
 
-async function chooseBranch(id, name, mode) {
-	await remoteTextApi.getHistory(id)
-		.then(histData => {
-			let branchView = document.getElementById("listBranches-" + id)
-			let branchList = ""
-			histData.refs.forEach(b => {
-				branchList += "<button id=uploadBranchButton" + b.hash + ">" + b.name + "</button>"+
-							  "<input id=uploadBranchInput"+b.hash+" type=file hidden=true></input>"
-			})
-			if (mode=="download") {
-				branchView.innerHTML = branchList
-				histData.refs.forEach(b => {
-					var re = /(?:\.([^.]+))?$/
-					let ext = re.exec(name)[1]
-					let branchFileName = name
-					if (ext != undefined) {  // check for file ext before renaming
-						branchFileName = name.replace(/\.[^/.]+$/, "") + "_" + b.name + "." + ext
-					} else {
-						branchFileName = name + "_" + b.name
-					}
-					document.getElementById("uploadBranchButton"+b.hash).addEventListener("click", () => {downloadBranchFile(id, branchFileName, b.hash)})
-				})
-			} else if (mode=="upload") {
-				branchView.innerHTML = "<div>Select parent branch:</div>" + branchList
-				histData.refs.forEach(b => {  // loop through again to fill in event listeners
-					document.getElementById("uploadBranchButton"+b.hash).addEventListener("click", ()=>{document.getElementById("uploadBranchInput"+b.hash).click()})
-					document.getElementById("uploadBranchInput"+b.hash).addEventListener("change", (event)=>{uploadFileAsBranch(event, id, name, b.hash)})
-				})
-			}
-		})
-}
-
 async function uploadFileAsBranch(event, id, name, parent) {
 	var fileObj = {id: id, name: name, parent: parent}
 
@@ -111,7 +79,6 @@ async function uploadFileAsBranch(event, id, name, parent) {
 		console.log(fileObj)
 		remoteTextApi.saveFile(fileObj)
 	}
-	document.getElementById("listBranches-"+id).innerHTML = ""
 }
 
 async function downloadBranchFile(id, name, hash) {
@@ -120,7 +87,6 @@ async function downloadBranchFile(id, name, hash) {
 			var blob = new Blob([fileObj.content], {type: "text/plain;charset=utf-8"})
 			saveAs(blob, name)
 		})
-	document.getElementById("listBranches-" + id).innerHTML = ""
 }
 
 // show hidden html elements for naming a new file
@@ -132,6 +98,11 @@ function hideCreateFile() {
 	document.getElementById("createFile").hidden = true
 }
 
+function showBranchOptions(id, filename) {
+	fillBranchOptionTable(id, filename)
+	document.getElementById("branchOptions"+id).hidden=!document.getElementById("branchOptions"+id).hidden
+}
+
 function selectAll(fileList) {
 	fileList.forEach(f => {
 	  document.getElementById("select"+f.id).checked = document.getElementById("selectAll").checked
@@ -139,9 +110,9 @@ function selectAll(fileList) {
 	})
   }
   
-  function selectFile(id) {
+function selectFile(id) {
 	document.getElementById("deleteFilesButton").hidden = !document.getElementById("select"+id).checked && !document.getElementById("selectAll").checked
-  }
+}
 
 function formatTimestamp(s) {
 	let fileDate = new Date(s)
@@ -156,11 +127,45 @@ function formatTimestamp(s) {
 	}
 }
 
+async function fillBranchOptionTable(id, filename){
+	await remoteTextApi.getHistory(id)
+	.then(histData => {
+		let tableBody = ""
+		histData.refs.forEach(b => {
+			tableBody += `<tr key=`+b.hash+`>
+				<td>`+b.name+`</td>
+				<td>
+					<button id=uploadBranchButton`+b.hash+`>Upload new branch</button>
+					<input id=uploadBranchInput`+b.hash+` type=file hidden=true}></input>
+				</td>
+				<td>
+					<button id=downloadBranchButton`+b.hash+`>Download this branch</button>
+				</td>
+			</tr>`
+		})
+
+		document.getElementById("branchOptions"+id).innerHTML=
+		`<table id="branchTable">
+			<thead><tr>
+				<th>Branch name</th>
+				<th></th>
+				<th></th>
+			</tr></thead>
+			<tbody>`+tableBody+`</tbody>
+		</table>`
+
+		histData.refs.forEach(b => {
+			document.getElementById("uploadBranchInput"+b.hash).addEventListener("onchange", ()=>uploadFileAsBranch(event, id, filename, b.hash))
+			document.getElementById("uploadBranchButton"+b.hash).addEventListener("onclick", document.getElementById("uploadBranchInput"+b.hash).click)
+			document.getElementById("downloadBranchButton"+b.hash).addEventListener("onclick", ()=>downloadBranchFile(id, b.name+filename, b.hash))
+		})
+	})
+}
+
 // main export
 export default function Files() {
 
 	const [fileData, setFileData] = useState({})
-
 	useEffect(() => {
 		listFilesData()
 			.then(data =>
@@ -184,7 +189,8 @@ export default function Files() {
 			        <input type="checkbox" id={"select"+f.id} onClick={()=>selectFile(f.id)}></input>
 				</td>
 				<td className={styles.nameRow}>
-					<button className={styles.fileButton} id="name" onClick={() => openFile(f.id, f.name)}>{f.name}</button>
+					<button className={styles.fileButton} id="name" onDoubleClick={() => openFile(f.id, f.name)} onClick={()=>showBranchOptions(f.id, f.name)}>{f.name}</button>
+					<div id={"branchOptions"+f.id} hidden={true}></div>
 				</td>
 				<td className={styles.dateRow}>{f.created_time}</td>
 				<td className={styles.dateRow}>{f.edited_time}</td>
