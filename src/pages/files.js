@@ -76,8 +76,10 @@ async function uploadFileAsBranch(event, id, name, parent) {
 
 	contentReader.onload = function (event) {
 		fileObj.content = event.target.result  // ERROR: doesn't display newlines (is this fixed?)
-		console.log(fileObj)
 		remoteTextApi.saveFile(fileObj)
+		.then(done=>
+			window.location.reload()
+		)
 	}
 }
 
@@ -98,8 +100,7 @@ function hideCreateFile() {
 	document.getElementById("createFile").hidden = true
 }
 
-function showBranchOptions(id, filename) {
-	fillBranchOptionTable(id, filename)
+function showBranchOptions(id) {
 	document.getElementById("branchOptions"+id).hidden=!document.getElementById("branchOptions"+id).hidden
 }
 
@@ -127,39 +128,29 @@ function formatTimestamp(s) {
 	}
 }
 
-async function fillBranchOptionTable(id, filename){
-	await remoteTextApi.getHistory(id)
-	.then(histData => {
-		let tableBody = ""
-		histData.refs.forEach(b => {
-			tableBody += `<tr key=`+b.hash+`>
-				<td>`+b.name+`</td>
-				<td>
-					<button id=uploadBranchButton`+b.hash+`>Upload new branch</button>
-					<input id=uploadBranchInput`+b.hash+` type=file hidden=true}></input>
-				</td>
-				<td>
-					<button id=downloadBranchButton`+b.hash+`>Download this branch</button>
-				</td>
-			</tr>`
-		})
+function branchOptionTable(histData, fileId, fileName){
+	if (histData!=undefined) {
+		let tableBody = histData.refs.map(b =>
+		<tr key={b.hash}>
+			<td>{b.name}</td>
+			<td>
+				<input id={"uploadBranchInput"+b.hash} type="file" onChange={(event)=>uploadFileAsBranch(event, fileId, fileName, b.hash)} hidden={true}></input>
+				<button id={"uploadBranchButton"+b.hash} onClick={()=>document.getElementById("uploadBranchInput"+b.hash).click()}>Upload new branch</button>
+			</td>
+			<td>
+				<button id={"downloadBranchButton"+b.hash} onClick={()=>downloadBranchFile(id, b.name+fileName, b.hash)}>Download this branch</button>
+			</td>
+		</tr>)
 
-		document.getElementById("branchOptions"+id).innerHTML=
-		`<table id="branchTable">
+		return <table id="branchTable">
 			<thead><tr>
-				<th>Branch name</th>
+				<th>Branches</th>
 				<th></th>
 				<th></th>
 			</tr></thead>
-			<tbody>`+tableBody+`</tbody>
-		</table>`
-
-		histData.refs.forEach(b => {
-			document.getElementById("uploadBranchInput"+b.hash).addEventListener("onchange", ()=>uploadFileAsBranch(event, id, filename, b.hash))
-			document.getElementById("uploadBranchButton"+b.hash).addEventListener("onclick", document.getElementById("uploadBranchInput"+b.hash).click)
-			document.getElementById("downloadBranchButton"+b.hash).addEventListener("onclick", ()=>downloadBranchFile(id, b.name+filename, b.hash))
-		})
-	})
+			<tbody>{tableBody}</tbody>
+		</table>
+	}
 }
 
 // main export
@@ -168,10 +159,18 @@ export default function Files() {
 	const [fileData, setFileData] = useState({})
 	useEffect(() => {
 		listFilesData()
-			.then(data =>
-				setFileData(data)
-			)
-	}, [])  // gets async data^
+		.then(data => {
+			for(let i=0; i<data.length; i++) {
+				remoteTextApi.getHistory(data[i].id)
+				.then(histData => {
+					data[i].history = histData
+					if (i==data.length-1) {
+						setFileData(data)
+					}
+				})
+			}
+		})
+	}, [])
 
 	let fileTable = <></>
 
@@ -190,7 +189,9 @@ export default function Files() {
 				</td>
 				<td className={styles.nameRow}>
 					<button className={styles.fileButton} id="name" onDoubleClick={() => openFile(f.id, f.name)} onClick={()=>showBranchOptions(f.id, f.name)}>{f.name}</button>
-					<div id={"branchOptions"+f.id} hidden={true}></div>
+					<div id={"branchOptions"+f.id} hidden={true}>
+						{branchOptionTable(f.history, f.id, f.name)}
+					</div>
 				</td>
 				<td className={styles.dateRow}>{f.created_time}</td>
 				<td className={styles.dateRow}>{f.edited_time}</td>
