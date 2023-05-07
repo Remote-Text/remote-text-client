@@ -54,27 +54,53 @@ async function uploadFile(event) {
 	}
 }
 
-async function downloadFile(id, name) {
+async function chooseBranch(id, name, mode) {
 	await remoteTextApi.getHistory(id)
 		.then(histData => {
 			let branchView = document.getElementById("listBranches-" + id)
 			let branchList = ""
 			histData.refs.forEach(b => {
-				branchList += "<button id=" + b.hash + ">" + b.name + "</button>"
+				branchList += "<button id=uploadBranchButton" + b.hash + ">" + b.name + "</button>"+
+							  "<input id=uploadBranchInput"+b.hash+" type=file hidden=true></input>"
 			})
-			branchView.innerHTML = branchList
-			histData.refs.forEach(b => {
-				var re = /(?:\.([^.]+))?$/
-				let ext = re.exec(name)[1]
-				let branchFileName = name
-				if (ext != undefined) {  // check for file ext before renaming
-					branchFileName = name.replace(/\.[^/.]+$/, "") + "_" + b.name + "." + ext
-				} else {
-					branchFileName = name + "_" + b.name
-				}
-				document.getElementById(b.hash).addEventListener("click", () => {downloadBranchFile(id, branchFileName, b.hash)})
-			})
+			if (mode=="download") {
+				branchView.innerHTML = branchList
+				histData.refs.forEach(b => {
+					var re = /(?:\.([^.]+))?$/
+					let ext = re.exec(name)[1]
+					let branchFileName = name
+					if (ext != undefined) {  // check for file ext before renaming
+						branchFileName = name.replace(/\.[^/.]+$/, "") + "_" + b.name + "." + ext
+					} else {
+						branchFileName = name + "_" + b.name
+					}
+					document.getElementById("uploadBranchButton"+b.hash).addEventListener("click", () => {downloadBranchFile(id, branchFileName, b.hash)})
+				})
+			} else if (mode=="upload") {
+				branchView.innerHTML = "<div>Select parent branch:</div>" + branchList
+				histData.refs.forEach(b => {  // loop through again to fill in event listeners
+					document.getElementById("uploadBranchButton"+b.hash).addEventListener("click", ()=>{document.getElementById("uploadBranchInput"+b.hash).click()})
+					document.getElementById("uploadBranchInput"+b.hash).addEventListener("change", (event)=>{uploadFileAsBranch(event, id, name, b.hash)})
+				})
+			}
 		})
+}
+
+async function uploadFileAsBranch(event, id, name, parent) {
+	var fileObj = {id: id, name: name, parent: parent}
+
+	var selectedFile = event.target.files[0]
+	fileObj.branch = selectedFile.name
+
+	var contentReader = new FileReader()
+	contentReader.readAsText(selectedFile)
+
+	contentReader.onload = function (event) {
+		fileObj.content = event.target.result  // ERROR: doesn't display newlines (is this fixed?)
+		console.log(fileObj)
+		remoteTextApi.saveFile(fileObj)
+	}
+	document.getElementById("listBranches-"+id).innerHTML = ""
 }
 
 async function downloadBranchFile(id, name, hash) {
@@ -136,8 +162,11 @@ export default function Files() {
 					<button className={styles.button} id="deleteFile" onClick={() => deleteFile(f.id)}>Delete</button>
 				</td>
 				<td>
-					<button className={styles.button} id="downloadFile" onClick={() => downloadFile(f.id, f.name)}>Download</button>
+					<button className={styles.button} id="downloadFile" onClick={() => chooseBranch(f.id, f.name, "download")}>Download</button>
 					<div id={"listBranches-" + f.id}></div>
+				</td>
+				<td>
+					<button className={styles.button} id="uploadBranch" onClick={()=> chooseBranch(f.id, f.name, "upload")}>Upload new branch</button>
 				</td>
 				<td className={styles.nameRow}>
 					<button className={styles.fileButton} id="name" onClick={() => openFile(f.id, f.name)}>{f.name}</button>
@@ -149,6 +178,7 @@ export default function Files() {
 		// fill html table with file elements
 		fileTable = <table id="fileTable" className={styles.table}>
 			<thead><tr>
+				<th></th>
 				<th></th>
 				<th></th>
 				<th className={styles.nameRow}>Name</th>
