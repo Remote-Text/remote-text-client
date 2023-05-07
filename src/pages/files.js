@@ -34,17 +34,20 @@ async function createNewFile(name, fileContent = "") {
 }
 
 async function deleteFiles(fileData) {
+	let tally = 0
+	let count = 0
 	fileData.forEach(f=>{
-		console.log()
-		if (document.getElementById("select"+f.id).value) {
+		if (document.getElementById("select"+f.id).checked) {
+			tally++
 			remoteTextApi.deleteFile(f.id)
+			.then(done=>{
+				count++
+				if (tally==count){
+					window.location.reload()
+				}
+			})
 		}
 	})
-	//window.location.reload()
-}
-
-async function selectAll(fileData) {
-
 }
 
 // open file explorer to select a file to upload
@@ -129,6 +132,17 @@ function hideCreateFile() {
 	document.getElementById("createFile").hidden = true
 }
 
+function selectAll(fileList) {
+	fileList.forEach(f => {
+	  document.getElementById("select"+f.id).checked = document.getElementById("selectAll").checked
+	  selectFile(f.id)
+	})
+  }
+  
+  function selectFile(id) {
+	document.getElementById("deleteFilesButton").hidden = !document.getElementById("select"+id).checked && !document.getElementById("selectAll").checked
+  }
+
 function formatTimestamp(s) {
 	let fileDate = new Date(s)
 	let todaysDate = new Date()
@@ -167,7 +181,7 @@ export default function Files() {
 		let fileList = fileData.map(f =>
 			<tr id={f.id} key={f.id}>
 				<td>
-			        <input type="checkbox" id={"select"+f.id}></input>
+			        <input type="checkbox" id={"select"+f.id} onClick={()=>selectFile(f.id)}></input>
 				</td>
 				<td className={styles.nameRow}>
 					<button className={styles.fileButton} id="name" onClick={() => openFile(f.id, f.name)}>{f.name}</button>
