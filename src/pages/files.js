@@ -33,10 +33,18 @@ async function createNewFile(name, fileContent = "") {
 	window.location.reload()
 }
 
-async function deleteFile(id) {
-	await remoteTextApi.deleteFile(id)
-		.then()
-	window.location.reload()
+async function deleteFiles(fileData) {
+	fileData.forEach(f=>{
+		console.log()
+		if (document.getElementById("select"+f.id).value) {
+			remoteTextApi.deleteFile(f.id)
+		}
+	})
+	//window.location.reload()
+}
+
+async function selectAll(fileData) {
+
 }
 
 // open file explorer to select a file to upload
@@ -159,14 +167,7 @@ export default function Files() {
 		let fileList = fileData.map(f =>
 			<tr id={f.id} key={f.id}>
 				<td>
-					<button className={styles.button} id="deleteFile" onClick={() => deleteFile(f.id)}>Delete</button>
-				</td>
-				<td>
-					<button className={styles.button} id="downloadFile" onClick={() => chooseBranch(f.id, f.name, "download")}>Download</button>
-					<div id={"listBranches-" + f.id}></div>
-				</td>
-				<td>
-					<button className={styles.button} id="uploadBranch" onClick={()=> chooseBranch(f.id, f.name, "upload")}>Upload new branch</button>
+			        <input type="checkbox" id={"select"+f.id}></input>
 				</td>
 				<td className={styles.nameRow}>
 					<button className={styles.fileButton} id="name" onClick={() => openFile(f.id, f.name)}>{f.name}</button>
@@ -178,9 +179,7 @@ export default function Files() {
 		// fill html table with file elements
 		fileTable = <table id="fileTable" className={styles.table}>
 			<thead><tr>
-				<th></th>
-				<th></th>
-				<th></th>
+				<th className={styles.checkBoxRow}><input type="checkbox" id={"selectAll"} onClick={()=>selectAll(fileData)}></input></th>
 				<th className={styles.nameRow}>Name</th>
 				<th className={styles.dateRow}>Created</th>
 				<th className={styles.dateRow}>Modified</th>
@@ -206,6 +205,7 @@ export default function Files() {
 					<button id="createFileButton" className={styles.createFileButton} onClick={showCreateFile}>Create New File</button>
 					<button id="uploadFileButton" className={styles.createFileButton} onClick={() => document.getElementById("uploadFileInput").click()}>Upload File</button>
 					<input id="uploadFileInput" type="file" onChange={() => uploadFile(event)} hidden={true}></input>
+					<button id="deleteFilesButton" className={styles.createFileButton} onClick={()=>deleteFiles(fileData)} hidden={true}>Delete</button>
 					<div id="createFile" hidden={true}>
 						<label htmlFor="fileName">New file name:</label>
 						<input type="text" id="fileName" name="fileName" required minLength="1" maxLength="64" size="10"></input>

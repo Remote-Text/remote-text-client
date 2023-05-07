@@ -224,6 +224,12 @@ border: 2px solid #ccc; /* border style */
   width: 90vw;
 }
 
+.checkBoxRow {
+  text-align: left;
+  width: 20px;
+  overflow: hidden;
+}
+
 .nameRow {
   text-align: left;
   width: 40vw;
