@@ -138,16 +138,11 @@ function branchOptionTable(histData, fileId, fileName){
 				<button id={"uploadBranchButton"+b.hash} onClick={()=>document.getElementById("uploadBranchInput"+b.hash).click()}>Upload new branch</button>
 			</td>
 			<td>
-				<button id={"downloadBranchButton"+b.hash} onClick={()=>downloadBranchFile(id, b.name+fileName, b.hash)}>Download this branch</button>
+				<button id={"downloadBranchButton"+b.hash} onClick={()=>downloadBranchFile(fileId, b.name+"_"+fileName, b.hash)}>Download this branch</button>
 			</td>
 		</tr>)
 
 		return <table id="branchTable">
-			<thead><tr>
-				<th>Branches</th>
-				<th></th>
-				<th></th>
-			</tr></thead>
 			<tbody>{tableBody}</tbody>
 		</table>
 	}
@@ -184,7 +179,7 @@ export default function Files() {
 		// map file data to html elements
 		let fileList = fileData.map(f =>
 			<tr id={f.id} key={f.id}>
-				<td>
+				<td className={styles.checkBoxRow}>
 			        <input type="checkbox" id={"select"+f.id} onClick={()=>selectFile(f.id)}></input>
 				</td>
 				<td className={styles.nameRow}>
@@ -221,7 +216,7 @@ export default function Files() {
 			</Head>
 			<main className={styles.filesMain}>
 				<h2>RemoteText Files</h2>
-				<h3>Click a filename to view the file history</h3>
+				<h3>Click a filename to view branch actions, or double click to open the history tree.</h3>
 				<div>
 					<button id="createFileButton" className={styles.createFileButton} onClick={showCreateFile}>Create New File</button>
 					<button id="uploadFileButton" className={styles.createFileButton} onClick={() => document.getElementById("uploadFileInput").click()}>Upload File</button>
