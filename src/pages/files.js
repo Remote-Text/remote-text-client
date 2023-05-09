@@ -36,16 +36,16 @@ async function createNewFile(name, fileContent = "") {
 async function deleteFiles(fileData) {
 	let tally = 0
 	let count = 0
-	fileData.forEach(f=>{
-		if (document.getElementById("select"+f.id).checked) {
+	fileData.forEach(f => {
+		if (document.getElementById("select" + f.id).checked) {
 			tally++
 			remoteTextApi.deleteFile(f.id)
-			.then(done=>{
-				count++
-				if (tally==count){
-					window.location.reload()
-				}
-			})
+				.then(done => {
+					count++
+					if (tally == count) {
+						window.location.reload()
+					}
+				})
 		}
 	})
 }
@@ -77,9 +77,9 @@ async function uploadFileAsBranch(event, id, name, parent) {
 	contentReader.onload = function (event) {
 		fileObj.content = event.target.result  // ERROR: doesn't display newlines (is this fixed?)
 		remoteTextApi.saveFile(fileObj)
-		.then(done=>
-			window.location.reload()
-		)
+			.then(done =>
+				window.location.reload()
+			)
 	}
 }
 
@@ -101,18 +101,18 @@ function hideCreateFile() {
 }
 
 function showBranchOptions(id) {
-	document.getElementById("branchOptions"+id).hidden=!document.getElementById("branchOptions"+id).hidden
+	document.getElementById("branchOptions" + id).hidden = !document.getElementById("branchOptions" + id).hidden
 }
 
 function selectAll(fileList) {
 	fileList.forEach(f => {
-	  document.getElementById("select"+f.id).checked = document.getElementById("selectAll").checked
-	  selectFile(f.id)
+		document.getElementById("select" + f.id).checked = document.getElementById("selectAll").checked
+		selectFile(f.id)
 	})
-  }
-  
+}
+
 function selectFile(id) {
-	document.getElementById("deleteFilesButton").hidden = !document.getElementById("select"+id).checked && !document.getElementById("selectAll").checked
+	document.getElementById("deleteFilesButton").hidden = !document.getElementById("select" + id).checked && !document.getElementById("selectAll").checked
 }
 
 function formatTimestamp(s) {
@@ -128,19 +128,19 @@ function formatTimestamp(s) {
 	}
 }
 
-function branchOptionTable(histData, fileId, fileName){
-	if (histData!=undefined) {
+function branchOptionTable(histData, fileId, fileName) {
+	if (histData != undefined) {
 		let tableBody = histData.refs.map(b =>
-		<tr key={b.hash}>
-			<td>{b.name}</td>
-			<td>
-				<input id={"uploadBranchInput"+b.hash} type="file" onChange={(event)=>uploadFileAsBranch(event, fileId, fileName, b.hash)} hidden={true}></input>
-				<button id={"uploadBranchButton"+b.hash} onClick={()=>document.getElementById("uploadBranchInput"+b.hash).click()}>Upload new branch</button>
-			</td>
-			<td>
-				<button id={"downloadBranchButton"+b.hash} onClick={()=>downloadBranchFile(fileId, b.name+"_"+fileName, b.hash)}>Download this branch</button>
-			</td>
-		</tr>)
+			<tr key={b.hash}>
+				<td>{b.name}</td>
+				<td>
+					<input id={"uploadBranchInput" + b.hash} type="file" onChange={(event) => uploadFileAsBranch(event, fileId, fileName, b.hash)} hidden={true}></input>
+					<button id={"uploadBranchButton" + b.hash} onClick={() => document.getElementById("uploadBranchInput" + b.hash).click()}>Upload new file to this branch</button>
+				</td>
+				<td>
+					<button id={"downloadBranchButton" + b.hash} onClick={() => downloadBranchFile(fileId, b.name + "_" + fileName, b.hash)}>Download this branch</button>
+				</td>
+			</tr>)
 
 		return <table id="branchTable">
 			<tbody>{tableBody}</tbody>
@@ -154,17 +154,17 @@ export default function Files() {
 	const [fileData, setFileData] = useState({})
 	useEffect(() => {
 		listFilesData()
-		.then(data => {
-			for(let i=0; i<data.length; i++) {
-				remoteTextApi.getHistory(data[i].id)
-				.then(histData => {
-					data[i].history = histData
-					if (i==data.length-1) {
-						setFileData(data)
-					}
-				})
-			}
-		})
+			.then(data => {
+				for (let i = 0; i < data.length; i++) {
+					remoteTextApi.getHistory(data[i].id)
+						.then(histData => {
+							data[i].history = histData
+							if (i == data.length - 1) {
+								setFileData(data)
+							}
+						})
+				}
+			})
 	}, [])
 
 	let fileTable = <></>
@@ -180,11 +180,12 @@ export default function Files() {
 		let fileList = fileData.map(f =>
 			<tr id={f.id} key={f.id}>
 				<td className={styles.checkBoxRow}>
-			        <input type="checkbox" id={"select"+f.id} onClick={()=>selectFile(f.id)}></input>
+					<input type="checkbox" id={"select" + f.id} onClick={() => selectFile(f.id)}></input>
 				</td>
 				<td className={styles.nameRow}>
-					<button className={styles.fileButton} id="name" onDoubleClick={() => openFile(f.id, f.name)} onClick={()=>showBranchOptions(f.id, f.name)}>{f.name}</button>
-					<div id={"branchOptions"+f.id} hidden={true}>
+					<button className={styles.fileButton} id="name" onDoubleClick={() => openFile(f.id, f.name)} onClick={() => showBranchOptions(f.id, f.name)}>{f.name}</button>
+					<div id={"branchOptions" + f.id} className={styles.newBranchName} hidden={true}>
+						<p>Double Click the file name to see the history, or upload/download from one of the branches below.</p>
 						{branchOptionTable(f.history, f.id, f.name)}
 					</div>
 				</td>
@@ -194,13 +195,13 @@ export default function Files() {
 
 		// fill html table with file elements
 		fileTable = <table id="fileTable" className={styles.table}>
-			<thead><tr>
-				<th className={styles.checkBoxRow}><input type="checkbox" id={"selectAll"} onClick={()=>selectAll(fileData)}></input></th>
+			<thead><tr >
+				<th className={styles.checkBoxRow}><input type="checkbox" id={"selectAll"} onClick={() => selectAll(fileData)}></input></th>
 				<th className={styles.nameRow}>Name</th>
 				<th className={styles.dateRow}>Created</th>
 				<th className={styles.dateRow}>Modified</th>
 			</tr></thead>
-			<tbody>{fileList}</tbody>
+			<tbody >{fileList}</tbody>
 		</table>
 
 	} else { // in case of no files
@@ -210,7 +211,7 @@ export default function Files() {
 	// page html
 	return (
 		<>
-			<Header helpText="To create a new File, click the 'Create New File' button. To upload a file, click 'Upload File'. Existing Files are listed below; click a filename to start editing. " />
+			<Header helpText="To create a new File, click the 'Create New File' button. To upload a file, click 'Upload File'. Existing Files are listed below; click a filename to start editing. To delete files, use the checkboxes on the left. " />
 			<Head>
 				<title>Files - RemoteText</title>
 			</Head>
@@ -219,9 +220,9 @@ export default function Files() {
 				<h3>Click a filename to view branch actions, or double click to open the history tree.</h3>
 				<div>
 					<button id="createFileButton" className={styles.createFileButton} onClick={showCreateFile}>Create New File</button>
-					<button id="uploadFileButton" className={styles.createFileButton} onClick={() => document.getElementById("uploadFileInput").click()}>Upload File</button>
+					<button id="uploadFileButton" className={styles.createFileButton} onClick={() => document.getElementById("uploadFileInput").click()}>Upload New File</button>
 					<input id="uploadFileInput" type="file" onChange={() => uploadFile(event)} hidden={true}></input>
-					<button id="deleteFilesButton" className={styles.createFileButton} onClick={()=>deleteFiles(fileData)} hidden={true}>Delete</button>
+					<button id="deleteFilesButton" className={styles.createFileButton} onClick={() => deleteFiles(fileData)} hidden={true}>Delete</button>
 					<div id="createFile" hidden={true}>
 						<label htmlFor="fileName">New file name:</label>
 						<input type="text" id="fileName" name="fileName" required minLength="1" maxLength="64" size="10"></input>

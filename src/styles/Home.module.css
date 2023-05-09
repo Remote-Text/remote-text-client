@@ -171,6 +171,18 @@ border: 2px solid #ccc; /* border style */
   padding: 10px; 
 }
 
+.filesListItem{
+	background: pink;
+	  border: 10px solid black; /* border style */
+	  border-collapse: collapse;
+	/* margin-top: 30px; */
+	/* margin-bottom: 30px; */
+  /* font-family: inherit; */
+  /* width: 100%; */
+  /* height: 100%; */
+  /* border-radius: 10px; /1* border radius to make it rounded *1/ */
+  /* padding: 10px; */ 
+}
 .newBranchName{
 	background: DarkGray;
 	  border: 2px solid #ccc; /* border style */
@@ -217,11 +229,35 @@ border: 2px solid #ccc; /* border style */
   fill: green;
 }
 
-/* Above is Josh's messing around with styles to make things pretty */
 .table {
-  border-spacing: 10px;
-  table-layout: fixed;
-  width: 90vw;
+  border-spacing: 30px;
+  border-collapse: collapse;
+  width: 80vw;
+  padding: 10px; 
+  border-radius:10px;
+  border-style:hidden;
+  overflow:hidden;
+	box-shadow: 0 0 0 3px SlateGray; /* this draws the table border  */
+}
+
+.table tr:last-child td:first-child {
+    border-bottom-left-radius: 10px;
+}
+    
+.table tr:last-child td:last-child {
+    border-bottom-right-radius: 10px;
+}
+.table th {
+	border: none;
+	background: orange;
+	padding: 10px;
+}
+.table tr{
+  border: 3px solid SlateGray;
+}
+.table td{
+	padding: 10px;
+  border-radius:10px;
 }
 
 .checkBoxRow {
