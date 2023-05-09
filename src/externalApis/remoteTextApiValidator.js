@@ -4,16 +4,16 @@ var Validator = require('jsonschema').Validator;
 
 module.exports = class Schemas {
 
-// listFiles(no input) -> list of fileSummary objects
+	// listFiles(no input) -> list of fileSummary objects
 
 	fileSummarySchema = {
 		"id": "/FileSummary",
 		"type": "object",
 		"properties": {
-			"name": { "type": "string" },
-			"edited_time": { "type": "string" },
-			"created_time": { "type": "string" },
-			"id": { "type": "string" }
+			"name": {"type": "string"},
+			"edited_time": {"type": "string"},
+			"created_time": {"type": "string"},
+			"id": {"type": "string"}
 		},
 		"required": ["id"]
 	}
@@ -26,19 +26,19 @@ module.exports = class Schemas {
 		}
 	}
 
-// createFile(name) -> fileSummary object
+	// createFile(name) -> fileSummary object
 
 	createFileInput = {
 		"id": "/createFile",
 		"type": "object",
 		"properties": {
-			"name": { "type": "string" },
-			"content": { "type": "string" }  // content is optional (for uploading existing file content)
+			"name": {"type": "string"},
+			"content": {"type": "string"}  // content is optional (for uploading existing file content)
 		},
 		"required": ["name"]
 	}
 
-// getFile(id, hash) -> file object
+	// getFile(id, hash) -> file object
 
 	getFileInput = {
 		"id": "/getFile",
@@ -54,21 +54,21 @@ module.exports = class Schemas {
 		"id": "/getFile",
 		"type": "object",
 		"properties": {
-			"name": { "type": "string" },
-			"id": { "type": "string" },
-			"content": { "type": "string" }
+			"name": {"type": "string"},
+			"id": {"type": "string"},
+			"content": {"type": "string"}
 		}
 	}
 
-// saveFile(name, id, content, parent, branch) -> hash, parent
+	// saveFile(name, id, content, parent, branch) -> hash, parent
 
 	saveFileInput = {
 		"id": "/saveFile",
 		"type": "object",
 		"properties": {
-			"name": { "type": "string" },
-			"id": { "type": "string" },
-			"content": { "type": "string" },
+			"name": {"type": "string"},
+			"id": {"type": "string"},
+			"content": {"type": "string"},
 			"parent": {"type": "string"},
 			"branch": {"type": "string"}
 		}
@@ -78,19 +78,19 @@ module.exports = class Schemas {
 		"id": "/saveFile",
 		"type": "object",
 		"properties": {
-			"hash": { "type": "string" },
-			"parent": { "type": ["string", "null"] }
+			"hash": {"type": "string"},
+			"parent": {"type": ["string", "null"]}
 		}
 	}
 
-// previewFile(id, hash) -> state (success/failure), log
+	// previewFile(id, hash) -> state (success/failure), log
 
 	previewFileInput = {
 		"id": "/previewFile",
 		"type": "object",
 		"properties": {
-			"id": { "type": "string" },
-			"hash": { "type": "string" }
+			"id": {"type": "string"},
+			"hash": {"type": "string"}
 		},
 		"required": ["id", "hash"]
 	}
@@ -99,35 +99,35 @@ module.exports = class Schemas {
 		"id": "/previewFile",
 		"type": "object",
 		"properties": {
-			"state": { "type": "string" },  // {"SUCCESS", "FAILURE"}
-			"log" : {"type": "string"}
+			"state": {"type": "string"},  // {"SUCCESS", "FAILURE"}
+			"log": {"type": "string"}
 		}
 	}
 
-// getPreview(id, hash) -> name, id, filetype, data
+	// getPreview(id, hash) -> name, id, filetype, data
 
 	getPreviewInput = {
 		"id": "/getPreview",
 		"type": "object",
 		"properties": {
-			"id": { "type": "string" },
-			"hash": { "type": "string" }
+			"id": {"type": "string"},
+			"hash": {"type": "string"}
 		},
 		"required": ["id", "hash"]
 	}
 
-/*	getPreviewOutput = {		// don't need this since this API call is now not returning a json, just preview string
-		"id": "/getPreview",
-		"type": "object",
-		"properties": {
-			"name": { "type": "string" },
-			"id": { "type": "string" },
-			"type": { "type": "string" },  // {"HTML", "PDF"}
-			"data": { "type": "string" }
-		}
-	} */
+	/*	getPreviewOutput = {		// don't need this since this API call is now not returning a json, just preview string
+			"id": "/getPreview",
+			"type": "object",
+			"properties": {
+				"name": { "type": "string" },
+				"id": { "type": "string" },
+				"type": { "type": "string" },  // {"HTML", "PDF"}
+				"data": { "type": "string" }
+			}
+		} */
 
-// getHistory(id) -> list of commit objects & list of ref objects
+	// getHistory(id) -> list of commit objects & list of ref objects
 
 	getHistoryInput = {
 		"id": "/getHistory",
@@ -160,18 +160,18 @@ module.exports = class Schemas {
 		"id": "/getHistory",
 		"type": "object",
 		"properties": {
-			"commits" : {
+			"commits": {
 				"type": "array",
 				"items": {"$ref": "/GitCommit"}
 			},
-			"refs" : {
+			"refs": {
 				"type": "array",
 				"items": {"$ref": "/GitRef"}
 			}
 		}
 	}
 
-// deleteFile(id) -> nothing returned
+	// deleteFile(id) -> nothing returned
 
 	deleteFileInput = {
 		"id": "/deleteFile",

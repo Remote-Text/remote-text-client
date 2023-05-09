@@ -1,9 +1,7 @@
 import styles from "../styles/Home.module.css"
 import {Header} from '../components/Header';
-import Head from "next/head"
 import React, {useEffect, useState} from 'react'
 import RemoteTextApi from '../externalApis/remoteTextApi.js'
-//var error_throw = "                __ \n               / _) \n      _.----._/ / \n     /   error / \n  __/ (  | (  | \n /__.-'|_|--|_|"
 
 const remoteTextApi = new RemoteTextApi()
 const {convert} = require('html-to-text')
@@ -22,11 +20,6 @@ async function getQueryString() {
 // for dealing with API calls:
 async function getFileData(id, hash) {
 
-	/*    let fileData = {        // Dummy data
-			name: "foo.txt",
-			id: "aec23664ae26d76ab66cedfb1206b9c9",
-			content: "hello world! is this working? I think it is",
-		}*/
 	let fileData = await remoteTextApi.getFile(id, hash)
 	let filePromise = new Promise((resolve) => {
 		if (fileData != undefined) {

@@ -1,17 +1,11 @@
 import Link from 'next/link'
 import styles from '../styles/Home.module.css'
-import RemoteTextApi from '../externalApis/remoteTextApi.js'
 import Head from "next/head"
-
-
-
-const remoteTextApi = new RemoteTextApi();
 
 export default function Home() {
 
 	return (
 		<>
-
 			<Head>
 				<title>RemoteText</title>
 			</Head>

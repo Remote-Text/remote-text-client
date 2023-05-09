@@ -3,18 +3,16 @@ import styles from "../styles/Home.module.css"
 import {Header} from '../components/Header';
 import React, {useCallback, useState, useLayoutEffect} from "react"
 import Head from "next/head"
-import Link from 'next/link'
 import Tree from 'react-d3-tree';
-import "../styles/historyTree.module.css"
 
 const remoteTextApi = new RemoteTextApi();
 var fileID
 var fileName
 
-// commitMap : dictionary of <parent hash>:[<child hash>]
+// commitToChildMap : dictionary of <parent hash>:[<child hash>]
 // refMap : dictionary of <hash>:<string>
 // rootHash : hash <string>
-function createHistoryTree(commitMap, refMap, rootHash) {
+function createHistoryTree(commitToChildMap, refMap, rootHash) {
 
 	// add the hash to the attributes
 	var historyTree = {
@@ -33,19 +31,19 @@ function createHistoryTree(commitMap, refMap, rootHash) {
 
 
 	// if there is children, get them too
-	let children = commitMap.get(rootHash)
+	let children = commitToChildMap.get(rootHash)
 	if (children) {
 		historyTree.children = []
 		for (let i = 0; i < children.length; i++) {
-			historyTree.children.push(createHistoryTree(commitMap, refMap, children[i]))
+			historyTree.children.push(createHistoryTree(commitToChildMap, refMap, children[i]))
 		}
-
 	}
 	return historyTree
 }
 
 
 
+// gets the history from the api, then puts the information into Maps to be processed into history tree
 async function getHistoryAndMakeTree(id) {
 	if (!id) {
 		return null
@@ -57,6 +55,7 @@ async function getHistoryAndMakeTree(id) {
 		return null
 	}
 
+	// throw the info from the api into maps to make it searchable
 	var commitMap = new Map();
 	var refMap = new Map();
 
@@ -76,13 +75,16 @@ async function getHistoryAndMakeTree(id) {
 		refMap.set(ref.hash, ref.name)
 	}
 
+	// the commit with the parent "null" should be the root of the tree
 	let hashes = commitMap.get(null)
 	if (!hashes) {
 		return null
 	}
+
 	let rootHash = hashes[0]
 	let tree = createHistoryTree(commitMap, refMap, rootHash)
 
+	// make sure tree is returned
 	let treePromise = new Promise((resolve) => {
 		if (tree != undefined) {
 			resolve(tree)
@@ -92,7 +94,7 @@ async function getHistoryAndMakeTree(id) {
 }
 
 // Here is how to extract the hash from pressing on a node
-function openNodeFile(event) {  // debug note from Alan: I wasn't sure how to pass the ID to this function & couldn't trace back where event is being given to it, so I just made fileID global. Maybe not best practice, but it works.
+function openNodeFile(event) {
 	let hash = event.data.properties.hash
 	let branchName = ""
 	if (event.data.hasOwnProperty("attributes")) {
@@ -101,27 +103,9 @@ function openNodeFile(event) {  // debug note from Alan: I wasn't sure how to pa
 		branchName = event.data.name
 	}
 	window.open(document.location.origin + "/editor?id=" + fileID + "&name=" + fileName + "&hash=" + hash + "&branch=" + branchName)
-	// to open in same window, add "_self" parameter. removed this do people can jump to a different branch more easily.
 }
 
-// a way to have prettier node names
-// to implement later
-// const renderForeignObjectNode = ({
-// 	nodeDatum,
-// 	foreignObjectProps
-// }) => (
-// 	<g>
-// 		<circle r={30}></circle>
-// 		{/* `foreignObject` requires width & height to be explicitly set. */}
-// 		<foreignObject {...foreignObjectProps}>
-// 			<div style={{x: 200, dy: "2em", border: "1px solid black", backgroundColor: "#dedede"}}>
-// 				<h3 style={{textAlign: "center"}}>{nodeDatum.name}</h3>
-// 			</div>
-// 		</foreignObject>
-// 	</g>
-// );
-
-// centers the tree
+// centers the history tree
 export const useCenteredTree = (defaultTranslate = {x: 0, y: 0}) => {
 	const [translate, setTranslate] = useState(defaultTranslate);
 	const containerRef = useCallback((containerElem) => {
@@ -133,6 +117,7 @@ export const useCenteredTree = (defaultTranslate = {x: 0, y: 0}) => {
 	return [translate, containerRef];
 };
 
+// extracts url parameters
 async function getQueryString() {
 	let queryString = window.location.search
 	let queryStringPromise = new Promise((resolve) => {
@@ -143,11 +128,13 @@ async function getQueryString() {
 	return queryStringPromise
 }
 
+// should show a tree which has the git history of the file
 export default function HistoryPage() {
 	const [historyTree, setHistoryTree] = useState({});
 	const [translate, containerRef] = useCenteredTree();
-	const textLayout = {attribute: {dy: "5em", x: 200000}};
 	const nodeSize = {x: 200, y: 200};
+
+	// this extracts file information from the URL
 	useLayoutEffect(() => {
 		getQueryString()
 			.then(data => {
@@ -164,7 +151,6 @@ export default function HistoryPage() {
 			}
 			)
 	}, [])
-	// const foreignObjectProps = {width: nodeSize.x, height: nodeSize.y, x: 20};
 
 	return (<>
 		<Head>
@@ -185,9 +171,6 @@ export default function HistoryPage() {
 					pathClassFunc={styles.node_link}
 					nodeSize={nodeSize}
 					textLayout={styles.node_text}
-					// renderCustomNodeElement={(rd3tProps) =>
-					// 	renderForeignObjectNode({...rd3tProps, foreignObjectProps})
-					// }
 					leafNodeClassName={styles.node__leaf} />
 			</div>
 		</main>
