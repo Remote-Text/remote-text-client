@@ -32,3 +32,25 @@ To run on production, don't `run dev`. Do
 npm run build
 npm run start
 ```
+
+## Tests
+
+To run unit tests, run 
+
+```
+npm run test
+```
+
+To run UI tests, run 
+
+```
+npm run cypress
+```
+
+## Help and Documentation
+
+[React](https://react.dev/) documentation, which we use for our web interface. 
+
+[Nextjs](https://nextjs.org/docs) documentation, which is a framework for react.
+
+For help on the website, follow the prompts. If something is unclear, there is a help menu in the top right corner of the screen.
