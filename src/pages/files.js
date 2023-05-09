@@ -33,10 +33,21 @@ async function createNewFile(name, fileContent = "") {
 	window.location.reload()
 }
 
-async function deleteFile(id) {
-	await remoteTextApi.deleteFile(id)
-		.then()
-	window.location.reload()
+async function deleteFiles(fileData) {
+	let tally = 0
+	let count = 0
+	fileData.forEach(f=>{
+		if (document.getElementById("select"+f.id).checked) {
+			tally++
+			remoteTextApi.deleteFile(f.id)
+			.then(done=>{
+				count++
+				if (tally==count){
+					window.location.reload()
+				}
+			})
+		}
+	})
 }
 
 // open file explorer to select a file to upload
@@ -54,27 +65,22 @@ async function uploadFile(event) {
 	}
 }
 
-async function downloadFile(id, name) {
-	await remoteTextApi.getHistory(id)
-		.then(histData => {
-			let branchView = document.getElementById("listBranches-" + id)
-			let branchList = ""
-			histData.refs.forEach(b => {
-				branchList += "<button id=" + b.hash + ">" + b.name + "</button>"
-			})
-			branchView.innerHTML = branchList
-			histData.refs.forEach(b => {
-				var re = /(?:\.([^.]+))?$/
-				let ext = re.exec(name)[1]
-				let branchFileName = name
-				if (ext != undefined) {  // check for file ext before renaming
-					branchFileName = name.replace(/\.[^/.]+$/, "") + "_" + b.name + "." + ext
-				} else {
-					branchFileName = name + "_" + b.name
-				}
-				document.getElementById(b.hash).addEventListener("click", () => {downloadBranchFile(id, branchFileName, b.hash)})
-			})
-		})
+async function uploadFileAsBranch(event, id, name, parent) {
+	var fileObj = {id: id, name: name, parent: parent}
+
+	var selectedFile = event.target.files[0]
+	fileObj.branch = selectedFile.name
+
+	var contentReader = new FileReader()
+	contentReader.readAsText(selectedFile)
+
+	contentReader.onload = function (event) {
+		fileObj.content = event.target.result  // ERROR: doesn't display newlines (is this fixed?)
+		remoteTextApi.saveFile(fileObj)
+		.then(done=>
+			window.location.reload()
+		)
+	}
 }
 
 async function downloadBranchFile(id, name, hash) {
@@ -83,7 +89,6 @@ async function downloadBranchFile(id, name, hash) {
 			var blob = new Blob([fileObj.content], {type: "text/plain;charset=utf-8"})
 			saveAs(blob, name)
 		})
-	document.getElementById("listBranches-" + id).innerHTML = ""
 }
 
 // show hidden html elements for naming a new file
@@ -93,6 +98,21 @@ function showCreateFile() {
 
 function hideCreateFile() {
 	document.getElementById("createFile").hidden = true
+}
+
+function showBranchOptions(id) {
+	document.getElementById("branchOptions"+id).hidden=!document.getElementById("branchOptions"+id).hidden
+}
+
+function selectAll(fileList) {
+	fileList.forEach(f => {
+	  document.getElementById("select"+f.id).checked = document.getElementById("selectAll").checked
+	  selectFile(f.id)
+	})
+  }
+  
+function selectFile(id) {
+	document.getElementById("deleteFilesButton").hidden = !document.getElementById("select"+id).checked && !document.getElementById("selectAll").checked
 }
 
 function formatTimestamp(s) {
@@ -108,17 +128,44 @@ function formatTimestamp(s) {
 	}
 }
 
+function branchOptionTable(histData, fileId, fileName){
+	if (histData!=undefined) {
+		let tableBody = histData.refs.map(b =>
+		<tr key={b.hash}>
+			<td>{b.name}</td>
+			<td>
+				<input id={"uploadBranchInput"+b.hash} type="file" onChange={(event)=>uploadFileAsBranch(event, fileId, fileName, b.hash)} hidden={true}></input>
+				<button id={"uploadBranchButton"+b.hash} onClick={()=>document.getElementById("uploadBranchInput"+b.hash).click()}>Upload new branch</button>
+			</td>
+			<td>
+				<button id={"downloadBranchButton"+b.hash} onClick={()=>downloadBranchFile(fileId, b.name+"_"+fileName, b.hash)}>Download this branch</button>
+			</td>
+		</tr>)
+
+		return <table id="branchTable">
+			<tbody>{tableBody}</tbody>
+		</table>
+	}
+}
+
 // main export
 export default function Files() {
 
 	const [fileData, setFileData] = useState({})
-
 	useEffect(() => {
 		listFilesData()
-			.then(data =>
-				setFileData(data)
-			)
-	}, [])  // gets async data^
+		.then(data => {
+			for(let i=0; i<data.length; i++) {
+				remoteTextApi.getHistory(data[i].id)
+				.then(histData => {
+					data[i].history = histData
+					if (i==data.length-1) {
+						setFileData(data)
+					}
+				})
+			}
+		})
+	}, [])
 
 	let fileTable = <></>
 
@@ -132,15 +179,14 @@ export default function Files() {
 		// map file data to html elements
 		let fileList = fileData.map(f =>
 			<tr id={f.id} key={f.id}>
-				<td>
-					<button className={styles.button} id="deleteFile" onClick={() => deleteFile(f.id)}>Delete</button>
-				</td>
-				<td>
-					<button className={styles.button} id="downloadFile" onClick={() => downloadFile(f.id, f.name)}>Download</button>
-					<div id={"listBranches-" + f.id}></div>
+				<td className={styles.checkBoxRow}>
+			        <input type="checkbox" id={"select"+f.id} onClick={()=>selectFile(f.id)}></input>
 				</td>
 				<td className={styles.nameRow}>
-					<button className={styles.fileButton} id="name" onClick={() => openFile(f.id, f.name)}>{f.name}</button>
+					<button className={styles.fileButton} id="name" onDoubleClick={() => openFile(f.id, f.name)} onClick={()=>showBranchOptions(f.id, f.name)}>{f.name}</button>
+					<div id={"branchOptions"+f.id} hidden={true}>
+						{branchOptionTable(f.history, f.id, f.name)}
+					</div>
 				</td>
 				<td className={styles.dateRow}>{f.created_time}</td>
 				<td className={styles.dateRow}>{f.edited_time}</td>
@@ -149,8 +195,7 @@ export default function Files() {
 		// fill html table with file elements
 		fileTable = <table id="fileTable" className={styles.table}>
 			<thead><tr>
-				<th></th>
-				<th></th>
+				<th className={styles.checkBoxRow}><input type="checkbox" id={"selectAll"} onClick={()=>selectAll(fileData)}></input></th>
 				<th className={styles.nameRow}>Name</th>
 				<th className={styles.dateRow}>Created</th>
 				<th className={styles.dateRow}>Modified</th>
@@ -171,11 +216,12 @@ export default function Files() {
 			</Head>
 			<main className={styles.filesMain}>
 				<h2>RemoteText Files</h2>
-				<h3>Click a filename to view the file history</h3>
+				<h3>Click a filename to view branch actions, or double click to open the history tree.</h3>
 				<div>
 					<button id="createFileButton" className={styles.createFileButton} onClick={showCreateFile}>Create New File</button>
 					<button id="uploadFileButton" className={styles.createFileButton} onClick={() => document.getElementById("uploadFileInput").click()}>Upload File</button>
 					<input id="uploadFileInput" type="file" onChange={() => uploadFile(event)} hidden={true}></input>
+					<button id="deleteFilesButton" className={styles.createFileButton} onClick={()=>deleteFiles(fileData)} hidden={true}>Delete</button>
 					<div id="createFile" hidden={true}>
 						<label htmlFor="fileName">New file name:</label>
 						<input type="text" id="fileName" name="fileName" required minLength="1" maxLength="64" size="10"></input>

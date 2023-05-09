@@ -224,6 +224,13 @@ border: 2px solid #ccc; /* border style */
   width: 90vw;
 }
 
+.checkBoxRow {
+  text-align: left;
+  vertical-align: top;
+  width: 20px;
+  overflow: hidden;
+}
+
 .nameRow {
   text-align: left;
   width: 40vw;
@@ -243,7 +250,7 @@ border: 2px solid #ccc; /* border style */
 }
 
 .fileButton {
-	margin-left: 30px;
+	margin-left: 0px;
 	margin-right: 30px;
   font-family: inherit;
   font-size: 1em;
