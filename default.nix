@@ -16,6 +16,7 @@ buildNpmPackage rec {
     REMOTE_TEXT_API_URL = "http://localhost:3030/api";
   };
 
+  # Credit to <https://github.com/nix-community/templates/blob/main/nextjs/flake.nix#L38-L49>
   postInstall = ''
     mkdir -p ''$out/bin
     exe="''$out/bin/${pname}"
