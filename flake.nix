@@ -1,7 +1,12 @@
 {
   description = "The server-side software for Remote Text";
 
-  outputs = { self, nixpkgs, ... }:
+  inputs.flockenzeit = {
+    url = "github:balsoft/Flockenzeit";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+
+  outputs = { self, flockenzeit, nixpkgs, ... }:
     let
       forAllSystems = gen:
         nixpkgs.lib.genAttrs nixpkgs.lib.systems.flakeExposed
@@ -12,8 +17,7 @@
         default = remote-text-web-client;
         dockerImage = pkgs.dockerTools.buildImage {
           name = "remote-text-web-client";
-          # Based on the last commit date, see: https://nixos.wiki/wiki/Docker#Reproducible_image_dates
-          created = builtins.substring 0 8 self.lastModifiedDate;
+          created = flockenzeit.lib.ISO-8601 self.lastModified;
           config = {
             Cmd = [ "${remote-text-web-client}/bin/remote-text-web-client" ];
           };
