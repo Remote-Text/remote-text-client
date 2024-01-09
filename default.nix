@@ -19,16 +19,17 @@ buildNpmPackage rec {
 
   # Credit to <https://github.com/nix-community/templates/blob/main/nextjs/flake.nix#L38-L49>
   postInstall = ''
-    mkdir -p ''$out/bin
-    exe="''$out/bin/${pname}"
-    lib="''$out/lib/node_modules/remote-text"
-    cp -r ./.next ''$lib
-    touch ''$exe
+    mkdir -p $out/bin
+    exe="$out/bin/${pname}"
+    rm -rf $out/lib/node_modules
+    lib="$out/lib/standalone"
+    cp -r ./.next/standalone $lib
+    touch $exe
     chmod +x ''$exe
     echo "
     #!${pkgs.bash}/bin/bash
-    cd ''$lib
-    ${pkgs.nodePackages_latest.pnpm}/bin/pnpm run start" > ''$exe
+    cd $lib
+    ${pkgs.nodejs}/bin/node server.js" > $exe
   '';
 
   meta = with lib; {
