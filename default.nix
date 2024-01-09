@@ -14,6 +14,8 @@ buildNpmPackage rec {
 
   env = {
     REMOTE_TEXT_API_URL = "http://localhost:3030/api";
+    CYPRESS_INSTALL_BINARY = "0";
+    CYPRESS_RUN_BINARY = "${pkgs.cypress}/bin/Cypress";
   };
 
   # Credit to <https://github.com/nix-community/templates/blob/main/nextjs/flake.nix#L38-L49>
@@ -25,9 +27,9 @@ buildNpmPackage rec {
     touch ''$exe
     chmod +x ''$exe
     echo "
-    #!/usr/bin/env bash
+    #!${pkgs.bash}/bin/bash
     cd ''$lib
-    ${pkgs.nodePackages_latest.pnpm}/bin/pnpm run start" > $exe
+    ${pkgs.nodePackages_latest.pnpm}/bin/pnpm run start" > ''$exe
   '';
 
   meta = with lib; {
