@@ -1,4 +1,4 @@
-{ lib, buildNpmPackage, cacert, pkgs }:
+{ lib, buildNpmPackage, cacert, pkgs, apiURL ? "http://localhost:3030/api" }:
 
 buildNpmPackage rec {
   pname = "remote-text-web-client";
@@ -13,7 +13,7 @@ buildNpmPackage rec {
   ];
 
   env = {
-    REMOTE_TEXT_API_URL = "http://localhost:3030/api";
+    REMOTE_TEXT_API_URL = apiURL;
     CYPRESS_INSTALL_BINARY = "0";
   };
 
