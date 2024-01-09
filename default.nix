@@ -24,6 +24,8 @@ buildNpmPackage rec {
     rm -rf $out/lib/node_modules
     lib="$out/lib/standalone"
     cp -r ./.next/standalone $lib
+    cp -r public $lib
+    cp -r ./.next/static $lib/.next
     touch $exe
     chmod +x ''$exe
     echo "#!${pkgs.bash}/bin/bash
