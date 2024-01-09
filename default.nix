@@ -26,8 +26,7 @@ buildNpmPackage rec {
     cp -r ./.next/standalone $lib
     touch $exe
     chmod +x ''$exe
-    echo "
-    #!${pkgs.bash}/bin/bash
+    echo "#!${pkgs.bash}/bin/bash
     cd $lib
     ${pkgs.nodejs}/bin/node server.js" > $exe
   '';
