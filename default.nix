@@ -1,4 +1,4 @@
-{ lib, buildNpmPackage, cacert, pkgs, apiURL ? "http://localhost:3030/api" }:
+{ lib, buildNpmPackage, cacert, pkgs }:
 
 buildNpmPackage rec {
   pname = "remote-text-web-client";
@@ -13,9 +13,13 @@ buildNpmPackage rec {
   ];
 
   env = {
-    REMOTE_TEXT_API_URL = apiURL;
+    REMOTE_TEXT_API_URL = "@@REMOTE_TEXT_API_URL@@";
     CYPRESS_INSTALL_BINARY = "0";
   };
+
+  postBuild = ''
+    ${pkgs.gnused}/bin/sed -i 's#"@@REMOTE_TEXT_API_URL@@"#process.env.REMOTE_TEXT_API_URL#' ./.next/standalone/server.js
+  '';
 
   # Credit to <https://github.com/nix-community/templates/blob/main/nextjs/flake.nix#L38-L49>
   postInstall = ''
